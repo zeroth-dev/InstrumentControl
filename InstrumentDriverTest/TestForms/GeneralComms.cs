@@ -21,8 +21,12 @@ namespace InstrumentDriverTest.TestForms
         {
             try
             {
+                InstrumentList.Items.Clear();
                 var deviceList = Instruments.VisaUtil.GetConnectedDeviceList();
-                InstrumentList.Items.Add(deviceList);
+                foreach (var device in deviceList)
+                {
+                    InstrumentList.Items.Add(device);
+                }
                 InstrumentList.SelectedIndex = 0;
             }
             catch (Exception ex)

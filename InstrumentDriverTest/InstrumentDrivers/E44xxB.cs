@@ -1,6 +1,7 @@
 ﻿using Ivi.Visa;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,7 +38,7 @@ namespace InstrumentDriverTest.Instruments
             {
                 throw new Exception("Instrument not initialized");
             }
-            var msg = String.Format("FREQ {0} {1}", frequency, freqBand);
+            var msg = String.Format("FREQ {0} {1}", frequency.ToString(CultureInfo.InvariantCulture.NumberFormat), freqBand);
             VisaUtil.SendCmd(visa, msg);
         }
 
@@ -49,7 +50,7 @@ namespace InstrumentDriverTest.Instruments
                 throw new Exception("Instrument not initialized");
             }
 
-            var msg = String.Format("POW:AMPL {0}", power);
+            var msg = String.Format("POW:AMPL {0}", power.ToString(CultureInfo.InvariantCulture.NumberFormat));
             VisaUtil.SendCmd(visa, msg);
         }
 

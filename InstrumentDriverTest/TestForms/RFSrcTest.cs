@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,9 +16,11 @@ namespace InstrumentDriverTest.TestForms
     public partial class RFSrcTest : Form
     {
         private E44xxB rfSource = null;
+        NumberFormatInfo provider = new NumberFormatInfo();
         public RFSrcTest()
         {
             InitializeComponent();
+            provider.NumberDecimalSeparator = ".";
             InitFreqBandList();
         }
 
@@ -31,8 +34,12 @@ namespace InstrumentDriverTest.TestForms
         {
             try
             {
+                InstrumentList.Items.Clear();
                 var deviceList = Instruments.VisaUtil.GetConnectedDeviceList();
-                InstrumentList.Items.Add(deviceList);
+                foreach (var device in deviceList)
+                {
+                    InstrumentList.Items.Add(device);
+                }
                 InstrumentList.SelectedIndex = 0;
             }
             catch (Exception ex)
@@ -62,10 +69,10 @@ namespace InstrumentDriverTest.TestForms
         {
             try
             {
-                double freq = double.Parse(CWFreqBox.Text);
+                double freq = double.Parse(CWFreqBox.Text, provider);
                 rfSource.setCWFrequency(freq, FreqBandBox.Text);
 
-                double power = double.Parse(PowerBox.Text);
+                double power = double.Parse(PowerBox.Text, provider);
                 rfSource.setCWPower(power);
             }
             catch (Exception ex)
@@ -116,6 +123,7 @@ namespace InstrumentDriverTest.TestForms
             ApplyBtn.Enabled = enable;
             TurnOffBtn.Enabled = enable;
             TurnOnBtn.Enabled = enable;
+            SendCmdBtn.Enabled = enable;
         }
     }
 }

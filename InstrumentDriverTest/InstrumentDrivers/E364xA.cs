@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -54,14 +55,14 @@ namespace InstrumentDriverTest.Instruments
 
         }
 
-        public void setCurrentLimit(int source, float limit)
+        public void setCurrentLimit(int source, double limit)
         {
             if (!initialized)
             {
                 // Write error message
                 return;
             }
-            if (source != 0 | source != 1)
+            if (source != 1 && source != 2)
             {
                 // Write error message
                 return;
@@ -74,18 +75,18 @@ namespace InstrumentDriverTest.Instruments
 
             string msg = String.Format("INST OUTP{0}", source);
             VisaUtil.SendCmd(visa, msg);
-            msg = String.Format("CURR {0}", limit);
+            msg = String.Format("CURR {0}", limit.ToString(CultureInfo.InvariantCulture.NumberFormat));
             VisaUtil.SendCmd(visa, msg);
         }
 
-        public void setVoltageLimit(int source, float limit)
+        public void setVoltageLimit(int source, double limit)
         {
             if (!initialized)
             {
                 // Write error message
                 return;
             }
-            if (source != 0 | source != 1)
+            if (source != 1 && source != 2)
             {
                 // Write error message
                 return;
@@ -98,7 +99,7 @@ namespace InstrumentDriverTest.Instruments
 
             string msg = String.Format("INST OUTP{0}", source);
             VisaUtil.SendCmd(visa, msg);
-            msg = String.Format("VOLT {0}", limit);
+            msg = String.Format("VOLT {0}", limit.ToString(CultureInfo.InvariantCulture.NumberFormat));
             VisaUtil.SendCmd(visa, msg);
         }
 
@@ -108,7 +109,7 @@ namespace InstrumentDriverTest.Instruments
             {
                 return -10;
             }
-            if (source != 0 | source != 1)
+            if (source != 1 && source != 2)
             {
                 // Write error message
                 return -10;
@@ -128,7 +129,7 @@ namespace InstrumentDriverTest.Instruments
             {
                 return -10;
             }
-            if (source != 0 | source != 1)
+            if (source != 1 && source != 2)
             {
                 // Write error message
                 return -10;
@@ -149,7 +150,7 @@ namespace InstrumentDriverTest.Instruments
                 return;
             }
 
-            if (source != 0 || source != 1)
+            if (source != 1 && source != 2)
             {
                 return;
             }

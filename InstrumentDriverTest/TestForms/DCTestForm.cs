@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,17 +16,24 @@ namespace InstrumentDriverTest.TestForms
     {
         private E364xA dcPowerSupply;
 
+
+        NumberFormatInfo provider = new NumberFormatInfo();
         public DCTestForm()
         {
             InitializeComponent();
+            provider.NumberDecimalSeparator = ".";
         }
 
         private void RefreshBtn_Click(object sender, EventArgs e)
         {
             try
             {
+                InstrumentList.Items.Clear();
                 var deviceList = Instruments.VisaUtil.GetConnectedDeviceList();
-                InstrumentList.Items.Add(deviceList);
+                foreach(var device in deviceList)
+                {
+                    InstrumentList.Items.Add(device);
+                }
                 InstrumentList.SelectedIndex = 0;
             }
             catch (Exception ex)
@@ -71,10 +79,10 @@ namespace InstrumentDriverTest.TestForms
 
             try
             {
-                float voltage = float.Parse(Src2VoltageBox.Text);
-                dcPowerSupply.setVoltageLimit(2, voltage);
-                float current = float.Parse(Src2CurrentBox.Text);
-                dcPowerSupply.setCurrentLimit(2, current);
+                double voltage = double.Parse(Src1VoltageBox.Text, provider);
+                dcPowerSupply.setVoltageLimit(1, voltage);
+                double current = double.Parse(Src1CurrentBox.Text, provider);
+                dcPowerSupply.setCurrentLimit(1, current);
             }
             catch (Exception ex)
             {
@@ -132,9 +140,9 @@ namespace InstrumentDriverTest.TestForms
 
             try
             {
-                float voltage = float.Parse(Src2VoltageBox.Text);
+                double voltage = double.Parse(Src2VoltageBox.Text, provider);
                 dcPowerSupply.setVoltageLimit(2, voltage);
-                float current = float.Parse(Src2CurrentBox.Text);
+                double current = double.Parse(Src2CurrentBox.Text, provider);
                 dcPowerSupply.setCurrentLimit(2, current);
             }
             catch(Exception ex)
@@ -173,7 +181,7 @@ namespace InstrumentDriverTest.TestForms
 
             try
             {
-                dcPowerSupply.turnOnOff(2, true);
+                dcPowerSupply.turnOnOff(2, false);
             }
             catch (Exception ex)
             {
