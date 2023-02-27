@@ -1,0 +1,198 @@
+﻿using InstrumentDriverTest.Instruments;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace InstrumentDriverTest.TestForms
+{
+    public partial class DCTestForm : Form
+    {
+        private E364xA dcPowerSupply;
+
+        public DCTestForm()
+        {
+            InitializeComponent();
+        }
+
+        private void RefreshBtn_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var deviceList = Instruments.VisaUtil.GetConnectedDeviceList();
+                InstrumentList.Items.Add(deviceList);
+                InstrumentList.SelectedIndex = 0;
+            }
+            catch (Exception ex)
+            {
+                LogBox.AppendText(ex.Message + Environment.NewLine);
+            }
+            
+        }
+
+        private void ConnectBtn_Click(object sender, EventArgs e)
+        {
+            string gpibAddress = InstrumentList.Text;
+            try
+            {
+                dcPowerSupply = new E364xA(gpibAddress);
+            }
+            catch (Exception ex)
+            {
+                LogBox.AppendText(ex.Message + Environment.NewLine);
+                return;
+            }
+
+            EnableBtns(true);
+        }
+
+        private void EnableBtns(bool enable)
+        {
+            ApplySrc1btn.Enabled = enable;
+            ApplySrc2Btn.Enabled = enable;
+            TurnOffSrc1Btn.Enabled = enable;
+            TurnOffSrc2Btn.Enabled = enable;
+            TurnOnSrc1Btn.Enabled = enable;
+            TurnOnSrc2Btn.Enabled = enable;
+        }
+
+        private void ApplySrc1btn_Click(object sender, EventArgs e)
+        {
+            if(dcPowerSupply == null)
+            {
+                LogBox.AppendText("Instrument not initialized!\n");
+                return;
+            }
+
+            try
+            {
+                float voltage = float.Parse(Src2VoltageBox.Text);
+                dcPowerSupply.setVoltageLimit(2, voltage);
+                float current = float.Parse(Src2CurrentBox.Text);
+                dcPowerSupply.setCurrentLimit(2, current);
+            }
+            catch (Exception ex)
+            {
+                LogBox.AppendText(ex.Message + Environment.NewLine);
+                return;
+            }
+
+        }
+
+        private void TurnOnSrc1Btn_Click(object sender, EventArgs e)
+        {
+
+            if (dcPowerSupply == null)
+            {
+                LogBox.AppendText("Instrument not initialized!\n");
+                return;
+            }
+
+            try
+            {
+                dcPowerSupply.turnOnOff(1, true);
+            }
+            catch (Exception ex)
+            {
+                LogBox.AppendText(ex.Message + Environment.NewLine);
+            }
+        }
+
+        private void TurnOffSrc1Btn_Click(object sender, EventArgs e)
+        {
+
+            if (dcPowerSupply == null)
+            {
+                LogBox.AppendText("Instrument not initialized!\n");
+                return;
+            }
+            try
+            {
+                dcPowerSupply.turnOnOff(1, false);
+            }
+            catch(Exception ex)
+            {
+                LogBox.AppendText(ex.Message + Environment.NewLine);
+            }
+        }
+
+        private void ApplySrc2Btn_Click(object sender, EventArgs e)
+        {
+
+            if (dcPowerSupply == null)
+            {
+                LogBox.AppendText("Instrument not initialized!\n");
+                return;
+            }
+
+            try
+            {
+                float voltage = float.Parse(Src2VoltageBox.Text);
+                dcPowerSupply.setVoltageLimit(2, voltage);
+                float current = float.Parse(Src2CurrentBox.Text);
+                dcPowerSupply.setCurrentLimit(2, current);
+            }
+            catch(Exception ex)
+            {
+                LogBox.AppendText(ex.Message + Environment.NewLine);
+                return;
+            }
+        }
+
+        private void TurnOnSrc2Btn_Click(object sender, EventArgs e)
+        {
+            if (dcPowerSupply == null)
+            {
+                LogBox.AppendText("Instrument not initialized!\n");
+                return;
+            }
+
+            try
+            {
+                dcPowerSupply.turnOnOff(2, true);
+            }
+            catch (Exception ex)
+            {
+                LogBox.AppendText(ex.Message + Environment.NewLine);
+            }
+
+        }
+
+        private void TurnOffSrc2Btn_Click(object sender, EventArgs e)
+        {
+            if (dcPowerSupply == null)
+            {
+                LogBox.AppendText("Instrument not initialized!\n");
+                return;
+            }
+
+            try
+            {
+                dcPowerSupply.turnOnOff(2, true);
+            }
+            catch (Exception ex)
+            {
+                LogBox.AppendText(ex.Message + Environment.NewLine);
+            }
+
+        }
+
+        private void SendCmdBtn_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var output = Instruments.VisaUtil.SendReceiveStringCmd(dcPowerSupply.visa, CmdBox.Text);
+                LogBox.AppendText(output + Environment.NewLine);
+            } 
+            catch (Exception ex)
+            {
+                LogBox.AppendText(ex.Message + Environment.NewLine);
+            }
+        }
+    }
+}

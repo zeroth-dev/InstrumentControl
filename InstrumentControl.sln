@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InstrumentControl", "InstrumentControl.csproj", "{B57A9A91-D599-44FA-87A0-AC18C98C891D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InstrumentControl", "InstrumentControl\InstrumentControl.csproj", "{B57A9A91-D599-44FA-87A0-AC18C98C891D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InstrumentDriverTest", "..\InstrumentDriverTest\InstrumentDriverTest.csproj", "{5657C427-BD63-4AEA-B6C5-F307C33E4B10}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InstrumentDriverTest", "InstrumentDriverTest\InstrumentDriverTest.csproj", "{5657C427-BD63-4AEA-B6C5-F307C33E4B10}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
