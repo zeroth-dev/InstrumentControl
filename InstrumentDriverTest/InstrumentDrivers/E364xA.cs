@@ -55,7 +55,7 @@ namespace InstrumentDriverTest.Instruments
 
         }
 
-        public void setCurrentLimit(int source, double limit)
+        public void SetCurrentLimit(int source, double limit)
         {
             if (!initialized)
             {
@@ -79,7 +79,7 @@ namespace InstrumentDriverTest.Instruments
             VisaUtil.SendCmd(visa, msg);
         }
 
-        public void setVoltageLimit(int source, double limit)
+        public void SetVoltageLimit(int source, double limit)
         {
             if (!initialized)
             {
@@ -103,7 +103,7 @@ namespace InstrumentDriverTest.Instruments
             VisaUtil.SendCmd(visa, msg);
         }
 
-        public double readCurrent(int source)
+        public double ReadCurrent(int source)
         {
             if (!initialized)
             {
@@ -123,7 +123,7 @@ namespace InstrumentDriverTest.Instruments
 
         }
 
-        public double readVoltage(int source)
+        public double ReadVoltage(int source)
         {
             if (!initialized)
             {
@@ -143,30 +143,16 @@ namespace InstrumentDriverTest.Instruments
 
         }
 
-        public void turnOnOff(int source, bool turnOn)
+        public void TurnOnOff(bool turnOn)
         {
             if (!initialized)
             {
                 return;
             }
 
-            if (source != 1 && source != 2)
-            {
-                return;
-            }
-
-            string msg = String.Format("INST OUTP{0}", source);
-            VisaUtil.SendCmd(visa, msg);
-            msg = string.Format("OUTP {0}", turnOn == true ? "ON" : "OFF");
+            var msg = string.Format("OUTP {0}", turnOn == true ? "ON" : "OFF");
             VisaUtil.SendCmd(visa, msg);
         }
 
-        public void turnAllOnOff(bool turnOn)
-        {
-            if (!initialized) { return; }
-
-            turnOnOff(0, turnOn);
-            turnOnOff(1, turnOn);
-        }
     }
 }

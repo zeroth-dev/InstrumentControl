@@ -4,22 +4,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 
 namespace InstrumentDriverTest.Instruments
 {
     internal class HP5412x
     {
-        string GpibAddress { get; }
+        string gpibAddress { get; }
         private bool initialized = false;
         private IMessageBasedSession visa = null;
 
-        public HP5412x(int address)
+        public HP5412x(string gpibAddress)
         {
-            GpibAddress = String.Format("GPIB0::{0}::INSTR", address);
+            this.gpibAddress = gpibAddress;
             string res = "";
             try
             {
-                (visa, res) = VisaUtil.InitInstrument(GpibAddress);
+                (visa, res) = VisaUtil.InitInstrument(this.gpibAddress);
             }
             catch (Exception ex)
             {
@@ -37,7 +38,7 @@ namespace InstrumentDriverTest.Instruments
             }
         }
 
-        public void GetNormalMeasurement(int channel)
+        public (List<double>, List<double>) GetNormalMeasurement(int channel)
         {
             if(!initialized)
             {
@@ -57,16 +58,40 @@ namespace InstrumentDriverTest.Instruments
             VisaUtil.SendCmd(visa, msg);
 
             // Set the memory from which the data will be loaded and specify ASCII form for data
-            msg = String.Format("WAV: SOUR WMEM {0}; FORM ASCII", channel);
+            msg = String.Format("WAV:SOUR WMEM{0}; FORM ASCII", channel);
             VisaUtil.SendCmd(visa, msg);
 
             // Get data
-            var data = VisaUtil.SendReceiveFloatArrayCmd(visa, "WAV:DATA?", 1024);
+            var data = VisaUtil.SendReceiveStringCmd(visa, "WAV:DATA?");
+            var intData = Array.ConvertAll<string, int>(data.Split(','), Convert.ToInt32);
             // TODO: postprocessing
-            return; 
+
+            msg = String.Format("WAV: SOUR WMEM{0};PRE?");
+            var preamble = VisaUtil.SendReceiveStringCmd(visa, msg);
+            var Xinc = preamble[4];
+            var Xor = preamble[5];
+            var Xref = preamble[6];
+            var Yinc = preamble[7];
+            var Yor = preamble[8];
+            var Yref = preamble[9];
+            //
+            //value = (Waveform - Yref) * Yinc + Yor;
+            //
+            //time = 1:length(value);
+            //time = (time - Xref) * Xinc + Xor;
+            List<double> yOutput = new List<double>();
+            List<double> xOutput = new List<double>();
+            double baseX = 1.0 / intData.Length;
+            foreach(var y in intData)
+            {
+                yOutput.Add(Yinc * (((double)y) - Yref  ) + Yor );
+                xOutput.Add(Xinc * (baseX - Xref) + Xor );
+            }
+
+            return (xOutput, yOutput); 
         }
 
-        public void GetAveragedMeasurement(int channel, int avgCount)
+        public (List<double>, List<double>) GetAveragedMeasurement(int channel, int avgCount)
         {
             if (!initialized)
             {
@@ -91,8 +116,31 @@ namespace InstrumentDriverTest.Instruments
 
             // Get data
             var data = VisaUtil.SendReceiveFloatArrayCmd(visa, "WAV:DATA?", 1024);
+            var intData = Array.ConvertAll<string, int>(data.Split(','), Convert.ToInt32);
             // TODO: postprocessing
-            return;
+
+            msg = String.Format("WAV: SOUR WMEM{0};PRE?");
+            var preamble = VisaUtil.SendReceiveStringCmd(visa, msg);
+            var Xinc = preamble[4];
+            var Xor = preamble[5];
+            var Xref = preamble[6];
+            var Yinc = preamble[7];
+            var Yor = preamble[8];
+            var Yref = preamble[9];
+            //
+            //value = (Waveform - Yref) * Yinc + Yor;
+            //
+            //time = 1:length(value);
+            //time = (time - Xref) * Xinc + Xor;
+            List<double> yOutput = new List<double>();
+            List<double> xOutput = new List<double>();
+            double baseX = 1.0 / intData.Length;
+            foreach (var y in intData)
+            {
+                yOutput.Add(Yinc * (((double)y) - Yref) + Yor);
+                xOutput.Add(Xinc * (baseX - Xref) + Xor);
+            }
+            return (xOutput, yOutput);
         }
     }
 }

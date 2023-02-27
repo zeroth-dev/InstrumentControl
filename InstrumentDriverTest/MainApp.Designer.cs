@@ -35,18 +35,19 @@
             this.TestVNABtn = new System.Windows.Forms.Button();
             this.GenBtn = new System.Windows.Forms.Button();
             this.TestRFSrcBtn = new System.Windows.Forms.Button();
+            this.TunerTestBtn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // exitBtn
             // 
-            this.exitBtn.Location = new System.Drawing.Point(106, 175);
+            this.exitBtn.Location = new System.Drawing.Point(108, 194);
             this.exitBtn.Name = "exitBtn";
             this.exitBtn.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.exitBtn.Size = new System.Drawing.Size(140, 23);
             this.exitBtn.TabIndex = 0;
             this.exitBtn.Text = "Exit";
             this.exitBtn.UseVisualStyleBackColor = true;
-            this.exitBtn.Click += new System.EventHandler(this.exitBtn_Click);
+            this.exitBtn.Click += new System.EventHandler(this.ExitBtn_Click);
             // 
             // TestOscBtn
             // 
@@ -108,11 +109,22 @@
             this.TestRFSrcBtn.UseVisualStyleBackColor = true;
             this.TestRFSrcBtn.Click += new System.EventHandler(this.TestRFSrcBtn_Click);
             // 
+            // TunerTestBtn
+            // 
+            this.TunerTestBtn.Location = new System.Drawing.Point(108, 165);
+            this.TunerTestBtn.Name = "TunerTestBtn";
+            this.TunerTestBtn.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.TunerTestBtn.Size = new System.Drawing.Size(140, 23);
+            this.TunerTestBtn.TabIndex = 7;
+            this.TunerTestBtn.Text = "Test Tuner";
+            this.TunerTestBtn.UseVisualStyleBackColor = true;
+            // 
             // MainApp
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(357, 215);
+            this.ClientSize = new System.Drawing.Size(357, 247);
+            this.Controls.Add(this.TunerTestBtn);
             this.Controls.Add(this.TestRFSrcBtn);
             this.Controls.Add(this.GenBtn);
             this.Controls.Add(this.TestVNABtn);
@@ -121,7 +133,7 @@
             this.Controls.Add(this.TestOscBtn);
             this.Controls.Add(this.exitBtn);
             this.Name = "MainApp";
-            this.Text = "Form1";
+            this.Text = "Testing Environment";
             this.ResumeLayout(false);
 
         }
@@ -135,6 +147,7 @@
         private System.Windows.Forms.Button TestVNABtn;
         private System.Windows.Forms.Button GenBtn;
         private System.Windows.Forms.Button TestRFSrcBtn;
+        private System.Windows.Forms.Button TunerTestBtn;
     }
 }
 

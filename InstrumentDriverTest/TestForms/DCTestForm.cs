@@ -80,9 +80,9 @@ namespace InstrumentDriverTest.TestForms
             try
             {
                 double voltage = double.Parse(Src1VoltageBox.Text, provider);
-                dcPowerSupply.setVoltageLimit(1, voltage);
+                dcPowerSupply.SetVoltageLimit(1, voltage);
                 double current = double.Parse(Src1CurrentBox.Text, provider);
-                dcPowerSupply.setCurrentLimit(1, current);
+                dcPowerSupply.SetCurrentLimit(1, current);
             }
             catch (Exception ex)
             {
@@ -103,7 +103,7 @@ namespace InstrumentDriverTest.TestForms
 
             try
             {
-                dcPowerSupply.turnOnOff(1, true);
+                dcPowerSupply.TurnOnOff(true);
             }
             catch (Exception ex)
             {
@@ -121,7 +121,7 @@ namespace InstrumentDriverTest.TestForms
             }
             try
             {
-                dcPowerSupply.turnOnOff(1, false);
+                dcPowerSupply.TurnOnOff(false);
             }
             catch(Exception ex)
             {
@@ -141,9 +141,9 @@ namespace InstrumentDriverTest.TestForms
             try
             {
                 double voltage = double.Parse(Src2VoltageBox.Text, provider);
-                dcPowerSupply.setVoltageLimit(2, voltage);
+                dcPowerSupply.SetVoltageLimit(2, voltage);
                 double current = double.Parse(Src2CurrentBox.Text, provider);
-                dcPowerSupply.setCurrentLimit(2, current);
+                dcPowerSupply.SetCurrentLimit(2, current);
             }
             catch(Exception ex)
             {
@@ -162,7 +162,7 @@ namespace InstrumentDriverTest.TestForms
 
             try
             {
-                dcPowerSupply.turnOnOff(2, true);
+                dcPowerSupply.TurnOnOff(true);
             }
             catch (Exception ex)
             {
@@ -181,7 +181,7 @@ namespace InstrumentDriverTest.TestForms
 
             try
             {
-                dcPowerSupply.turnOnOff(2, false);
+                dcPowerSupply.TurnOnOff(false);
             }
             catch (Exception ex)
             {

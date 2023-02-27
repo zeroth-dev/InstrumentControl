@@ -18,7 +18,7 @@ namespace InstrumentDriverTest
             InitializeComponent();
         }
 
-        private void exitBtn_Click(object sender, EventArgs e)
+        private void ExitBtn_Click(object sender, EventArgs e)
         {
             Application.Exit();
         }

@@ -16,7 +16,7 @@ namespace InstrumentDriverTest
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainApp());
+            Application.Run(new TestingEn());
         }
     }
 }
