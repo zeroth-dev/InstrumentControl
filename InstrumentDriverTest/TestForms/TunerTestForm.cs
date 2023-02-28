@@ -47,7 +47,7 @@ namespace InstrumentDriverTest.TestForms
             string gpibAddress = InstrumentList.Text;
             try
             {
-                tuner = new MauryTunerDriver(1333, 0, 2048, 2, 3);
+                tuner = new MauryTunerDriver(2, 0, 1333, 2048, 2, 3);
             }
             catch (Exception ex)
             {
@@ -85,6 +85,7 @@ namespace InstrumentDriverTest.TestForms
         {
             try
             {
+                tuner = new MauryTunerDriver(2, 0, 1333, 2048, 2, 3);
                 tuner.initTuner(CtrlDriverBox.Text);
                 Complex impedance = new Complex(double.Parse(ZRealBox.Text, CultureInfo.InvariantCulture.NumberFormat),
                                                 double.Parse(ZImagBox.Text, CultureInfo.InvariantCulture.NumberFormat));

@@ -59,7 +59,8 @@ namespace InstrumentDriverTest
 
         private void TunerTestBtn_Click(object sender, EventArgs e)
         {
-
+            var TunerTest = new TunerTestForm();
+            TunerTest.Show();
         }
     }
 }

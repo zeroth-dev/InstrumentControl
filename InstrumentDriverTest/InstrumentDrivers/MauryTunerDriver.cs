@@ -15,6 +15,7 @@ namespace InstrumentDriverTest.Instruments
         private short controllerPort { get;}
         private short address { get;}
         private short tunerNumber { get;}
+        private short ctrlrSerial { get;}
         // Model used is MT986B02 
         private char[] model = new char[]{'M', 'T', '9', '8', '6', 'B', '0', '2'};
         private short numOfMotors = 3;
@@ -23,13 +24,14 @@ namespace InstrumentDriverTest.Instruments
         private double fmax = 8f;
         private double fcrossover = 2.8f;
         private Complex[] sParams = new Complex[4];
-        public MauryTunerDriver(short tunerNumber, short controllerNumber, short serial, short ctlrPort, short address) 
+        public MauryTunerDriver(short tunerNumber, short controllerNumber, short serial, short ctrlrSerial, short ctlrPort, short address) 
         {
             this.tunerNumber = tunerNumber;
             this.controllerNumber = controllerNumber;
             this.serial = serial;
             this.controllerPort = ctlrPort;
             this.address = address;
+            this.ctrlrSerial = ctrlrSerial;
 
             if (serial == 1331)
             {
