@@ -53,7 +53,7 @@ namespace InstrumentDriverTest.Instruments
 
         public static void SendCmd(IMessageBasedSession visa, string msg)
         {
-            visa.RawIO.Write(msg);
+            visa.RawIO.Write(msg + "\n");
         }
 
         /// <summary>
@@ -66,8 +66,18 @@ namespace InstrumentDriverTest.Instruments
         public static string SendReceiveStringCmd(IMessageBasedSession visa, string msg)
         {
             
-            visa.RawIO.Write(msg); // write to instrument
+            visa.RawIO.Write(msg + "\n"); // write to instrument
             var strOutput = visa.RawIO.ReadString(); // read from instrument
+            Console.WriteLine(strOutput + "\n");
+            return strOutput;
+        }
+
+        public static string SendReceiveStringCmd(IMessageBasedSession visa, string msg, int count)
+        {
+
+            visa.RawIO.Write(msg + "\n"); // write to instrument
+            var charOutput = visa.RawIO.Read(count); // read from instrument
+            var strOutput = System.Text.Encoding.ASCII.GetString(charOutput);
             Console.WriteLine(strOutput + "\n");
             return strOutput;
         }
@@ -82,7 +92,7 @@ namespace InstrumentDriverTest.Instruments
         public static float SendReceiveFloatCmd(IMessageBasedSession visa, string msg)
         {
 
-            visa.RawIO.Write(msg); // write to instrument
+            visa.RawIO.Write(msg + "\n"); // write to instrument
             var floatReturn = float.Parse(visa.RawIO.ReadString()); // read from instrument
             Console.WriteLine(floatReturn + "\n");
             return floatReturn;
@@ -100,7 +110,7 @@ namespace InstrumentDriverTest.Instruments
         public static string SendReceiveFloatArrayCmd(IMessageBasedSession visa, string msg, int arrSize)
         {
 
-            visa.RawIO.Write(msg); // write to instrument
+            visa.RawIO.Write(msg + "\n"); // write to instrument
             var idOutput = visa.RawIO.ReadString(); // read from instrument
             Console.WriteLine(idOutput + "\n");
             visa.ReadStatusByte();
@@ -149,7 +159,7 @@ namespace InstrumentDriverTest.Instruments
             try
             { 
                 var visa = GlobalResourceManager.Open(gpibAddress) as IMessageBasedSession;
-                visa.RawIO.Write(msg); // write to instrument
+                visa.RawIO.Write(msg+"\n"); // write to instrument
                 var strOutput = visa.RawIO.ReadString(); // read from instrument
                 Console.WriteLine(strOutput + "\n");
                 return strOutput;

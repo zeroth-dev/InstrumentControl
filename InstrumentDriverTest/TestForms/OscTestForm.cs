@@ -4,10 +4,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace InstrumentDriverTest.TestForms
 {
@@ -65,7 +67,23 @@ namespace InstrumentDriverTest.TestForms
             try
             {
                 var channel = int.Parse(ChannelBox.Text);
-                oscilloscope.GetNormalMeasurement(channel);
+                var (time, amp) = oscilloscope.GetNormalMeasurement(channel);
+                using (StreamWriter writer = new StreamWriter(@"NormalOutput_time.csv"))
+                {
+                    foreach (double item in time)
+                    {
+                        writer.WriteLine(item); //note the F9
+                    }
+                };
+                using (StreamWriter writer = new StreamWriter(@"NormalOutput_volt.csv"))
+                {
+                    foreach (double item in amp)
+                    {
+                        writer.WriteLine(item); //note the F9
+                    }
+                };
+                var chart = new ChartForm(time, amp);
+                chart.Show();
             }
             catch(Exception ex)
             {
@@ -99,6 +117,22 @@ namespace InstrumentDriverTest.TestForms
             GetNormDataBtn.Enabled = enable;
             GetAvgDataBtn.Enabled = enable;
             SendCmdBtn.Enabled = enable;
+        }
+
+        private void PlotData(List<double> x, List<double> y)
+        {
+            Chart chart = new Chart();
+            DataTable dt = new DataTable();
+            dt.Columns.Add("Time", typeof(double));
+            dt.Columns.Add("Voltage", typeof(double));
+            for(int i = 0; i < x.Count; i++)
+            {
+                dt.Rows.Add(x[i], y[i]);
+            }
+            chart.DataSource = dt;
+            chart.Series["Series1"].XValueMember = "Time";
+            chart.Series["Series1"].YValueMembers = "Voltage";
+            chart.Series["Series1"].ChartType = SeriesChartType.Line;
         }
 
     }

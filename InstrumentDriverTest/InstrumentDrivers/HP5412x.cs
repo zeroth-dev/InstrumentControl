@@ -1,6 +1,7 @@
 ﻿using Ivi.Visa;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -51,7 +52,7 @@ namespace InstrumentDriverTest.Instruments
             }
 
             // Set normal acquisition type with 1028 points
-            VisaUtil.SendCmd(visa, "ACQ:TYPE NORM;POINTS 1028");
+            VisaUtil.SendCmd(visa, "ACQ:TYPE NORM;POINTS 1024");
 
             // Digitize the specified channel
             var msg = String.Format("DIG CHAN{0}", channel);
@@ -62,18 +63,20 @@ namespace InstrumentDriverTest.Instruments
             VisaUtil.SendCmd(visa, msg);
 
             // Get data
-            var data = VisaUtil.SendReceiveStringCmd(visa, "WAV:DATA?");
+            var data = VisaUtil.SendReceiveStringCmd(visa, "WAV:DATA?", 8192);
             var intData = Array.ConvertAll<string, int>(data.Split(','), Convert.ToInt32);
+            var test = data.Length;
             // TODO: postprocessing
 
-            msg = String.Format("WAV: SOUR WMEM{0};PRE?");
+            msg = String.Format("WAV: SOUR WMEM{0};PRE?", channel);
             var preamble = VisaUtil.SendReceiveStringCmd(visa, msg);
-            var Xinc = preamble[4];
-            var Xor = preamble[5];
-            var Xref = preamble[6];
-            var Yinc = preamble[7];
-            var Yor = preamble[8];
-            var Yref = preamble[9];
+            var preambleNums = preamble.Split(',');
+            var Xinc = double.Parse(preambleNums[4], System.Globalization.NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat);
+            var Xor = double.Parse(preambleNums[5], System.Globalization.NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat);
+            var Xref = double.Parse(preambleNums[6], System.Globalization.NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat);
+            var Yinc = double.Parse(preambleNums[7], System.Globalization.NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat);
+            var Yor = double.Parse(preambleNums[8], System.Globalization.NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat);
+            var Yref = double.Parse(preambleNums[9], System.Globalization.NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat);
             //
             //value = (Waveform - Yref) * Yinc + Yor;
             //
