@@ -90,22 +90,35 @@ namespace InstrumentDriverTest.Instruments
 
         }
 
-        public void moveTunerToImpedance(Complex impedance, double freq)
+        public void moveTunerToImpedance(string tunerDataFilePath, Complex impedance, double freq)
         {
+
+            char[] error = new char[100];
+            var err = MauryTunerFunctions.read_tuner_data_file(tunerNumber, tunerDataFilePath.ToCharArray(), model, out error);
+            if(err != 0)
+            {
+                throw new Exception(new string(error));
+            }
             Complex Z0= new Complex(50,0);
             Complex gamma = (impedance - Z0) / (impedance + Z0);
 
             Complex target = (gamma - sParams[0])/(sParams[4]*(gamma-sParams[4])+sParams[2]*sParams[1]);
 
-            char[] error = new char[100];
             long carr;
             long p1;
             long p2;
             double[] dummy = new double[3];
-            MauryTunerFunctions.get_tuner_refl_data(tunerNumber, 0, freq, 0, 0, target.Real, target.Imaginary, out carr, out p1, out p2,
+            err = MauryTunerFunctions.get_tuner_refl_data(tunerNumber, 0, freq, 0, 0, target.Real, target.Imaginary, out carr, out p1, out p2,
                                                     out dummy, out dummy, out dummy, out dummy, out dummy, out dummy, out dummy, out dummy, out error);
-
-            MauryTunerFunctions.move_tuner(tunerNumber, carr, p1, p2, out error);
+            if (err != 0)
+            {
+                throw new Exception(new string(error));
+            }
+            err = MauryTunerFunctions.move_tuner(tunerNumber, carr, p1, p2, out error);
+            if (err != 0)
+            {
+                throw new Exception(new string(error));
+            }
         }
 
         public void moveTunerToSmithPosition(Complex position, double freq)

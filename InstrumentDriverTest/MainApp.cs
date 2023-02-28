@@ -25,7 +25,8 @@ namespace InstrumentDriverTest
 
         private void TestOscBtn_Click(object sender, EventArgs e)
         {
-
+            var oscTest = new OscTestForm();
+            oscTest.Show();
         }
 
         private void TestSpectAnBtn_Click(object sender, EventArgs e)
@@ -36,7 +37,7 @@ namespace InstrumentDriverTest
         private void TestDCBtn_Click(object sender, EventArgs e)
         {
             var dcTest = new DCTestForm();
-            dcTest.ShowDialog();
+            dcTest.Show();
         }
 
         private void TestVNABtn_Click(object sender, EventArgs e)
@@ -47,13 +48,18 @@ namespace InstrumentDriverTest
         private void GenBtn_Click(object sender, EventArgs e)
         {
             var general = new GeneralComms();
-            general.ShowDialog();
+            general.Show();
         }
 
         private void TestRFSrcBtn_Click(object sender, EventArgs e)
         {
             var RFTest = new RFSrcTest();
-            RFTest.ShowDialog();
+            RFTest.Show();
+        }
+
+        private void TunerTestBtn_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

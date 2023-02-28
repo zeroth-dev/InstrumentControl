@@ -118,6 +118,7 @@
             this.TunerTestBtn.TabIndex = 7;
             this.TunerTestBtn.Text = "Test Tuner";
             this.TunerTestBtn.UseVisualStyleBackColor = true;
+            this.TunerTestBtn.Click += new System.EventHandler(this.TunerTestBtn_Click);
             // 
             // MainApp
             // 

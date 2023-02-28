@@ -89,6 +89,12 @@
     <Compile Include="TestForms\RFSrcTest.Designer.cs">
       <DependentUpon>RFSrcTest.cs</DependentUpon>
     </Compile>
+    <Compile Include="TestForms\TunerTestForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TestForms\TunerTestForm.Designer.cs">
+      <DependentUpon>TunerTestForm.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="MainApp.resx">
       <DependentUpon>MainApp.cs</DependentUpon>
     </EmbeddedResource>
@@ -112,6 +118,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="TestForms\RFSrcTest.resx">
       <DependentUpon>RFSrcTest.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TestForms\TunerTestForm.resx">
+      <DependentUpon>TunerTestForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
