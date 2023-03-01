@@ -25,23 +25,25 @@ namespace InstrumentDriverTest.Instruments
         string tunerCharFilePath;
         string ctrlDriverPath;
 
+        string tunerExeFilePath;
 
         // Checks if tuner controller was already initialised
         private static bool ctrlInitialised = false; 
-        public MauryTunerDriver(short tunerNumber, short controllerNumber, short serial, short ctrlrSerial, 
-                            short ctlrPort, short gpibAddress) 
+        public MauryTunerDriver(short tunerNumber, short controllerNumber, short serial, short ctrlSerial, 
+                            short ctrlPort, short gpibAddress, string tunerExeFilePath = "CppDllTest.exe") 
         {
             this.tunerNumber = tunerNumber;
             this.controllerNumber = controllerNumber;
             this.serial = serial;
-            this.controllerPort = ctlrPort;
+            this.controllerPort = ctrlPort;
             this.gpibAddress = gpibAddress;
-            this.ctrlSerial = ctrlrSerial;
+            this.ctrlSerial = ctrlSerial;
+            this.tunerExeFilePath= tunerExeFilePath;
 
         }
 
         public void InitTuner(string ctrlDriverPath, string tunerCharFilePath, int tunerNumber, 
-                                bool inputTuner, string tunerExeFilePath = "CppDllTest.exe")
+                                bool inputTuner)
         {
 
             this.ctrlDriverPath = ctrlDriverPath;
@@ -63,8 +65,7 @@ namespace InstrumentDriverTest.Instruments
 
         }
 
-        public void MoveTunerToImpedance( int tunerNumber, Complex impedance, double freq, List<Complex> sParams = null,
-                                            string tunerCharFilePath = "CppDllTest.exe")
+        public void MoveTunerToImpedance( int tunerNumber, Complex impedance, double freq, List<Complex> sParams = null)
         {
             Complex Z0 = new Complex(50, 0);
             Complex gamma = (impedance - Z0)/(impedance + Z0);
@@ -72,10 +73,10 @@ namespace InstrumentDriverTest.Instruments
             {
                 gamma = (gamma - sParams[0]) / (sParams[3]*(gamma-sParams[3]) + sParams[1]*sParams[2]);
             }
-            MoveTunerToSmithPosition(tunerNumber, gamma, freq, tunerCharFilePath);
+            MoveTunerToSmithPosition(tunerNumber, gamma, freq);
         }
 
-        public void MoveTunerToSmithPosition(int tunerNumber, Complex reflection, double freq, string tunerCharFilePath = "CppDllTest.exe")
+        public void MoveTunerToSmithPosition(int tunerNumber, Complex reflection, double freq)
         {
             string arguments = String.Format("set {0} {1} {2} {3} {4}", tunerNumber, reflection.Real, reflection.Imaginary, freq, false);
             RunProcess(tunerCharFilePath, arguments);
