@@ -137,13 +137,25 @@ namespace InstrumentDriverTest.Instruments
             //time = (time - Xref) * Xinc + Xor;
             List<double> yOutput = new List<double>();
             List<double> xOutput = new List<double>();
-            double baseX = 1.0 / intData.Length;
-            foreach (var y in intData)
+            List<double> baseX = (List<double>)Range(1, intData.Length);
+            for (int i = 0; i < intData.Length; i++)
             {
+                var y = intData[i];
                 yOutput.Add(Yinc * (((double)y) - Yref) + Yor);
-                xOutput.Add(Xinc * (baseX - Xref) + Xor);
+                xOutput.Add(Xinc * (baseX[i] - Xref) + Xor);
             }
             return (xOutput, yOutput);
         }
+
+        private IEnumerable<double> Range(double min, double max)
+        {
+            double i;
+            for (i = min; i <= max; i += 1)
+                yield return i;
+
+            if (i != max + 1) // added only because you want max to be returned as last item
+                yield return max;
+        }
     }
+
 }
