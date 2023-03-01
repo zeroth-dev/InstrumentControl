@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Numerics;
 using System.CodeDom;
+using System.Threading;
 
 namespace InstrumentDriverTest.Instruments
 {
@@ -16,10 +17,12 @@ namespace InstrumentDriverTest.Instruments
         private short address { get;}
         private short tunerNumber { get;}
         private short ctrlrSerial { get;}
+
+        string tunerModel = "MT982EU30";
         // Model used is MT986B02 
         private char[] model = new char[]{'M', 'T', '9', '8', '6', 'B', '0', '2'};
         private short numOfMotors = 3;
-        private long[] maxRange = { 21200, 5000, 5000};
+        private int[] maxRange = new int[3]; //{ 21200, 5000, 5000};
         private double fmin = 0.8f;
         private double fmax = 8f;
         private double fcrossover = 2.8f;
@@ -58,32 +61,115 @@ namespace InstrumentDriverTest.Instruments
         {
 
             char[] error =  new char[100];
-            int errorCode = MauryTunerFunctions.add_controller(controllerNumber, driverPath.ToCharArray(), model, 0, address, 0, serial, out error);
+            char[] error2 = new char[500];
+            StringBuilder test = new StringBuilder();
+            int errorCode = 0;
+            // Add controller
+            try
+            {
+                errorCode = MauryTunerFunctions.add_controller(controllerNumber, driverPath.ToCharArray(), model, 30, address, 0, ctrlrSerial, error);
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            
             if (errorCode != 0)
             {
                 Console.WriteLine(error);
-                throw new Exception(error.ToString());
+                throw new Exception(new string(error));
             }
-            errorCode = MauryTunerFunctions.add_tuner(0, model, serial, controllerNumber, controllerPort, out numOfMotors, 
-                                                        out maxRange, out fmin, out fmax, out fcrossover, out error);
+            //Init tuners
+            try
+            {
+                string test2 = "C:\\Users\\korisnik\\Desktop\\Maury\\MLibV04\\Drivers\\Tun986.dll\0";
+                errorCode = MauryTunerFunctions.add_tuner_ex(0, test2.ToCharArray(), tunerModel.ToCharArray(), serial, address, error);
+
+                //errorCode = MauryTunerFunctions.add_tuner(0, tunerModel.ToCharArray(), 1333, 0, 2, numOfMotors, maxRange,
+                 //                                           fmin, fmax, fcrossover, error);
+                if (errorCode != 0)
+                {
+                    throw new Exception(new string(error));
+                }
+                string tunTest = "C:/Users/korisnik/Documents/karakterizacija_fund_2400MHz_all.tun\0";
+                var fileTest = tunTest.ToCharArray();
+                errorCode = MauryTunerFunctions.read_tuner_data_file(0, fileTest, model, error2);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            if (errorCode != 0)
+            {
+                Console.WriteLine(error2);
+                throw new Exception(new string(error2));
+            }
+
+            // Add tuners
+            try
+            {
+                }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            //errorCode = MauryTunerFunctions.init_tuners(error);
 
             if (errorCode != 0)
             {
                 Console.WriteLine(error);
-                throw new Exception(error.ToString());
+                throw new Exception(new string(error));
             }
+
+            long carr =110;
+            long p1 = 5100;
+            long p2 = 5100;
+            double[] s11_x = new double[10];
+            double[] s11_y = new double[10];
+            double[] s21_x = new double[10];
+            double[] s21_y = new double[10];
+            double[] s12_x = new double[10];
+            double[] s12_y = new double[10];
+            double[] s22_x = new double[10];
+            double[] s22_y = new double[10];
+            double gammaT_x = 0;
+            double gammaT_y = 0;
+            double gammaC_x = 0;
+            double gammaC_y = 0;
+            double freq = 2.4;
+            //errorCode = MauryTunerFunctions.get_tuner_refl_data(tunerNumber, 0, freq, gammaC_x, gammaC_y, gammaT_x, gammaT_y, carr, p1, p2,
+             //                                       s11_x, s11_y, s21_x, s21_y, s12_x, s12_y, s22_x, s22_y, error);
+            if (errorCode != 0)
+            {
+                throw new Exception(new string(error));
+            }
+            try
+            {
+                errorCode = MauryTunerFunctions.move_tuner(tunerNumber, carr, p1, p2, error);
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+
+            if (errorCode != 0)
+            {
+                throw new Exception(new string(error));
+            }
+
         }
 
         public void deinitTuner()
         {
             char[] error = new char[100];
-            int errorCode = MauryTunerFunctions.delete_tuner_ex(tunerNumber, out error);
+            int errorCode = MauryTunerFunctions.delete_tuner_ex(tunerNumber, error);
             if (errorCode != 0)
             {
                 Console.WriteLine(error);
                 throw new Exception(error.ToString());
             }
-            errorCode = MauryTunerFunctions.delete_controller_ex(controllerNumber, out error);  
+            errorCode = MauryTunerFunctions.delete_controller_ex(controllerNumber, error);  
             if (errorCode != 0)
             {
                 Console.WriteLine(error);
@@ -96,7 +182,7 @@ namespace InstrumentDriverTest.Instruments
         {
 
             char[] error = new char[100];
-            var err = MauryTunerFunctions.read_tuner_data_file(tunerNumber, tunerDataFilePath.ToCharArray(), model, out error);
+            var err = MauryTunerFunctions.read_tuner_data_file(tunerNumber, tunerDataFilePath.ToCharArray(), model, error);
             if(err != 0)
             {
                 throw new Exception(new string(error));
@@ -106,17 +192,17 @@ namespace InstrumentDriverTest.Instruments
 
             Complex target = (gamma - sParams[0])/(sParams[4]*(gamma-sParams[4])+sParams[2]*sParams[1]);
 
-            long carr;
-            long p1;
-            long p2;
+            long carr = 0;
+            long p1 = 0;
+            long p2 = 0;
             double[] dummy = new double[3];
-            err = MauryTunerFunctions.get_tuner_refl_data(tunerNumber, 0, freq, 0, 0, target.Real, target.Imaginary, out carr, out p1, out p2,
-                                                    out dummy, out dummy, out dummy, out dummy, out dummy, out dummy, out dummy, out dummy, out error);
+            err = MauryTunerFunctions.get_tuner_refl_data(tunerNumber, 0, freq, 0, 0, target.Real, target.Imaginary, carr, p1, p2,
+                                                    dummy, dummy, dummy, dummy, dummy, dummy, dummy, dummy, error);
             if (err != 0)
             {
                 throw new Exception(new string(error));
             }
-            err = MauryTunerFunctions.move_tuner(tunerNumber, carr, p1, p2, out error);
+            err = MauryTunerFunctions.move_tuner(tunerNumber, carr, p1, p2, error);
             if (err != 0)
             {
                 throw new Exception(new string(error));
@@ -128,14 +214,14 @@ namespace InstrumentDriverTest.Instruments
             Complex target = (position - sParams[0]) / (sParams[4] * (position - sParams[4]) + sParams[2] * sParams[1]);
 
             char[] error = new char[100];
-            long carr;
-            long p1;
-            long p2;
+            long carr = 0;
+            long p1 = 0;
+            long p2 = 0;
             double[] dummy = new double[3];
-            MauryTunerFunctions.get_tuner_refl_data(tunerNumber, 0, freq, 0, 0, target.Real, target.Imaginary, out carr, out p1, out p2,
-                                                    out dummy, out dummy, out dummy, out dummy, out dummy, out dummy, out dummy, out dummy, out error);
+            MauryTunerFunctions.get_tuner_refl_data(tunerNumber, 0, freq, 0, 0, target.Real, target.Imaginary, carr, p1, p2,
+                                                    dummy, dummy, dummy, dummy, dummy, dummy, dummy, dummy, error);
 
-            MauryTunerFunctions.move_tuner(tunerNumber, carr, p1, p2, out error);
+            MauryTunerFunctions.move_tuner(tunerNumber, carr, p1, p2, error);
         }
     }
 }

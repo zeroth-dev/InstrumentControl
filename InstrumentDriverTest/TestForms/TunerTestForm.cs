@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
@@ -21,6 +22,13 @@ namespace InstrumentDriverTest.TestForms
         public TunerTestForm()
         {
             InitializeComponent();
+            Init();
+        }
+
+        private void Init()
+        {
+            CtrlDriverBox.Text = "C:\\Users\\korisnik\\Desktop\\Maury\\MLibV04\\Drivers\\Tun986.dll";
+            TunerCharFileBox.Text = "C:\\Users\\korisnik\\Downloads\\Tuner files\\to send\\to send\\karakterizacija_fund_2400MHz_all.tun";
         }
 
         private void RefreshBtn_Click(object sender, EventArgs e)
@@ -85,18 +93,32 @@ namespace InstrumentDriverTest.TestForms
         {
             try
             {
-                tuner = new MauryTunerDriver(2, 0, 1333, 2048, 2, 3);
-                tuner.initTuner(CtrlDriverBox.Text);
-                Complex impedance = new Complex(double.Parse(ZRealBox.Text, CultureInfo.InvariantCulture.NumberFormat),
-                                                double.Parse(ZImagBox.Text, CultureInfo.InvariantCulture.NumberFormat));
-                tuner.moveTunerToImpedance(TunerCharFileBox.Text, impedance, 2.4);
-                tuner.deinitTuner();
+                using (Process p = new Process())
+                {
+                    p.StartInfo.FileName = "CppDllTest.exe";
+                    string arguments = "\"" + CtrlDriverBox.Text + "\" \"" + TunerCharFileBox.Text + "\" " + ZRealBox.Text + " " + ZImagBox.Text + " true";
+                    p.StartInfo.Arguments = arguments;
+                    p.StartInfo.CreateNoWindow = false;
+                    p.StartInfo.RedirectStandardOutput = true;
+                    p.StartInfo.UseShellExecute = false;
+                    p.StartInfo.RedirectStandardOutput = true;
+                    p.StartInfo.RedirectStandardError = true;
+                    p.Start();
+
+                    while (!p.StandardOutput.EndOfStream)
+                    {
+                        string line = p.StandardOutput.ReadLine();
+                        LogBox.AppendText(line+ Environment.NewLine);
+                        // do something with line
+                    }
+                }
             }
             catch(Exception ex)
             {
                 LogBox.AppendText(ex.Message + Environment.NewLine);
+                LogBox.AppendText(ex.StackTrace.ToString() + Environment.NewLine);
             }
-           
+
         }
 
         private void SendCmdBtn_Click(object sender, EventArgs e)

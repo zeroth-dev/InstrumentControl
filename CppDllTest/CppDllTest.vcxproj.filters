@@ -18,12 +18,18 @@
     <ClInclude Include="TunerWrapper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TunerCommands.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TunerWrapper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TunerCommands.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
