@@ -2,48 +2,93 @@
 #include <stdlib.h>
 #include "TunerCommands.h"
 using namespace std;
-#ifdef _DEBUG
-int main()
-{
-	char ctrlDriver[] = "C:\\Users\\korisnik\\Desktop\\Maury\\MLibV04\\Drivers\\Tun986.dll\0";
-	char tunerFile[] = "C:\\Users\\korisnik\\Downloads\\Tuner files\\to send\\to send\\karakterizacija_fund_2400MHz_all.tun\0";
-	std::cout << "Testing...\n";
-#else
+
 int main(int argc, char *argv[])
 {
+	// .exe init {tuner|controller}
+	// .exe init controller ctrlDrv gpibAddress
+	// .exe init tuner tunCharFile tunerNumber={0|1} inputTuner={0|1}
+	// .exe deinit controller
+	// .exe deinit tuner tunerNumber
+	// .exe set tunerNumber={0|1} double(gammaX/Zreal) double(gammaY/Zimag) double(freq) usingImpedance={0|1}
+	short errorCode = 0;
 
-	char *ctrlDriver = argv[1];
-	char *tunerFile = argv[2];
-	double real = atof(argv[3]);
-	double imag = atof(argv[4]);
-	char* usingImpedance = argv[5];
-
-#endif
-	try
+	// Init command
+	if (!std::strcmp(argv[1], "init"))
 	{
-		
-		int errCode = initTuner(ctrlDriver, tunerFile);
-		if (errCode != 0)
+		if (!std::strcmp(argv[2], "controller"))
 		{
-			return errCode;
+			if (argc < 5) 
+			{
+				std::cout << "Not enough arguments" << std::endl;
+				return -1;
+			}
+			errorCode = initController(argv[3], std::atoi(argv[4]));
 		}
-
-		if (!std::strcmp(usingImpedance, "true"))
+		else if (!std::strcmp(argv[2], "tuner"))
 		{
-			errCode = moveTunerToImpedance(real, imag, 2.4);
+			if (argc < 6)
+			{
+				std::cout << "Not enough arguments" << std::endl;
+				return -1;
+			}
+			errorCode = initTuner(argv[3], std::atoi(argv[4]), std::atoi(argv[5]));
 		}
 		else
 		{
-			errCode = moveTunerToReflection(real, imag, 2.4);
-		}
-		if (errCode != 0)
-		{
-			return errCode;
+			std::cout << "Invalid arguments passed" << std::endl;
+			return -1;
 		}
 	}
-	catch (exception ex)
+	// deinit command
+	else if (!std::strcmp(argv[1], "deinit"))
 	{
-		std::cout << ex.what() << std::endl;
+		if (!std::strcmp(argv[2], "controller"))
+		{
+			deinitController();
+		}
+		else if (!std::strcmp(argv[2], "tuner"))
+		{
+			deinitTuner(std::atoi(argv[3]));
+		}
+		else
+		{
+			std::cout << "Invalid arguments passed" << std::endl;
+			return -1;
+		}
 	}
-	return 0;
+	// set command - used to set tuner to specified impedance or reflection
+	else if (!std::strcmp(argv[1], "set"))
+	{
+		// .exe set tunerNumber={0|1} double(gammaX/Zreal) double(gammaY/Zimag) double(freq) usingImpedance={true|false}
+		int tunerNumber = std::atoi(argv[2]);
+		double real = atof(argv[3]);
+		double imag = atof(argv[4]);
+		double freq = atof(argv[5]);
+		bool usingImpedance = std::atoi(argv[6]);
+		try
+		{
+			if (usingImpedance)
+			{
+				errorCode = moveTunerToImpedance(tunerNumber, real, imag, freq);
+			}
+			else
+			{
+				errorCode = moveTunerToReflection(tunerNumber, real, imag, freq);
+			}
+		}
+		catch (exception ex)
+		{
+			std::cout << ex.what() << std::endl;
+		}
+	}
+	else
+	{
+		std::cout << "Invalid arguments passed" << std::endl;
+		return -1;
+	}
+
+
+	
+	return errorCode;
 }

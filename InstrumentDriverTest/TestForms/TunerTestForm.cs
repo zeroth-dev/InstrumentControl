@@ -17,7 +17,7 @@ namespace InstrumentDriverTest.TestForms
     public partial class TunerTestForm : Form
     {
 
-        MauryTunerDriver tuner;
+        List<MauryTunerDriver> tuners;
 
         public TunerTestForm()
         {
@@ -29,6 +29,11 @@ namespace InstrumentDriverTest.TestForms
         {
             CtrlDriverBox.Text = "C:\\Users\\korisnik\\Desktop\\Maury\\MLibV04\\Drivers\\Tun986.dll";
             TunerCharFileBox.Text = "C:\\Users\\korisnik\\Downloads\\Tuner files\\to send\\to send\\karakterizacija_fund_2400MHz_all.tun";
+
+            string tunerModel = "MT982EU30";
+            // Model used is MT986B02 
+            string ctrlModel = "MT986B02";
+            tuners = new List<MauryTunerDriver>();
         }
 
         private void RefreshBtn_Click(object sender, EventArgs e)
@@ -55,7 +60,6 @@ namespace InstrumentDriverTest.TestForms
             string gpibAddress = InstrumentList.Text;
             try
             {
-                tuner = new MauryTunerDriver(2, 0, 1333, 2048, 2, 3);
             }
             catch (Exception ex)
             {
@@ -93,25 +97,7 @@ namespace InstrumentDriverTest.TestForms
         {
             try
             {
-                using (Process p = new Process())
-                {
-                    p.StartInfo.FileName = "CppDllTest.exe";
-                    string arguments = "\"" + CtrlDriverBox.Text + "\" \"" + TunerCharFileBox.Text + "\" " + ZRealBox.Text + " " + ZImagBox.Text + " true";
-                    p.StartInfo.Arguments = arguments;
-                    p.StartInfo.CreateNoWindow = false;
-                    p.StartInfo.RedirectStandardOutput = true;
-                    p.StartInfo.UseShellExecute = false;
-                    p.StartInfo.RedirectStandardOutput = true;
-                    p.StartInfo.RedirectStandardError = true;
-                    p.Start();
-
-                    while (!p.StandardOutput.EndOfStream)
-                    {
-                        string line = p.StandardOutput.ReadLine();
-                        LogBox.AppendText(line+ Environment.NewLine);
-                        // do something with line
-                    }
-                }
+               
             }
             catch(Exception ex)
             {
