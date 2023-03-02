@@ -25,16 +25,17 @@ namespace LoadPullSystemControl.Forms
             series.ResistanceMember = "Resistance";
 
             series.ReactanceMember = "Reactance";
+            sfSmithChart1.Series.Add(series);
         }
 
         internal void UpdatePoints(List<Complex> smithPoints)
         {
-            sfSmithChart1.Series.Add(series);
+            sfSmithChart1.Series[0].Points.Clear();
             var lineSeries = sfSmithChart1.Series[0] as LineSeries;
             Random random = new Random();
             for (int i = 0; i < smithPoints.Count; i++)
             {
-                lineSeries.Points.Add(smithPoints.ElementAt(i).Real*50, smithPoints.ElementAt(i).Imaginary*50);
+                lineSeries.Points.Add(smithPoints.ElementAt(i).Real, smithPoints.ElementAt(i).Imaginary);
             }
             
         }

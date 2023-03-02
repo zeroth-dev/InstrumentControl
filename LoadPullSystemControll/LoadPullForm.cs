@@ -488,14 +488,15 @@ namespace LoadPullSystemControl
 
             smithPoints = GeneratePoints(minRadius, maxRadius, noRadius, 
                                         minAngle*Math.PI/180, maxAngle*Math.PI / 180, noAngles);
-            /*
+            
+            var impedancePoints = GammaToImpedance(smithPoints);
             if(smithForm == null)
             {
                 smithForm = new SmithForm();
             }
-            smithForm.UpdatePoints(smithPoints);
+            smithForm.UpdatePoints(impedancePoints);
             smithForm.Show();
-            */
+            
         }
 
         private void FinalOutSaveOptsBtn_Click(object sender, EventArgs e)
@@ -551,11 +552,34 @@ namespace LoadPullSystemControl
         private List<Complex> GeneratePoints(double minRadius, double maxRadius, int noRadius,
                                                 double startAngle, double endAngle, int noAngle)
         {
-           
+
             var points = new List<Complex>();
+            double deltaR = (maxRadius - minRadius) / (noRadius - 1);
+            double deltaAng = (endAngle-startAngle) / (noAngle - 1);
+            for (int i = 0; i < noRadius; i++)
+            {
+                double currRadius = minRadius+ i * deltaR;
+                for(int j = 0; j < noAngle; j++)
+                {
+                    double currAngle = startAngle+ j * deltaAng;
+                    points.Add(new Complex(currRadius*Math.Cos(currAngle), currRadius*Math.Sin(currAngle)));
+                }
+            }
+
             return points;
         }
 
+        private List<Complex> GammaToImpedance(List<Complex> gamma)
+        {
+            List<Complex> impedance = new List<Complex>();
+            var Z0 = new Complex(50, 0);
+            for(int i = 0; i < gamma.Count;i++)
+            {
+                var Z = Z0 * (gamma[i] + 1) / (1 - gamma[i]);
+                impedance.Add(Z);
+            }
+            return impedance;
+        }
         /////////////////////////////////////////////////////////
         ///////////////////   UTILITY END   /////////////////////
         /////////////////////////////////////////////////////////
