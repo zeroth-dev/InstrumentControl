@@ -46,6 +46,8 @@
             this.BrowseCtrlDriverPathBtn = new System.Windows.Forms.Button();
             this.LogBox = new System.Windows.Forms.RichTextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.FreqBox = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.GammaAngleBox = new System.Windows.Forms.TextBox();
@@ -63,8 +65,6 @@
             this.ZImagBox = new System.Windows.Forms.TextBox();
             this.ZRealBox = new System.Windows.Forms.TextBox();
             this.MoveTunerZBtn = new System.Windows.Forms.Button();
-            this.FreqBox = new System.Windows.Forms.TextBox();
-            this.label12 = new System.Windows.Forms.Label();
             this.groupBox5.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -77,7 +77,7 @@
             this.groupBox5.Controls.Add(this.groupBox2);
             this.groupBox5.Location = new System.Drawing.Point(12, 12);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(514, 297);
+            this.groupBox5.Size = new System.Drawing.Size(514, 268);
             this.groupBox5.TabIndex = 5;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Init";
@@ -265,6 +265,22 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Control";
             // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(221, 32);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(58, 13);
+            this.label12.TabIndex = 32;
+            this.label12.Text = "Freq [GHz]";
+            // 
+            // FreqBox
+            // 
+            this.FreqBox.Location = new System.Drawing.Point(285, 29);
+            this.FreqBox.Name = "FreqBox";
+            this.FreqBox.Size = new System.Drawing.Size(71, 20);
+            this.FreqBox.TabIndex = 31;
+            // 
             // label10
             // 
             this.label10.AutoSize = true;
@@ -407,22 +423,6 @@
             this.MoveTunerZBtn.Text = "Set impedance";
             this.MoveTunerZBtn.UseVisualStyleBackColor = true;
             this.MoveTunerZBtn.Click += new System.EventHandler(this.MoveTunerBtn_Click);
-            // 
-            // FreqBox
-            // 
-            this.FreqBox.Location = new System.Drawing.Point(285, 29);
-            this.FreqBox.Name = "FreqBox";
-            this.FreqBox.Size = new System.Drawing.Size(71, 20);
-            this.FreqBox.TabIndex = 31;
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(221, 32);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(58, 13);
-            this.label12.TabIndex = 32;
-            this.label12.Text = "Freq [GHz]";
             // 
             // TunerTestForm
             // 
