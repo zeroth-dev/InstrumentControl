@@ -1,6 +1,6 @@
 ﻿using LoadPullSystemControl.Forms;
 using LoadPullSystemControl.Instruments;
-using LoadPullSystemControll.Properties;
+using LoadPullSystemControl.Properties;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,8 +11,10 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace LoadPullSystemControl
 {
@@ -21,12 +23,14 @@ namespace LoadPullSystemControl
 
         private E364xA dcPowerSupply;
         private E44xxB rfSource;
-        HP5412x oscilloscope;
+        N9000A spectrumAnalyzer;
         List<MauryTunerDriver> tuners;
         List<Complex> smithPoints;
 
         SmithForm smithForm;
         NumberFormatInfo provider = new NumberFormatInfo();
+
+        double inputPower = 0;
 
         public LoadPullForm()
         {
@@ -186,13 +190,13 @@ namespace LoadPullSystemControl
                 double freq = double.Parse(CWFreqBox.Text, provider);
                 rfSource.setCWFrequency(freq, FreqBandBox.Text);
 
-                double power = double.Parse(PowerBox.Text, provider);
+                inputPower = double.Parse(PowerBox.Text, provider);
                 double gain = 0;
                 if(PreampGainBox.Text.Length > 0)
                 {
                     gain = double.Parse(PreampGainBox.Text, provider);
                 }
-                rfSource.setCWPower(power-gain);
+                rfSource.setCWPower(inputPower - gain);
             }
             catch (Exception ex)
             {
@@ -228,6 +232,7 @@ namespace LoadPullSystemControl
         {
             string[] list = { "Hz", "kHz", "MHz", "GHz" };
             FreqBandBox.Items.AddRange(list);
+            FreqBandSABox.Items.AddRange(list);
         }
 
         private void EnableRFBtns(bool enable)
@@ -243,69 +248,31 @@ namespace LoadPullSystemControl
 
 
         /////////////////////////////////////////////////////////
-        ///////////////  Osciloscope Controls   /////////////////
+        /////////    Spectrum Analyzer Controls   ///////////////
         /////////////////////////////////////////////////////////
 
 
-        private void RefreshOscBtn_Click(object sender, EventArgs e)
+        private void RefreshSABtn_Click(object sender, EventArgs e)
         {
-            FillGpibComboBox(OscInstrumentList);
+            FillGpibComboBox(InstrumentSAList);
         }
 
-        private void ConnectOscBtn_Click(object sender, EventArgs e)
+        private void ConnectSABtn_Click(object sender, EventArgs e)
         {
-            string gpibAddress = OscInstrumentList.Text;
+            string gpibAddress = InstrumentSAList.Text;
             try
             {
-                oscilloscope = new HP5412x(gpibAddress);
+                spectrumAnalyzer = new N9000A(gpibAddress);
             }
             catch (Exception ex)
             {
                 LogBox.AppendText(ex.Message + Environment.NewLine);
                 return;
             }
-
-            EnableOscBtns(true);
         }
-
-        private void AvgDataCheckBtn_CheckedChanged(object sender, EventArgs e)
-        {
-            AvgNoBox.Enabled = AvgDataCheckBtn.Checked;
-        }
-
-        private void OutOscDataCheckBtn_CheckedChanged(object sender, EventArgs e)
-        {
-            OscSaveOptsBtn.Enabled = OutOscDataCheckBtn.Checked;
-            BrowseOscSavePathBtn.Enabled = OutOscDataCheckBtn.Checked;
-            OscSavePathBox.Enabled = OutOscDataCheckBtn.Checked;
-        }
-
-        private void OscSaveOptsBtn_Click(object sender, EventArgs e)
-        {
-            // TODO
-        }
-
-        private void BrowseOscSavePathBtn_Click(object sender, EventArgs e)
-        {
-            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
-            {
-                if(saveFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    OscSavePathBox.Text = saveFileDialog.FileName;
-                }
-            }
-        }
-
-        private void EnableOscBtns(bool enable)
-        {
-            OutOscDataCheckBtn.Enabled = enable;
-            ChannelBox.Enabled = enable;
-            AvgDataCheckBtn.Enabled = enable;
-        }
-
 
         /////////////////////////////////////////////////////////
-        /////////////  Osciloscope Controls END  ////////////////
+        ///////////////  Spectrum Analyzer END  ////////////////
         /////////////////////////////////////////////////////////
 
 
@@ -387,9 +354,8 @@ namespace LoadPullSystemControl
             {
                 tuner = new MauryTunerDriver((short)(port - 1), 0, (short)serial, 2048, 3, 3, ExeFilePathBox.Text);
             }
-
-            tuners.Insert(port - 1, tuner);
-            tuner.InitTuner(CtrlDriverBox.Text, TunerCharFileBox.Text, tuners.Count, inputTuner);
+            tuners[port-1] =  tuner;
+            tuner.InitTuner(CtrlDriverBox.Text, TunerCharFileBox.Text, 0, inputTuner);
             StartBtn.Enabled = true;
         }
 
@@ -464,7 +430,11 @@ namespace LoadPullSystemControl
             TunerSelectBox.Items.Add("Output tuner");
             TunerSelectBox.SelectedIndex = 1;
 
-            tuners = new List<MauryTunerDriver>(2);
+            TunerSelectCtrlBox.Items.Add("Input tuner");
+            TunerSelectCtrlBox.Items.Add("Output tuner");
+            TunerSelectCtrlBox.SelectedIndex = 1;
+
+            tuners = new List<MauryTunerDriver>(new MauryTunerDriver[2]);
         }
 
         /////////////////////////////////////////////////////////
@@ -478,16 +448,7 @@ namespace LoadPullSystemControl
 
         private void ViewDistBtn_Click(object sender, EventArgs e)
         {
-
-            double minRadius = double.Parse(MinRadBox.Text, CultureInfo.InvariantCulture.NumberFormat);
-            double maxRadius = double.Parse(MaxRadBox.Text, CultureInfo.InvariantCulture.NumberFormat); 
-            int noRadius = int.Parse(NoOfCircBox.Text, CultureInfo.InvariantCulture.NumberFormat);
-            double minAngle = double.Parse(MinAngBox.Text, CultureInfo.InvariantCulture.NumberFormat);
-            double maxAngle = double.Parse(MaxAngBox.Text, CultureInfo.InvariantCulture.NumberFormat);
-            int noAngles = int.Parse(NoOfAngBox.Text, CultureInfo.InvariantCulture.NumberFormat);
-
-            smithPoints = GeneratePoints(minRadius, maxRadius, noRadius, 
-                                        minAngle*Math.PI/180, maxAngle*Math.PI / 180, noAngles);
+            smithPoints = GeneratePoints();
             
             var impedancePoints = GammaToImpedance(smithPoints);
             if(smithForm == null)
@@ -506,24 +467,45 @@ namespace LoadPullSystemControl
 
         private void StartBtn_Click(object sender, EventArgs e)
         {
-            int progress = 0;
-            ProgressLabel.Text = "0/" + smithPoints.Count;
-            foreach(Complex point in smithPoints)
+            string filename = "Output.txt";
+            if(FileNameBox.Text != "")
             {
-                tuners.ElementAt(1).MoveTunerToSmithPosition(1, point, 2.4);
-                // ... TODO
-                var (time, amp) = oscilloscope.GetAveragedMeasurement(2, 10);
-                using (var file = File.CreateText("Oscilloscope_" + point.Real + "_" + point.Imaginary))
-                {
-                    file.WriteLine("Time(s), V(V)");
-                    for(int i = 0; i < time.Count; i++)
-                    {
-                        file.WriteLine(string.Format("{0}, {1}", time.ElementAt(i), amp.ElementAt(i)));
-                    }
-                }
+                filename = FileNameBox.Text;
+            }
+
+            using (StreamWriter sw = File.CreateText(filename))
+            {
+                sw.WriteLine("gammaX, gammaY, Pin, Pout1, Pout2, Pout3, Vd, Id");
+            }
+            int progress = 0;
+            if(smithPoints == null || smithPoints.Count == 0)
+            {
+                smithPoints = GeneratePoints();
+            }
+            ProgressLabel.Text = "0/" + smithPoints.Count;
+            double freq = double.Parse(CWFreqBox.Text, provider);
+            double attenuation = double.Parse(AttBox.Text, provider);
+            foreach (Complex point in smithPoints)
+            {
+                tuners.ElementAt(1).MoveTunerToSmithPosition(0, point, freq);
+
+                double basePwr = spectrumAnalyzer.MeasPeak(freq, FreqBandBox.Text) + attenuation;
+                double secondPwr = spectrumAnalyzer.MeasPeak(2 * freq, FreqBandBox.Text) + attenuation;
+                double thirdPwr = spectrumAnalyzer.MeasPeak(3 * freq, FreqBandBox.Text) + attenuation;
+
+                BaseHarmBox.Text = basePwr.ToString();
+                ScndHarmBox.Text = secondPwr.ToString();
+                TrdHarmBox.Text = thirdPwr.ToString();
+
+                double Vd = dcPowerSupply.ReadVoltage(2);
+                double Id = dcPowerSupply.ReadCurrent(2);
+
+                OutputData(filename, point.Real, point.Imaginary, inputPower, basePwr, secondPwr, thirdPwr, Vd, Id);
+
                 progress++;
                 ProgressLabel.Text = progress + "/" + smithPoints.Count;
             }
+            dcPowerSupply.TurnOnOff(false);
         }
 
 
@@ -543,9 +525,9 @@ namespace LoadPullSystemControl
                 var deviceList = Instruments.VisaUtil.GetConnectedDeviceList();
                 foreach (var device in deviceList)
                 {
-                    DCInstrumentList.Items.Add(device);
+                    comboBox.Items.Add(device);
                 }
-                DCInstrumentList.SelectedIndex = 0;
+                comboBox.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
@@ -553,9 +535,15 @@ namespace LoadPullSystemControl
             }
         }
 
-        private List<Complex> GeneratePoints(double minRadius, double maxRadius, int noRadius,
-                                                double startAngle, double endAngle, int noAngle)
+        private List<Complex> GeneratePoints()
         {
+
+            double minRadius = double.Parse(MinRadBox.Text, CultureInfo.InvariantCulture.NumberFormat);
+            double maxRadius = double.Parse(MaxRadBox.Text, CultureInfo.InvariantCulture.NumberFormat);
+            int noRadius = int.Parse(NoOfCircBox.Text, CultureInfo.InvariantCulture.NumberFormat);
+            double minAngle = double.Parse(MinAngBox.Text, CultureInfo.InvariantCulture.NumberFormat)*Math.PI/180;
+            double maxAngle = double.Parse(MaxAngBox.Text, CultureInfo.InvariantCulture.NumberFormat) * Math.PI / 180;
+            int noAngles = int.Parse(NoOfAngBox.Text, CultureInfo.InvariantCulture.NumberFormat);
 
             var points = new List<Complex>();
             double deltaR = 0;
@@ -564,17 +552,17 @@ namespace LoadPullSystemControl
                 deltaR = (maxRadius - minRadius) / (noRadius - 1);
             }
             double deltaAng = 0;
-            if (noAngle > 1)
+            if (noAngles > 1)
             {
-                deltaAng = (endAngle - startAngle) / (noAngle - 1);
+                deltaAng = (maxAngle - minAngle) / (noAngles - 1);
             }
             
             for (int i = 0; i < noRadius; i++)
             {
                 double currRadius = minRadius+ i * deltaR;
-                for(int j = 0; j < noAngle; j++)
+                for(int j = 0; j < noAngles; j++)
                 {
-                    double currAngle = startAngle+ j * deltaAng;
+                    double currAngle = minAngle + j * deltaAng;
                     points.Add(new Complex(currRadius*Math.Cos(currAngle), currRadius*Math.Sin(currAngle)));
                 }
             }
@@ -592,6 +580,33 @@ namespace LoadPullSystemControl
                 impedance.Add(Z);
             }
             return impedance;
+        }
+
+        private void PlotData(List<double> x, List<double> y)
+        {
+            Chart chart = new Chart();
+            DataTable dt = new DataTable();
+            dt.Columns.Add("Time", typeof(double));
+            dt.Columns.Add("Voltage", typeof(double));
+            for (int i = 0; i < x.Count; i++)
+            {
+                dt.Rows.Add(x[i], y[i]);
+            }
+            chart.DataSource = dt;
+            chart.Series["Series1"].XValueMember = "Time";
+            chart.Series["Series1"].YValueMembers = "Voltage";
+            chart.Series["Series1"].ChartType = SeriesChartType.Line;
+        }
+
+        private void OutputData(string filename, double gammaX, double gammaY, double powerIn, double baseHarmPwr, 
+                                double scndHarmPwr, double TrdHarmPwr, double vd, double id)
+        {
+            Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+            using (StreamWriter sw = File.AppendText(filename))
+            {
+                sw.WriteLine(String.Format("{0} {1} {2} {3} {4} {5} {6} {7}", gammaX, gammaY, powerIn, baseHarmPwr, scndHarmPwr,
+                                                                                TrdHarmPwr, vd, id));
+            }
         }
 
         /////////////////////////////////////////////////////////

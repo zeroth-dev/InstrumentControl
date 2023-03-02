@@ -36,12 +36,16 @@
             this.CmdBox = new System.Windows.Forms.TextBox();
             this.LogBox = new System.Windows.Forms.RichTextBox();
             this.CtrlBox = new System.Windows.Forms.GroupBox();
-            this.ChannelBox = new System.Windows.Forms.TextBox();
-            this.ChannelLabel = new System.Windows.Forms.Label();
-            this.AvgNumLabel = new System.Windows.Forms.Label();
+            this.OscSaveOptsBtn = new System.Windows.Forms.Button();
+            this.label12 = new System.Windows.Forms.Label();
+            this.OscSavePathBox = new System.Windows.Forms.TextBox();
+            this.OutOscDataCheckBtn = new System.Windows.Forms.CheckBox();
+            this.BrowseOscSavePathBtn = new System.Windows.Forms.Button();
+            this.AvgDataCheckBtn = new System.Windows.Forms.CheckBox();
             this.AvgNoBox = new System.Windows.Forms.TextBox();
-            this.GetAvgDataBtn = new System.Windows.Forms.Button();
-            this.GetNormDataBtn = new System.Windows.Forms.Button();
+            this.label11 = new System.Windows.Forms.Label();
+            this.ChannelBox = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.groupBox5.SuspendLayout();
             this.CtrlBox.SuspendLayout();
             this.SuspendLayout();
@@ -51,18 +55,21 @@
             this.groupBox5.Controls.Add(this.ConnectBtn);
             this.groupBox5.Controls.Add(this.InstrumentList);
             this.groupBox5.Controls.Add(this.RefreshBtn);
-            this.groupBox5.Location = new System.Drawing.Point(12, 12);
+            this.groupBox5.Location = new System.Drawing.Point(16, 15);
+            this.groupBox5.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(309, 51);
+            this.groupBox5.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox5.Size = new System.Drawing.Size(412, 63);
             this.groupBox5.TabIndex = 5;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Init";
             // 
             // ConnectBtn
             // 
-            this.ConnectBtn.Location = new System.Drawing.Point(228, 17);
+            this.ConnectBtn.Location = new System.Drawing.Point(304, 21);
+            this.ConnectBtn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ConnectBtn.Name = "ConnectBtn";
-            this.ConnectBtn.Size = new System.Drawing.Size(75, 23);
+            this.ConnectBtn.Size = new System.Drawing.Size(100, 28);
             this.ConnectBtn.TabIndex = 2;
             this.ConnectBtn.Text = "Connect";
             this.ConnectBtn.UseVisualStyleBackColor = true;
@@ -71,16 +78,18 @@
             // InstrumentList
             // 
             this.InstrumentList.FormattingEnabled = true;
-            this.InstrumentList.Location = new System.Drawing.Point(87, 19);
+            this.InstrumentList.Location = new System.Drawing.Point(116, 23);
+            this.InstrumentList.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.InstrumentList.Name = "InstrumentList";
-            this.InstrumentList.Size = new System.Drawing.Size(135, 21);
+            this.InstrumentList.Size = new System.Drawing.Size(179, 24);
             this.InstrumentList.TabIndex = 1;
             // 
             // RefreshBtn
             // 
-            this.RefreshBtn.Location = new System.Drawing.Point(6, 19);
+            this.RefreshBtn.Location = new System.Drawing.Point(8, 23);
+            this.RefreshBtn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.RefreshBtn.Name = "RefreshBtn";
-            this.RefreshBtn.Size = new System.Drawing.Size(75, 23);
+            this.RefreshBtn.Size = new System.Drawing.Size(100, 28);
             this.RefreshBtn.TabIndex = 0;
             this.RefreshBtn.Text = "Refresh list";
             this.RefreshBtn.UseVisualStyleBackColor = true;
@@ -88,105 +97,166 @@
             // 
             // SendCmdBtn
             // 
-            this.SendCmdBtn.Location = new System.Drawing.Point(230, 432);
+            this.SendCmdBtn.Location = new System.Drawing.Point(307, 532);
+            this.SendCmdBtn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.SendCmdBtn.Name = "SendCmdBtn";
-            this.SendCmdBtn.Size = new System.Drawing.Size(91, 20);
+            this.SendCmdBtn.Size = new System.Drawing.Size(121, 25);
             this.SendCmdBtn.TabIndex = 10;
             this.SendCmdBtn.Text = "Send command";
             this.SendCmdBtn.UseVisualStyleBackColor = true;
             // 
             // CmdBox
             // 
-            this.CmdBox.Location = new System.Drawing.Point(12, 432);
+            this.CmdBox.Location = new System.Drawing.Point(16, 532);
+            this.CmdBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.CmdBox.Name = "CmdBox";
-            this.CmdBox.Size = new System.Drawing.Size(212, 20);
+            this.CmdBox.Size = new System.Drawing.Size(281, 22);
             this.CmdBox.TabIndex = 9;
             // 
             // LogBox
             // 
-            this.LogBox.Location = new System.Drawing.Point(12, 215);
+            this.LogBox.Location = new System.Drawing.Point(16, 341);
+            this.LogBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.LogBox.Name = "LogBox";
-            this.LogBox.Size = new System.Drawing.Size(309, 211);
+            this.LogBox.Size = new System.Drawing.Size(411, 183);
             this.LogBox.TabIndex = 8;
             this.LogBox.Text = "";
             // 
             // CtrlBox
             // 
-            this.CtrlBox.Controls.Add(this.ChannelBox);
-            this.CtrlBox.Controls.Add(this.ChannelLabel);
-            this.CtrlBox.Controls.Add(this.AvgNumLabel);
+            this.CtrlBox.Controls.Add(this.OscSaveOptsBtn);
+            this.CtrlBox.Controls.Add(this.label12);
+            this.CtrlBox.Controls.Add(this.OscSavePathBox);
+            this.CtrlBox.Controls.Add(this.OutOscDataCheckBtn);
+            this.CtrlBox.Controls.Add(this.BrowseOscSavePathBtn);
+            this.CtrlBox.Controls.Add(this.AvgDataCheckBtn);
             this.CtrlBox.Controls.Add(this.AvgNoBox);
-            this.CtrlBox.Controls.Add(this.GetAvgDataBtn);
-            this.CtrlBox.Controls.Add(this.GetNormDataBtn);
-            this.CtrlBox.Location = new System.Drawing.Point(12, 69);
+            this.CtrlBox.Controls.Add(this.label11);
+            this.CtrlBox.Controls.Add(this.ChannelBox);
+            this.CtrlBox.Controls.Add(this.label1);
+            this.CtrlBox.Location = new System.Drawing.Point(16, 85);
+            this.CtrlBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.CtrlBox.Name = "CtrlBox";
-            this.CtrlBox.Size = new System.Drawing.Size(309, 140);
+            this.CtrlBox.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.CtrlBox.Size = new System.Drawing.Size(412, 248);
             this.CtrlBox.TabIndex = 11;
             this.CtrlBox.TabStop = false;
             this.CtrlBox.Text = "Control";
             // 
-            // ChannelBox
+            // OscSaveOptsBtn
             // 
-            this.ChannelBox.Location = new System.Drawing.Point(58, 25);
-            this.ChannelBox.Name = "ChannelBox";
-            this.ChannelBox.Size = new System.Drawing.Size(32, 20);
-            this.ChannelBox.TabIndex = 5;
+            this.OscSaveOptsBtn.Enabled = false;
+            this.OscSaveOptsBtn.Location = new System.Drawing.Point(150, 166);
+            this.OscSaveOptsBtn.Margin = new System.Windows.Forms.Padding(4);
+            this.OscSaveOptsBtn.Name = "OscSaveOptsBtn";
+            this.OscSaveOptsBtn.Size = new System.Drawing.Size(113, 28);
+            this.OscSaveOptsBtn.TabIndex = 19;
+            this.OscSaveOptsBtn.Text = "Save options";
+            this.OscSaveOptsBtn.UseVisualStyleBackColor = true;
             // 
-            // ChannelLabel
+            // label12
             // 
-            this.ChannelLabel.AutoSize = true;
-            this.ChannelLabel.Location = new System.Drawing.Point(6, 28);
-            this.ChannelLabel.Name = "ChannelLabel";
-            this.ChannelLabel.Size = new System.Drawing.Size(46, 13);
-            this.ChannelLabel.TabIndex = 4;
-            this.ChannelLabel.Text = "Channel";
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(6, 203);
+            this.label12.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(68, 16);
+            this.label12.TabIndex = 20;
+            this.label12.Text = "Save path";
             // 
-            // AvgNumLabel
+            // OscSavePathBox
             // 
-            this.AvgNumLabel.AutoSize = true;
-            this.AvgNumLabel.Location = new System.Drawing.Point(165, 98);
-            this.AvgNumLabel.Name = "AvgNumLabel";
-            this.AvgNumLabel.Size = new System.Drawing.Size(83, 13);
-            this.AvgNumLabel.TabIndex = 3;
-            this.AvgNumLabel.Text = "No. of averages";
+            this.OscSavePathBox.Enabled = false;
+            this.OscSavePathBox.Location = new System.Drawing.Point(97, 199);
+            this.OscSavePathBox.Margin = new System.Windows.Forms.Padding(4);
+            this.OscSavePathBox.Name = "OscSavePathBox";
+            this.OscSavePathBox.Size = new System.Drawing.Size(197, 22);
+            this.OscSavePathBox.TabIndex = 24;
+            // 
+            // OutOscDataCheckBtn
+            // 
+            this.OutOscDataCheckBtn.AutoSize = true;
+            this.OutOscDataCheckBtn.Enabled = false;
+            this.OutOscDataCheckBtn.Location = new System.Drawing.Point(10, 171);
+            this.OutOscDataCheckBtn.Margin = new System.Windows.Forms.Padding(4);
+            this.OutOscDataCheckBtn.Name = "OutOscDataCheckBtn";
+            this.OutOscDataCheckBtn.Size = new System.Drawing.Size(97, 20);
+            this.OutOscDataCheckBtn.TabIndex = 28;
+            this.OutOscDataCheckBtn.Text = "Output data";
+            this.OutOscDataCheckBtn.UseVisualStyleBackColor = true;
+            // 
+            // BrowseOscSavePathBtn
+            // 
+            this.BrowseOscSavePathBtn.Enabled = false;
+            this.BrowseOscSavePathBtn.Location = new System.Drawing.Point(306, 196);
+            this.BrowseOscSavePathBtn.Margin = new System.Windows.Forms.Padding(4);
+            this.BrowseOscSavePathBtn.Name = "BrowseOscSavePathBtn";
+            this.BrowseOscSavePathBtn.Size = new System.Drawing.Size(100, 28);
+            this.BrowseOscSavePathBtn.TabIndex = 22;
+            this.BrowseOscSavePathBtn.Text = "Browse";
+            this.BrowseOscSavePathBtn.UseVisualStyleBackColor = true;
+            // 
+            // AvgDataCheckBtn
+            // 
+            this.AvgDataCheckBtn.AutoSize = true;
+            this.AvgDataCheckBtn.Enabled = false;
+            this.AvgDataCheckBtn.Location = new System.Drawing.Point(10, 75);
+            this.AvgDataCheckBtn.Margin = new System.Windows.Forms.Padding(4);
+            this.AvgDataCheckBtn.Name = "AvgDataCheckBtn";
+            this.AvgDataCheckBtn.Size = new System.Drawing.Size(119, 20);
+            this.AvgDataCheckBtn.TabIndex = 27;
+            this.AvgDataCheckBtn.Text = "Averaged data";
+            this.AvgDataCheckBtn.UseVisualStyleBackColor = true;
             // 
             // AvgNoBox
             // 
-            this.AvgNoBox.Location = new System.Drawing.Point(127, 95);
+            this.AvgNoBox.Enabled = false;
+            this.AvgNoBox.Location = new System.Drawing.Point(118, 103);
+            this.AvgNoBox.Margin = new System.Windows.Forms.Padding(4);
             this.AvgNoBox.Name = "AvgNoBox";
-            this.AvgNoBox.Size = new System.Drawing.Size(32, 20);
-            this.AvgNoBox.TabIndex = 2;
+            this.AvgNoBox.Size = new System.Drawing.Size(41, 22);
+            this.AvgNoBox.TabIndex = 26;
             // 
-            // GetAvgDataBtn
+            // label11
             // 
-            this.GetAvgDataBtn.Location = new System.Drawing.Point(6, 93);
-            this.GetAvgDataBtn.Name = "GetAvgDataBtn";
-            this.GetAvgDataBtn.Size = new System.Drawing.Size(115, 23);
-            this.GetAvgDataBtn.TabIndex = 1;
-            this.GetAvgDataBtn.Text = "Get averaged data";
-            this.GetAvgDataBtn.UseVisualStyleBackColor = true;
-            this.GetAvgDataBtn.Click += new System.EventHandler(this.GetAvgDataBtn_Click);
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(6, 107);
+            this.label11.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(103, 16);
+            this.label11.TabIndex = 25;
+            this.label11.Text = "No. of averages";
             // 
-            // GetNormDataBtn
+            // ChannelBox
             // 
-            this.GetNormDataBtn.Location = new System.Drawing.Point(6, 51);
-            this.GetNormDataBtn.Name = "GetNormDataBtn";
-            this.GetNormDataBtn.Size = new System.Drawing.Size(115, 23);
-            this.GetNormDataBtn.TabIndex = 0;
-            this.GetNormDataBtn.Text = "Get pure data";
-            this.GetNormDataBtn.UseVisualStyleBackColor = true;
-            this.GetNormDataBtn.Click += new System.EventHandler(this.GetNormDataBtn_Click);
+            this.ChannelBox.Enabled = false;
+            this.ChannelBox.Location = new System.Drawing.Point(118, 24);
+            this.ChannelBox.Margin = new System.Windows.Forms.Padding(4);
+            this.ChannelBox.Name = "ChannelBox";
+            this.ChannelBox.Size = new System.Drawing.Size(41, 22);
+            this.ChannelBox.TabIndex = 23;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 28);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(56, 16);
+            this.label1.TabIndex = 21;
+            this.label1.Text = "Channel";
             // 
             // OscTestForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(333, 464);
+            this.ClientSize = new System.Drawing.Size(444, 571);
             this.Controls.Add(this.CtrlBox);
             this.Controls.Add(this.SendCmdBtn);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.CmdBox);
             this.Controls.Add(this.LogBox);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "OscTestForm";
             this.Text = "OscTestForm";
             this.groupBox5.ResumeLayout(false);
@@ -207,11 +277,15 @@
         private System.Windows.Forms.TextBox CmdBox;
         private System.Windows.Forms.RichTextBox LogBox;
         private System.Windows.Forms.GroupBox CtrlBox;
-        private System.Windows.Forms.Label AvgNumLabel;
+        private System.Windows.Forms.Button OscSaveOptsBtn;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.TextBox OscSavePathBox;
+        private System.Windows.Forms.CheckBox OutOscDataCheckBtn;
+        private System.Windows.Forms.Button BrowseOscSavePathBtn;
+        private System.Windows.Forms.CheckBox AvgDataCheckBtn;
         private System.Windows.Forms.TextBox AvgNoBox;
-        private System.Windows.Forms.Button GetAvgDataBtn;
-        private System.Windows.Forms.Button GetNormDataBtn;
+        private System.Windows.Forms.Label label11;
         private System.Windows.Forms.TextBox ChannelBox;
-        private System.Windows.Forms.Label ChannelLabel;
+        private System.Windows.Forms.Label label1;
     }
 }

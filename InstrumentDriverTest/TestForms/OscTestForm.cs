@@ -114,8 +114,6 @@ namespace InstrumentDriverTest.TestForms
 
         private void EnableBtns(bool enable)
         {
-            GetNormDataBtn.Enabled = enable;
-            GetAvgDataBtn.Enabled = enable;
             SendCmdBtn.Enabled = enable;
         }
 

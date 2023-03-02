@@ -31,7 +31,8 @@ namespace InstrumentDriverTest
 
         private void TestSpectAnBtn_Click(object sender, EventArgs e)
         {
-
+            var SATest = new SATestForm();
+            SATest.Show();
         }
 
         private void TestDCBtn_Click(object sender, EventArgs e)

@@ -1,25 +1,27 @@
 ﻿using Ivi.Visa;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace InstrumentDriverTest.Instruments
 {
     internal class N9000A
     {
-        string GpibAddress { get; }
+        string gpibAddress { get; }
         private bool initialized = false;
         private IMessageBasedSession visa = null;
 
-        public N9000A(int address)
+        public N9000A(string gpibAddress)
         {
-            GpibAddress = String.Format("GPIB0::{0}::INSTR", address);
+            this.gpibAddress=gpibAddress;
             string res = "";
             try
             {
-                (visa, res) = VisaUtil.InitInstrument(GpibAddress);
+                (visa, res) = VisaUtil.InitInstrument(gpibAddress);
             }
             catch (Exception ex)
             {
@@ -28,23 +30,24 @@ namespace InstrumentDriverTest.Instruments
             }
             initialized = true;
             VisaUtil.SendCmd(visa, "INST:SEL SA");
+            VisaUtil.SendCmd(visa, "FORM:DATA ASCII");
         }
 
-        public void SetCentralFrequency(int frequency, int bandwith, string freqBand)
+        public void SetCentralFrequency(double frequency, double span, string freqBand)
         {
             if (!initialized)
             {
                 throw new Exception("Instrument is not initialized");
             }
 
-            if (frequency < 0 || bandwith < 0) 
+            if (frequency < 0 || span < 0) 
             {
                 throw new ArgumentOutOfRangeException("Frequency and bandwith cannot be negative");
             }
 
-            var msg = string.Format("FREQ:CENT {0} {1}", frequency, freqBand);
+            var msg = string.Format("FREQ:CENT {0} {1}", frequency.ToString(CultureInfo.InvariantCulture.NumberFormat), freqBand);
             VisaUtil.SendCmd(visa, msg);
-            msg = string.Format("FREQ:SPAN {0} {1}", bandwith, freqBand);
+            msg = string.Format("FREQ:SPAN {0} {1}", span.ToString(CultureInfo.InvariantCulture.NumberFormat), freqBand);
             VisaUtil.SendCmd(visa, msg);
         }
 
@@ -78,5 +81,28 @@ namespace InstrumentDriverTest.Instruments
         }
 
         // TODO CALC:DATA:PEAKS
+        public double MeasPeak(double frequency, string freqBand)
+        {
+            if (!initialized)
+            {
+                throw new Exception("Instrument is not initialized");
+            }
+            if (frequency < 0)
+            {
+                throw new ArgumentOutOfRangeException("Frequency cannot be negative");
+            }
+
+            SetCentralFrequency(frequency, 0.1, freqBand);
+
+            Thread.Sleep(100);
+
+            var msg = string.Format("CALC:MARK1:MAX");
+            VisaUtil.SendCmd(visa, msg);
+            Thread.Sleep(100);
+            msg = string.Format("CALC:MARK1:Y?");
+            double measurement = VisaUtil.SendReceiveFloatCmd(visa, msg);
+
+            return measurement;
+        }
     }
 }

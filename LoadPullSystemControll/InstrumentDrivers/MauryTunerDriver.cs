@@ -7,6 +7,7 @@ using System.Numerics;
 using System.CodeDom;
 using System.Threading;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace LoadPullSystemControl.Instruments
 {
@@ -26,6 +27,8 @@ namespace LoadPullSystemControl.Instruments
         string ctrlDriverPath;
 
         string tunerExeFilePath;
+
+        string arguments = "";
 
         // Checks if tuner controller was already initialised
         private static bool ctrlInitialised = false; 
@@ -48,15 +51,12 @@ namespace LoadPullSystemControl.Instruments
 
             this.ctrlDriverPath = ctrlDriverPath;
             this.tunerCharFilePath= tunerCharFilePath;
-            string arguments = "";
             if(!ctrlInitialised)
             {
-                arguments = String.Format("init controller \"{0}\" {1}", ctrlDriverPath, gpibAddress);
-                RunProcess(tunerExeFilePath, arguments);
+                arguments += String.Format("init \"{0}\" {1} ", ctrlDriverPath, gpibAddress);
                 ctrlInitialised = true;
             }
-            arguments = String.Format("init tuner \"{0}\" {1} {2}", tunerCharFilePath, tunerNumber, inputTuner);
-            RunProcess(tunerExeFilePath, arguments);
+            arguments += String.Format("\"{0}\" {1} {2}", tunerCharFilePath, tunerNumber, inputTuner ? 1:0);
         }
 
         public void DeinitTuner()
@@ -78,8 +78,9 @@ namespace LoadPullSystemControl.Instruments
 
         public void MoveTunerToSmithPosition(int tunerNumber, Complex reflection, double freq)
         {
-            string arguments = String.Format("set {0} {1} {2} {3} {4}", tunerNumber, reflection.Real, reflection.Imaginary, freq, false);
-            RunProcess(tunerCharFilePath, arguments);
+            string finalArguments = String.Format("{0} {1} {2} {3} {4}", arguments, reflection.Real, reflection.Imaginary, 
+                                                                        freq.ToString(CultureInfo.InvariantCulture.NumberFormat), 0);
+            RunProcess(tunerExeFilePath, finalArguments);
         }
 
         private string RunProcess(string path, string arguments)

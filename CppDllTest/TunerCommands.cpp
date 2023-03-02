@@ -10,10 +10,11 @@
 
 short initController(char ctrlDrv[], short gpibAddress)
 {
+	char test[] = "C:/Users/korisnik/Desktop/Maury/MLibV04/Drivers/Tun986.dll\0";
 
 	char ctrlModel[] = CTRL_MODEL;
 	char errorString[500];
-	short errorCode = addController(0, ctrlDrv, ctrlModel, 0, gpibAddress, 0, CTRL_SERIAL, errorString);
+	short errorCode = addController(0, test, ctrlModel, 0, gpibAddress, 0, CTRL_SERIAL, errorString);
 
 	if (errorCode != 0)
 	{
@@ -36,7 +37,7 @@ short deinitTuner(short tunerNumber)
 short initTuner(char tunCharFile[], int tunerNumber, bool inputTuner)
 {
 	char errorString[500];
-
+	std::cout << "DEBUG:\n tunCharFIle: " << tunCharFile << "\n tuner number: " << tunerNumber << "\n input tuner: " << inputTuner << std::endl;
 	char tunerModel[] = TUNER_MODEL;
 	short no_of_motors = 0;
 	long max_range[3];
@@ -51,7 +52,7 @@ short initTuner(char tunCharFile[], int tunerNumber, bool inputTuner)
 
 	if (errorCode != 0)
 	{
-		std::cout << "Error has occured:\n" << errorString << std::endl;
+		std::cout << "Error has occured when adding tuner:\n" << errorString << std::endl;
 		return errorCode;
 	}
 
@@ -59,7 +60,7 @@ short initTuner(char tunCharFile[], int tunerNumber, bool inputTuner)
 
 	if (errorCode != 0)
 	{
-		std::cout << "Error has occured:\n" << errorString << std::endl;
+		std::cout << "Error has occured while reading tuner data:\n" << errorString << std::endl;
 		return errorCode;
 	}
 	return 0;

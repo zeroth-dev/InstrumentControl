@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -89,11 +90,12 @@ namespace LoadPullSystemControl.Instruments
         /// <param name="visa">visa object for the instrument</param>
         /// <param name="msg">Query to be sent</param>
         /// <returns>Float number received from the instrument</returns>
-        public static float SendReceiveFloatCmd(IMessageBasedSession visa, string msg)
+        public static double SendReceiveFloatCmd(IMessageBasedSession visa, string msg)
         {
 
             visa.RawIO.Write(msg + "\n"); // write to instrument
-            var floatReturn = float.Parse(visa.RawIO.ReadString()); // read from instrument
+            string outp = visa.RawIO.ReadString();
+            var floatReturn = double.Parse(outp, System.Globalization.NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat); // read from instrument
             Console.WriteLine(floatReturn + "\n");
             return floatReturn;
         }
