@@ -506,6 +506,8 @@ namespace LoadPullSystemControl
 
         private void StartBtn_Click(object sender, EventArgs e)
         {
+            int progress = 0;
+            ProgressLabel.Text = "0/" + smithPoints.Count;
             foreach(Complex point in smithPoints)
             {
                 tuners.ElementAt(1).MoveTunerToSmithPosition(1, point, 2.4);
@@ -519,6 +521,8 @@ namespace LoadPullSystemControl
                         file.WriteLine(string.Format("{0}, {1}", time.ElementAt(i), amp.ElementAt(i)));
                     }
                 }
+                progress++;
+                ProgressLabel.Text = progress + "/" + smithPoints.Count;
             }
         }
 
@@ -554,8 +558,17 @@ namespace LoadPullSystemControl
         {
 
             var points = new List<Complex>();
-            double deltaR = (maxRadius - minRadius) / (noRadius - 1);
-            double deltaAng = (endAngle-startAngle) / (noAngle - 1);
+            double deltaR = 0;
+            if (noRadius > 1)
+            {
+                deltaR = (maxRadius - minRadius) / (noRadius - 1);
+            }
+            double deltaAng = 0;
+            if (noAngle > 1)
+            {
+                deltaAng = (endAngle - startAngle) / (noAngle - 1);
+            }
+            
             for (int i = 0; i < noRadius; i++)
             {
                 double currRadius = minRadius+ i * deltaR;
@@ -575,11 +588,12 @@ namespace LoadPullSystemControl
             var Z0 = new Complex(50, 0);
             for(int i = 0; i < gamma.Count;i++)
             {
-                var Z = Z0 * (gamma[i] + 1) / (1 - gamma[i]);
+                var Z = (gamma[i] + 1) / (1 - gamma[i]);
                 impedance.Add(Z);
             }
             return impedance;
         }
+
         /////////////////////////////////////////////////////////
         ///////////////////   UTILITY END   /////////////////////
         /////////////////////////////////////////////////////////

@@ -120,6 +120,8 @@
             this.CtrlDriverBox = new System.Windows.Forms.TextBox();
             this.BrowseCtrlDriverPathBtn = new System.Windows.Forms.Button();
             this.groupBox14 = new System.Windows.Forms.GroupBox();
+            this.ProgressLabel = new System.Windows.Forms.Label();
+            this.label35 = new System.Windows.Forms.Label();
             this.StartBtn = new System.Windows.Forms.Button();
             this.FinalOutSaveOptsBtn = new System.Windows.Forms.Button();
             this.ViewDistBtn = new System.Windows.Forms.Button();
@@ -1061,6 +1063,8 @@
             // 
             // groupBox14
             // 
+            this.groupBox14.Controls.Add(this.ProgressLabel);
+            this.groupBox14.Controls.Add(this.label35);
             this.groupBox14.Controls.Add(this.StartBtn);
             this.groupBox14.Controls.Add(this.FinalOutSaveOptsBtn);
             this.groupBox14.Controls.Add(this.ViewDistBtn);
@@ -1086,6 +1090,24 @@
             this.groupBox14.TabIndex = 13;
             this.groupBox14.TabStop = false;
             this.groupBox14.Text = "Smith iteration";
+            // 
+            // ProgressLabel
+            // 
+            this.ProgressLabel.AutoSize = true;
+            this.ProgressLabel.Location = new System.Drawing.Point(59, 194);
+            this.ProgressLabel.Name = "ProgressLabel";
+            this.ProgressLabel.Size = new System.Drawing.Size(24, 13);
+            this.ProgressLabel.TabIndex = 13;
+            this.ProgressLabel.Text = "0/0";
+            // 
+            // label35
+            // 
+            this.label35.AutoSize = true;
+            this.label35.Location = new System.Drawing.Point(6, 194);
+            this.label35.Name = "label35";
+            this.label35.Size = new System.Drawing.Size(54, 13);
+            this.label35.TabIndex = 22;
+            this.label35.Text = "Progress: ";
             // 
             // StartBtn
             // 
@@ -1412,6 +1434,8 @@
         private System.Windows.Forms.TextBox ZImagBox;
         private System.Windows.Forms.TextBox ZRealBox;
         private System.Windows.Forms.Button MoveTunerZBtn;
+        private System.Windows.Forms.Label ProgressLabel;
+        private System.Windows.Forms.Label label35;
     }
 }
 
