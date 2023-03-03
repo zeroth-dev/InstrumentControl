@@ -140,6 +140,7 @@
             this.label42 = new System.Windows.Forms.Label();
             this.label41 = new System.Windows.Forms.Label();
             this.RefreshListBtn = new System.Windows.Forms.Button();
+            this.StopBtn = new System.Windows.Forms.Button();
             this.groupBox2.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -792,6 +793,7 @@
             // 
             // groupBox14
             // 
+            this.groupBox14.Controls.Add(this.StopBtn);
             this.groupBox14.Controls.Add(this.label40);
             this.groupBox14.Controls.Add(this.FileNameBox);
             this.groupBox14.Controls.Add(this.ProgressLabel);
@@ -1231,6 +1233,17 @@
             this.RefreshListBtn.UseVisualStyleBackColor = true;
             this.RefreshListBtn.Click += new System.EventHandler(this.RefreshListBtn_Click);
             // 
+            // StopBtn
+            // 
+            this.StopBtn.Enabled = false;
+            this.StopBtn.Location = new System.Drawing.Point(9, 274);
+            this.StopBtn.Name = "StopBtn";
+            this.StopBtn.Size = new System.Drawing.Size(91, 23);
+            this.StopBtn.TabIndex = 24;
+            this.StopBtn.Text = "Stop";
+            this.StopBtn.UseVisualStyleBackColor = true;
+            this.StopBtn.Click += new System.EventHandler(this.StopBtn_Click);
+            // 
             // LoadPullForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1376,6 +1389,7 @@
         private System.Windows.Forms.TextBox InTunerCharFileBox;
         private System.Windows.Forms.Button BrowseInTunerCharFileBtn;
         private System.Windows.Forms.Label label45;
+        private System.Windows.Forms.Button StopBtn;
     }
 }
 

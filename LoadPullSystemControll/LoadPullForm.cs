@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -33,12 +34,20 @@ namespace LoadPullSystemControl
 
         double inputPower = 0;
 
+        // Object for running a second thread
+        BackgroundWorker backgroundWorker;
+
         public LoadPullForm()
         {
             InitializeComponent();
             provider.NumberDecimalSeparator = ".";
             InitFreqBandList();
             InitTunerData();
+            backgroundWorker = new BackgroundWorker();
+            backgroundWorker.ProgressChanged += UpdateProgress;
+            backgroundWorker.RunWorkerCompleted += IterationDone;
+            backgroundWorker.WorkerReportsProgress= true;
+            backgroundWorker.WorkerSupportsCancellation= true;
         }
 
         /////////////////////////////////////////////////////////
@@ -314,20 +323,31 @@ namespace LoadPullSystemControl
 
         private void InitBtn_Click(object sender, EventArgs e)
         {
-            // TODO 2
-            bool inputTuner = true;
-            int serial = inputTuner ? 1331 : 1333;
-            int port = inputTuner ? 1 : 2;
+            // These values are meaningless at this point
+            // If you figure out how to use MLibTuner.dll 
+            // directly you can use them
 
-            if (ExeFilePathBox.Text.Length == 0)
-            {
-                tuner = new MauryTunerDriver((short)(port - 1), 0, (short)serial, 2048, 3, 3);
-            }
-            else
-            {
-                tuner = new MauryTunerDriver((short)(port - 1), 0, (short)serial, 2048, 3, 3, ExeFilePathBox.Text);
-            }
+            //bool inputTuner = true;
+            //int serial = inputTuner ? 1331 : 1333;
+            //int port = inputTuner ? 1 : 2;
 
+            try
+            {
+
+
+                if (ExeFilePathBox.Text.Length == 0)
+                {
+                    tuner = new MauryTunerDriver(0, 0, (short)1333, 2048, 3, 3);
+                }
+                else
+                {
+                    tuner = new MauryTunerDriver(0, 0, (short)1333, 2048, 3, 3, ExeFilePathBox.Text);
+                }
+            }
+            catch(Exception ex)
+            {
+                LogText(ex.Message);
+            }
             tuner.InitTuner(CtrlDriverBox.Text, OutTunerCharFileBox.Text, InTunerCharFileBox.Text);
             StartBtn.Enabled = true;
         }
@@ -439,6 +459,12 @@ namespace LoadPullSystemControl
 
         private void StartBtn_Click(object sender, EventArgs e)
         {
+
+            if(dcPowerSupply == null || spectrumAnalyzer == null || tuner == null || rfSource == null)
+            {
+                LogText("Please initialise all devices before starting the program");
+            }
+
             string filename = "Output.txt";
             if(FileNameBox.Text != "")
             {
@@ -457,6 +483,18 @@ namespace LoadPullSystemControl
             ProgressLabel.Text = "0/" + smithPoints.Count;
             double freq = double.Parse(CWFreqBox.Text, provider);
             double attenuation = double.Parse(AttBox.Text, provider);
+
+            backgroundWorker.DoWork += (s, args) => IterateThroughSmith(freq, attenuation, filename);
+
+            backgroundWorker.RunWorkerAsync();
+
+        }
+
+        public void IterateThroughSmith(double freq, double attenuation, string filename)
+        //(object sender, System.ComponentModel.DoWorkEventArgs e)
+        //
+        {
+            int progress = 0;
             foreach (Complex point in smithPoints)
             {
                 tuner.MoveTunerToSmithPosition(false, point, freq);
@@ -477,10 +515,7 @@ namespace LoadPullSystemControl
                 progress++;
                 ProgressLabel.Text = progress + "/" + smithPoints.Count;
             }
-            dcPowerSupply.TurnOnOff(false);
         }
-
-
         /////////////////////////////////////////////////////////
         ////////////////////   SMITH END   //////////////////////
         /////////////////////////////////////////////////////////
@@ -488,24 +523,6 @@ namespace LoadPullSystemControl
         /////////////////////////////////////////////////////////
         ///////////////////     UTILITY     /////////////////////
         /////////////////////////////////////////////////////////
-
-        private void FillGpibComboBox(ComboBox comboBox)
-        {
-            try
-            {
-                comboBox.Items.Clear();
-                var deviceList = Instruments.VisaUtil.GetConnectedDeviceList();
-                foreach (var device in deviceList)
-                {
-                    comboBox.Items.Add(device);
-                }
-                comboBox.SelectedIndex = 0;
-            }
-            catch (Exception ex)
-            {
-                LogBox.AppendText(ex.Message + Environment.NewLine);
-            }
-        }
 
         private List<Complex> GeneratePoints()
         {
@@ -592,10 +609,41 @@ namespace LoadPullSystemControl
 
         private void LogText(string msg)
         {
+            if(InvokeRequired)
+            {
+                Invoke(new Action<string>(LogText), msg);
+            }
             LogBox.AppendText(msg + Environment.NewLine);
         }
 
+        private void UpdateProgress(object sender, System.ComponentModel.ProgressChangedEventArgs e)
+        {
+            ProgressLabel.Text = String.Format("{0}/{1}", e.ProgressPercentage, smithPoints.Count);
+        }
 
+        private void IterationDone(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        {
+            if (e.Cancelled)
+            {
+                LogText("Process was cancelled");
+            }
+            else if (e.Error != null)
+            {
+               LogText("There was an error running the process. The thread aborted");
+            }
+            else
+            {
+                LogText("Process was completed");
+
+                rfSource.turnOnOff(false);
+                dcPowerSupply.TurnOnOff(false);
+            }
+        }
+
+        private void StopBtn_Click(object sender, EventArgs e)
+        {
+            backgroundWorker.CancelAsync();
+        }
         /////////////////////////////////////////////////////////
         ///////////////////   UTILITY END   /////////////////////
         /////////////////////////////////////////////////////////
