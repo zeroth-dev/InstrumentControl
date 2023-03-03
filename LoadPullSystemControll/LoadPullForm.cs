@@ -475,7 +475,6 @@ namespace LoadPullSystemControl
             {
                 sw.WriteLine("gammaX, gammaY, Pin, Pout1, Pout2, Pout3, Vd, Id");
             }
-            int progress = 0;
             if(smithPoints == null || smithPoints.Count == 0)
             {
                 smithPoints = GeneratePoints();
@@ -513,7 +512,13 @@ namespace LoadPullSystemControl
                 OutputData(filename, point.Real, point.Imaginary, inputPower, basePwr, secondPwr, thirdPwr, Vd, Id);
 
                 progress++;
-                ProgressLabel.Text = progress + "/" + smithPoints.Count;
+                //ProgressLabel.Text = progress + "/" + smithPoints.Count;
+                if (backgroundWorker.CancellationPending)
+                {
+                    backgroundWorker.ReportProgress(progress);
+                    return;
+                }
+                backgroundWorker.ReportProgress(progress);
             }
         }
         /////////////////////////////////////////////////////////
