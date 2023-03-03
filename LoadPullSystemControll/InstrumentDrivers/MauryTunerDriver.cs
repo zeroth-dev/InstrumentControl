@@ -8,6 +8,7 @@ using System.CodeDom;
 using System.Threading;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 
 namespace LoadPullSystemControl.Instruments
 {
@@ -23,40 +24,52 @@ namespace LoadPullSystemControl.Instruments
         string tunerModel;
         private string ctrlModel;
 
-        string tunerCharFilePath;
+        string outTunerCharFilePath;
         string ctrlDriverPath;
 
         string tunerExeFilePath;
 
-        string arguments = "";
+        string inTunerArguments = "";
+        string outTunerArguments = "";
 
         // Checks if tuner controller was already initialised
         private static bool ctrlInitialised = false; 
         public MauryTunerDriver(short tunerNumber, short controllerNumber, short serial, short ctrlSerial, 
                             short ctrlPort, short gpibAddress, string tunerExeFilePath = "CppDllTest.exe") 
         {
+            // Leaving all the port and controller initialisation in case someone figures out 
+            // how to use dlls in c# properly without errors.
             this.tunerNumber = tunerNumber;
             this.controllerNumber = controllerNumber;
             this.serial = serial;
             this.controllerPort = ctrlPort;
             this.gpibAddress = gpibAddress;
             this.ctrlSerial = ctrlSerial;
+            if (!File.Exists(tunerExeFilePath))
+
+            {
+                throw new Exception("Executable file could not be found");
+            }
             this.tunerExeFilePath= tunerExeFilePath;
 
         }
 
-        public void InitTuner(string ctrlDriverPath, string tunerCharFilePath, int tunerNumber, 
-                                bool inputTuner)
+        public void InitTuner(string ctrlDriverPath, string outTunerCharFilePath, string inTunerCharFilePath)
         {
 
             this.ctrlDriverPath = ctrlDriverPath;
-            this.tunerCharFilePath= tunerCharFilePath;
-            if(!ctrlInitialised)
+            this.outTunerCharFilePath= outTunerCharFilePath;
+            string baseArguments = String.Format("init \"{0}\" {1} ", ctrlDriverPath, gpibAddress);
+
+            // Tuner number is always 0 because we are only moving only a single tuner at the time
+            string secondArgs = "";
+            if(inTunerCharFilePath.Length > 0 )
             {
-                arguments += String.Format("init \"{0}\" {1} ", ctrlDriverPath, gpibAddress);
-                ctrlInitialised = true;
+                secondArgs = String.Format("\"{0}\" {1} {2}", inTunerCharFilePath, 0, 1);
+                this.inTunerArguments = baseArguments + secondArgs;
             }
-            arguments += String.Format("\"{0}\" {1} {2}", tunerCharFilePath, tunerNumber, inputTuner ? 1:0);
+            secondArgs = String.Format("\"{0}\" {1} {2}", outTunerCharFilePath, 0, 0);
+            this.outTunerArguments= baseArguments + secondArgs;
         }
 
         public void DeinitTuner()
@@ -65,7 +78,7 @@ namespace LoadPullSystemControl.Instruments
 
         }
 
-        public void MoveTunerToImpedance( int tunerNumber, Complex impedance, double freq, List<Complex> sParams = null)
+        public void MoveTunerToImpedance(bool inputTuner, Complex impedance, double freq, List<Complex> sParams = null)
         {
             Complex Z0 = new Complex(50, 0);
             Complex gamma = (impedance - Z0)/(impedance + Z0);
@@ -73,11 +86,20 @@ namespace LoadPullSystemControl.Instruments
             {
                 gamma = (gamma - sParams[0]) / (sParams[3]*(gamma-sParams[3]) + sParams[1]*sParams[2]);
             }
-            MoveTunerToSmithPosition(tunerNumber, gamma, freq);
+            MoveTunerToSmithPosition(inputTuner, gamma, freq);
         }
 
-        public void MoveTunerToSmithPosition(int tunerNumber, Complex reflection, double freq)
+        public void MoveTunerToSmithPosition(bool inputTuner, Complex reflection, double freq)
         {
+            string arguments;
+            if(inputTuner)
+            {
+                arguments = inTunerArguments;
+            }
+            else
+            {
+                arguments = outTunerArguments;
+            }
             string finalArguments = String.Format("{0} {1} {2} {3} {4}", arguments, reflection.Real, reflection.Imaginary, 
                                                                         freq.ToString(CultureInfo.InvariantCulture.NumberFormat), 0);
             RunProcess(tunerExeFilePath, finalArguments);

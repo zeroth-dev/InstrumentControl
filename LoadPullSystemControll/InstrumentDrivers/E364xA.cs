@@ -21,7 +21,8 @@ namespace LoadPullSystemControl.Instruments
         double[] maxVoltage = { 35, 35 };
         double[] minVoltage = { 0 ,0 };
 
-        public string idMsg { get;}
+        public bool turnedOn { get; set; }
+        public string idMsg { get; }
         public E364xA(string gpibAddress) 
         {
             this.gpibAddress = gpibAddress;
@@ -51,7 +52,7 @@ namespace LoadPullSystemControl.Instruments
             maxVoltage[1] = VisaUtil.SendReceiveFloatCmd(visa, "VOLT? MAX");
             minVoltage[1] = VisaUtil.SendReceiveFloatCmd(visa, "CURR? MIN");
 
-
+            turnedOn = false;
         }
 
         public void SetCurrentLimit(int source, double limit)
@@ -151,6 +152,7 @@ namespace LoadPullSystemControl.Instruments
 
             var msg = string.Format("OUTP {0}", turnOn == true ? "ON" : "OFF");
             VisaUtil.SendCmd(visa, msg);
+            this.turnedOn = turnOn;
         }
 
     }

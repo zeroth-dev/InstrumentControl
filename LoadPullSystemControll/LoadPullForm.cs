@@ -10,6 +10,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,7 +25,7 @@ namespace LoadPullSystemControl
         private E364xA dcPowerSupply;
         private E44xxB rfSource;
         N9000A spectrumAnalyzer;
-        List<MauryTunerDriver> tuners;
+        MauryTunerDriver tuner;
         List<Complex> smithPoints;
 
         SmithForm smithForm;
@@ -43,10 +44,6 @@ namespace LoadPullSystemControl
         /////////////////////////////////////////////////////////
         /////////////  DC Power Supply Controls  ////////////////
         /////////////////////////////////////////////////////////
-        private void RefreshDCBtn_Click(object sender, EventArgs e)
-        {
-            FillGpibComboBox(DCInstrumentList);
-        }
 
         private void ConnectDCBtn_Click(object sender, EventArgs e)
         {
@@ -54,11 +51,12 @@ namespace LoadPullSystemControl
             try
             {
                 dcPowerSupply = new E364xA(gpibAddress);
-                LogBox.AppendText(dcPowerSupply.idMsg + Environment.NewLine);
+                LogText("Registered device:");
+                LogText(dcPowerSupply.idMsg);
             }
             catch (Exception ex)
             {
-                LogBox.AppendText(ex.Message + Environment.NewLine);
+                LogText(ex.Message);
                 return;
             }
 
@@ -69,7 +67,7 @@ namespace LoadPullSystemControl
         {
             if (dcPowerSupply == null)
             {
-                LogBox.AppendText("Instrument not initialized!\n");
+                LogText("DC power supply  not initialized!");
                 return;
             }
 
@@ -79,10 +77,11 @@ namespace LoadPullSystemControl
                 dcPowerSupply.SetVoltageLimit(1, voltage);
                 double current = double.Parse(Src1CurrentBox.Text, provider);
                 dcPowerSupply.SetCurrentLimit(1, current);
+                LogText("Set voltage and current limit for source 1");
             }
             catch (Exception ex)
             {
-                LogBox.AppendText(ex.Message + Environment.NewLine);
+                LogText(ex.Message);
                 return;
             }
         }
@@ -91,7 +90,7 @@ namespace LoadPullSystemControl
         {
             if (dcPowerSupply == null)
             {
-                LogBox.AppendText("Instrument not initialized!\n");
+                LogText("DC power supply not initialized!");
                 return;
             }
 
@@ -114,29 +113,16 @@ namespace LoadPullSystemControl
 
             if (dcPowerSupply == null)
             {
-                LogBox.AppendText("Instrument not initialized!\n");
+                LogBox.AppendText("DC power supply not initialized!\n");
                 return;
             }
             try
             {
-                dcPowerSupply.TurnOnOff(true);
-            }
-            catch (Exception ex)
-            {
-                LogBox.AppendText(ex.Message + Environment.NewLine);
-            }
-        }
+                bool turnOn = !dcPowerSupply.turnedOn;
+                dcPowerSupply.TurnOnOff(turnOn);
 
-        private void TurnOffDCSrcBtn_Click(object sender, EventArgs e)
-        {
-            if (dcPowerSupply == null)
-            {
-                LogBox.AppendText("Instrument not initialized!\n");
-                return;
-            }
-            try
-            {
-                dcPowerSupply.TurnOnOff(false);
+                // If we just turned it on, the button say "turn off" and vice-versa
+                TurnOnDCSrcBtn.Text = String.Format("Turn {0}", turnOn ? "off" : "on"); 
             }
             catch (Exception ex)
             {
@@ -148,7 +134,6 @@ namespace LoadPullSystemControl
         {
             ApplyDCSrc1btn.Enabled = enable;
             ApplyDCSrc2Btn.Enabled = enable;
-            TurnOffDCSrcBtn.Enabled = enable;
             TurnOnDCSrcBtn.Enabled = enable;
         }
 
@@ -161,21 +146,18 @@ namespace LoadPullSystemControl
         /////////////    RF Power Source Controls   /////////////
         /////////////////////////////////////////////////////////
 
-        private void RefreshRFBtn_Click(object sender, EventArgs e)
-        {
-            FillGpibComboBox(RFInstrumentList);
-        }
-
         private void ConnectRFBtn_Click(object sender, EventArgs e)
         {
             string gpibAddress = RFInstrumentList.Text;
             try
             {
                 rfSource = new E44xxB(gpibAddress);
+                LogText("Registered device: ");
+                LogText(rfSource.idMsg);
             }
             catch (Exception ex)
             {
-                LogBox.AppendText(ex.Message + Environment.NewLine);
+                LogText(ex.Message);
                 return;
             }
 
@@ -197,10 +179,12 @@ namespace LoadPullSystemControl
                     gain = double.Parse(PreampGainBox.Text, provider);
                 }
                 rfSource.setCWPower(inputPower - gain);
+                LogText(String.Format("Set RF frequency {0} {1} and power {2} dBm", 
+                                        freq.ToString(provider), FreqBandBox.Text, (inputPower-gain).ToString(provider)));
             }
             catch (Exception ex)
             {
-                LogBox.AppendText(ex.Message + Environment.NewLine);
+                LogText(ex.Message + Environment.NewLine);
             }
         }
 
@@ -208,19 +192,11 @@ namespace LoadPullSystemControl
         {
             try
             {
-                rfSource.turnOn();
-            }
-            catch (Exception ex)
-            {
-                LogBox.AppendText(ex.Message + Environment.NewLine);
-            }
-        }
+                bool turnOn = !rfSource.turnedOn;
+                rfSource.turnOnOff(turnOn);
 
-        private void TurnOffRFBtn_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                rfSource.turnOff();
+                // If we just turned it on, the button say "turn off" and vice-versa
+                TurnOnDCSrcBtn.Text = String.Format("Turn {0}", turnOn ? "off" : "on");
             }
             catch (Exception ex)
             {
@@ -232,12 +208,11 @@ namespace LoadPullSystemControl
         {
             string[] list = { "Hz", "kHz", "MHz", "GHz" };
             FreqBandBox.Items.AddRange(list);
-            FreqBandSABox.Items.AddRange(list);
+            FreqBandBox.Items.AddRange(list);
         }
 
         private void EnableRFBtns(bool enable)
         {
-            TurnOffRFBtn.Enabled = enable;
             TurnOnRFBtn.Enabled = enable;
             ApplyRFBtn.Enabled = enable;
         }
@@ -251,22 +226,18 @@ namespace LoadPullSystemControl
         /////////    Spectrum Analyzer Controls   ///////////////
         /////////////////////////////////////////////////////////
 
-
-        private void RefreshSABtn_Click(object sender, EventArgs e)
-        {
-            FillGpibComboBox(InstrumentSAList);
-        }
-
         private void ConnectSABtn_Click(object sender, EventArgs e)
         {
-            string gpibAddress = InstrumentSAList.Text;
+            string gpibAddress = SAInstrumentList.Text;
             try
             {
                 spectrumAnalyzer = new N9000A(gpibAddress);
+                LogText("Registered device:");
+                LogText(spectrumAnalyzer.idMsg);
             }
             catch (Exception ex)
             {
-                LogBox.AppendText(ex.Message + Environment.NewLine);
+                LogText(ex.Message);
                 return;
             }
         }
@@ -298,11 +269,11 @@ namespace LoadPullSystemControl
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
-                openFileDialog.Title = "Executable for tuenr control";
+                openFileDialog.Title = "Executable for tuner control";
                 openFileDialog.Filter = "(*.exe)";
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    CtrlDriverBox.Text = openFileDialog.FileName;
+                    ExeFilePathBox.Text = openFileDialog.FileName;
                 }
             }
         }
@@ -314,19 +285,8 @@ namespace LoadPullSystemControl
                "has serial number 1331 and output tuner has serial number 1333.", "README", MessageBoxButtons.OK);
         }
 
-        private void TunerSelectBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (TunerSelectBox.SelectedIndex == 1)
-            {
-                TunerCharFileBox.Text = "C:\\Users\\korisnik\\Downloads\\Tuner files\\to send\\to send\\karakterizacija_fund_2400MHz_all.tun";
-            }
-            else
-            {
-                TunerCharFileBox.Text = "Other file path";
-            }
-        }
 
-        private void BrowseTunerCharFileBtn_Click(object sender, EventArgs e)
+        private void BrowseInTunerCharFileBtn_Click(object sender, EventArgs e)
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
@@ -334,18 +294,31 @@ namespace LoadPullSystemControl
                 openFileDialog.Filter = "(*.tun)";
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    CtrlDriverBox.Text = openFileDialog.FileName;
+                    InTunerCharFileBox.Text = openFileDialog.FileName;
+                }
+            }
+        }
+
+        private void BrowseOutTunerCharFileBtn_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Title = "Tuner characterization file";
+                openFileDialog.Filter = "(*.tun)";
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    OutTunerCharFileBox.Text = openFileDialog.FileName;
                 }
             }
         }
 
         private void InitBtn_Click(object sender, EventArgs e)
         {
-            bool inputTuner = TunerSelectBox.Text == "Input tuner";
+            // TODO 2
+            bool inputTuner = true;
             int serial = inputTuner ? 1331 : 1333;
             int port = inputTuner ? 1 : 2;
 
-            MauryTunerDriver tuner;
             if (ExeFilePathBox.Text.Length == 0)
             {
                 tuner = new MauryTunerDriver((short)(port - 1), 0, (short)serial, 2048, 3, 3);
@@ -354,8 +327,8 @@ namespace LoadPullSystemControl
             {
                 tuner = new MauryTunerDriver((short)(port - 1), 0, (short)serial, 2048, 3, 3, ExeFilePathBox.Text);
             }
-            tuners[port-1] =  tuner;
-            tuner.InitTuner(CtrlDriverBox.Text, TunerCharFileBox.Text, 0, inputTuner);
+
+            tuner.InitTuner(CtrlDriverBox.Text, OutTunerCharFileBox.Text, InTunerCharFileBox.Text);
             StartBtn.Enabled = true;
         }
 
@@ -367,8 +340,9 @@ namespace LoadPullSystemControl
                 double Zimag = double.Parse(ZImagBox.Text, CultureInfo.InvariantCulture.NumberFormat);
                 Complex Z = new Complex(Zreal, Zimag);
                 double freq = double.Parse(FreqBox.Text, CultureInfo.InvariantCulture.NumberFormat);
-                int tunerNumber = TunerSelectCtrlBox.SelectedIndex;
-                tuners.ElementAt(tunerNumber).MoveTunerToImpedance(tunerNumber, Z, freq);
+
+                bool inputTuner = TunerSelectCtrlBox.SelectedIndex == 0 ? true : false;
+                tuner.MoveTunerToImpedance(inputTuner, Z, freq);
 
             }
             catch (Exception ex)
@@ -386,8 +360,9 @@ namespace LoadPullSystemControl
                 double gammaImag = double.Parse(GammaImagBox.Text, CultureInfo.InvariantCulture.NumberFormat);
                 Complex gamma = new Complex(gammaReal, gammaImag);
                 double freq = double.Parse(FreqBox.Text, CultureInfo.InvariantCulture.NumberFormat);
-                int tunerNumber = TunerSelectCtrlBox.SelectedIndex;
-                tuners.ElementAt(tunerNumber).MoveTunerToSmithPosition(tunerNumber, gamma, freq);
+
+                bool inputTuner = TunerSelectCtrlBox.SelectedIndex == 0 ? true : false;
+                tuner.MoveTunerToSmithPosition(inputTuner, gamma, freq);
 
             }
             catch (Exception ex)
@@ -405,8 +380,9 @@ namespace LoadPullSystemControl
                 double angle = double.Parse(GammaAngleBox.Text, CultureInfo.InvariantCulture.NumberFormat);
                 Complex gamma = new Complex(radius * Math.Cos(angle), radius * Math.Sin(angle));
                 double freq = double.Parse(FreqBox.Text, CultureInfo.InvariantCulture.NumberFormat);
-                int tunerNumber = TunerSelectCtrlBox.SelectedIndex;
-                tuners.ElementAt(tunerNumber).MoveTunerToImpedance(tunerNumber, gamma, freq);
+
+                bool inputTuner = TunerSelectCtrlBox.SelectedIndex == 0 ? true : false;
+                tuner.MoveTunerToImpedance(inputTuner, gamma, freq);
 
             }
             catch (Exception ex)
@@ -424,17 +400,13 @@ namespace LoadPullSystemControl
             //string ctrlModel = "MT986B02";
 
             CtrlDriverBox.Text = "C:\\Users\\korisnik\\Desktop\\Maury\\MLibV04\\Drivers\\Tun986.dll";
-            TunerCharFileBox.Text = "C:\\Users\\korisnik\\Downloads\\Tuner files\\to send\\to send\\karakterizacija_fund_2400MHz_all.tun";
-
-            TunerSelectBox.Items.Add("Input tuner");
-            TunerSelectBox.Items.Add("Output tuner");
-            TunerSelectBox.SelectedIndex = 1;
+            OutTunerCharFileBox.Text = "C:\\Users\\korisnik\\Downloads\\Tuner files\\to send\\to send\\karakterizacija_fund_2400MHz_all.tun";
+            InTunerCharFileBox.Text = "Idk...";
 
             TunerSelectCtrlBox.Items.Add("Input tuner");
             TunerSelectCtrlBox.Items.Add("Output tuner");
             TunerSelectCtrlBox.SelectedIndex = 1;
 
-            tuners = new List<MauryTunerDriver>(new MauryTunerDriver[2]);
         }
 
         /////////////////////////////////////////////////////////
@@ -487,7 +459,7 @@ namespace LoadPullSystemControl
             double attenuation = double.Parse(AttBox.Text, provider);
             foreach (Complex point in smithPoints)
             {
-                tuners.ElementAt(1).MoveTunerToSmithPosition(0, point, freq);
+                tuner.MoveTunerToSmithPosition(false, point, freq);
 
                 double basePwr = spectrumAnalyzer.MeasPeak(freq, FreqBandBox.Text) + attenuation;
                 double secondPwr = spectrumAnalyzer.MeasPeak(2 * freq, FreqBandBox.Text) + attenuation;
@@ -582,22 +554,6 @@ namespace LoadPullSystemControl
             return impedance;
         }
 
-        private void PlotData(List<double> x, List<double> y)
-        {
-            Chart chart = new Chart();
-            DataTable dt = new DataTable();
-            dt.Columns.Add("Time", typeof(double));
-            dt.Columns.Add("Voltage", typeof(double));
-            for (int i = 0; i < x.Count; i++)
-            {
-                dt.Rows.Add(x[i], y[i]);
-            }
-            chart.DataSource = dt;
-            chart.Series["Series1"].XValueMember = "Time";
-            chart.Series["Series1"].YValueMembers = "Voltage";
-            chart.Series["Series1"].ChartType = SeriesChartType.Line;
-        }
-
         private void OutputData(string filename, double gammaX, double gammaY, double powerIn, double baseHarmPwr, 
                                 double scndHarmPwr, double TrdHarmPwr, double vd, double id)
         {
@@ -608,6 +564,37 @@ namespace LoadPullSystemControl
                                                                                 TrdHarmPwr, vd, id));
             }
         }
+
+
+        private void RefreshListBtn_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                DCInstrumentList.Items.Clear();
+                RFInstrumentList.Items.Clear();
+                SAInstrumentList.Items.Clear();
+                var deviceList = Instruments.VisaUtil.GetConnectedDeviceList();
+                foreach (var device in deviceList)
+                {
+                    DCInstrumentList.Items.Add(device);
+                    RFInstrumentList.Items.Add(device);
+                    SAInstrumentList.Items.Add(device);
+                }
+                DCInstrumentList.SelectedIndex = 0;
+                RFInstrumentList.SelectedIndex = 0;
+                SAInstrumentList.SelectedIndex = 0;
+            }
+            catch (Exception ex)
+            {
+                LogBox.AppendText(ex.Message + Environment.NewLine);
+            }
+        }
+
+        private void LogText(string msg)
+        {
+            LogBox.AppendText(msg + Environment.NewLine);
+        }
+
 
         /////////////////////////////////////////////////////////
         ///////////////////   UTILITY END   /////////////////////

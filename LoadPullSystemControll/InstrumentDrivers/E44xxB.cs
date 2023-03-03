@@ -13,14 +13,15 @@ namespace LoadPullSystemControl.Instruments
         public string gpibAddress { get; }
         private bool initialized = false;
         public IMessageBasedSession visa = null;
+        public string idMsg {get;}
+        public bool turnedOn { get; set;}
 
         public E44xxB(string gpibAddress)
         {
             this.gpibAddress = gpibAddress;
-            string res = "";
             try
             {
-                (visa, res) = VisaUtil.InitInstrument(gpibAddress);
+                (visa, idMsg) = VisaUtil.InitInstrument(gpibAddress);
             }
             catch (Exception ex)
             {
@@ -28,6 +29,7 @@ namespace LoadPullSystemControl.Instruments
                 throw ex;
             }
             initialized = true;
+            turnedOn= false;
         }
 
         // Set CW frequency
@@ -56,25 +58,26 @@ namespace LoadPullSystemControl.Instruments
 
         // TODO Add an instrument defined sweep
 
-        // Turn on
-        public void turnOn()
+        // Turn on or off
+        public void turnOnOff(bool turnOn)
         {
             if (!initialized)
             {
                 throw new Exception("Instrument not initialized");
             }
-            VisaUtil.SendCmd(visa, "OUTP:STAT ON");
+            try
+            {
+                string onMsg = turnOn ? "ON" : "OF";
+                var msg = String.Format("OUTP:STAT {0}", onMsg);
+                VisaUtil.SendCmd(visa, msg);
+                turnedOn = turnOn;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
-        // Turn off
-        public void turnOff()
-        {
-            if (!initialized)
-            {
-                throw new Exception("Instrument not initialized");
-            }
-            VisaUtil.SendCmd(visa, "OUTP:STAT OFF");
-        }
     }
 
 }

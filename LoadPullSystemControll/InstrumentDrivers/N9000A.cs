@@ -14,14 +14,14 @@ namespace LoadPullSystemControl.Instruments
         string gpibAddress { get; }
         private bool initialized = false;
         private IMessageBasedSession visa = null;
+        public string idMsg { get; }
 
         public N9000A(string gpibAddress)
         {
             this.gpibAddress = gpibAddress;
-            string res = "";
             try
             {
-                (visa, res) = VisaUtil.InitInstrument(gpibAddress);
+                (visa, idMsg) = VisaUtil.InitInstrument(gpibAddress);
             }
             catch (Exception ex)
             {
@@ -80,7 +80,6 @@ namespace LoadPullSystemControl.Instruments
 
         }
 
-        // TODO CALC:DATA:PEAKS
         public double MeasPeak(double frequency, string freqBand)
         {
             if (!initialized)
@@ -95,7 +94,6 @@ namespace LoadPullSystemControl.Instruments
             SetCentralFrequency(frequency, 0.1, freqBand);
 
             Thread.Sleep(100);
-
             var msg = string.Format("CALC:MARK1:MAX");
             VisaUtil.SendCmd(visa, msg);
             Thread.Sleep(100);
