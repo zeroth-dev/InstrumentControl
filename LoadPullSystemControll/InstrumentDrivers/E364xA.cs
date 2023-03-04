@@ -91,7 +91,7 @@ namespace LoadPullSystemControl.Instruments
                 // Write error message
                 return;
             }
-            if (limit > maxCurrent[source - 1] || limit < minCurrent[source - 1])
+            if (limit > maxVoltage[source - 1] || limit < minVoltage[source - 1])
             {
                 // Write error mesage
                 return;
@@ -117,7 +117,7 @@ namespace LoadPullSystemControl.Instruments
 
             string msg = String.Format("INST OUTP{0}", source);
             VisaUtil.SendCmd(visa, msg);
-            msg = String.Format("CURR?");
+            msg = String.Format("MEAS:CURR?");
             double current = VisaUtil.SendReceiveFloatCmd(visa, msg);
             return current;
 
@@ -137,7 +137,7 @@ namespace LoadPullSystemControl.Instruments
 
             string msg = String.Format("INST OUTP{0}", source);
             VisaUtil.SendCmd(visa, msg);
-            msg = String.Format("VOLT?");
+            msg = String.Format("MEAS:VOLT?");
             double voltage = VisaUtil.SendReceiveFloatCmd(visa, msg);
             return voltage;
 

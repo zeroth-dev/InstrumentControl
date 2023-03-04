@@ -67,7 +67,7 @@ namespace LoadPullSystemControl.Instruments
             }
             try
             {
-                string onMsg = turnOn ? "ON" : "OF";
+                string onMsg = turnOn ? "ON" : "OFF";
                 var msg = String.Format("OUTP:STAT {0}", onMsg);
                 VisaUtil.SendCmd(visa, msg);
                 turnedOn = turnOn;

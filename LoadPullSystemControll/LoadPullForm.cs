@@ -279,7 +279,7 @@ namespace LoadPullSystemControl
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
                 openFileDialog.Title = "Executable for tuner control";
-                openFileDialog.Filter = "(*.exe)";
+                openFileDialog.Filter = "(*.exe)|*.exe";
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     ExeFilePathBox.Text = openFileDialog.FileName;
@@ -482,14 +482,18 @@ namespace LoadPullSystemControl
             ProgressLabel.Text = "0/" + smithPoints.Count;
             double freq = double.Parse(CWFreqBox.Text, provider);
             double attenuation = double.Parse(AttBox.Text, provider);
+            string freqBand = FreqBandBox.Text;
 
-            backgroundWorker.DoWork += (s, args) => IterateThroughSmith(freq, attenuation, filename);
+            dcPowerSupply.TurnOnOff(true);
+            rfSource.turnOnOff(true);
+
+            backgroundWorker.DoWork += (s, args) => IterateThroughSmith(freq, attenuation, filename, freqBand);
 
             backgroundWorker.RunWorkerAsync();
 
         }
 
-        public void IterateThroughSmith(double freq, double attenuation, string filename)
+        public void IterateThroughSmith(double freq, double attenuation, string filename, string freqBand)
         //(object sender, System.ComponentModel.DoWorkEventArgs e)
         //
         {
@@ -498,13 +502,14 @@ namespace LoadPullSystemControl
             {
                 tuner.MoveTunerToSmithPosition(false, point, freq);
 
-                double basePwr = spectrumAnalyzer.MeasPeak(freq, FreqBandBox.Text) + attenuation;
-                double secondPwr = spectrumAnalyzer.MeasPeak(2 * freq, FreqBandBox.Text) + attenuation;
-                double thirdPwr = spectrumAnalyzer.MeasPeak(3 * freq, FreqBandBox.Text) + attenuation;
+                double basePwr = spectrumAnalyzer.MeasPeak(freq, freqBand) + attenuation;
+                double secondPwr = spectrumAnalyzer.MeasPeak(2 * freq, freqBand) + attenuation;
+                double thirdPwr = spectrumAnalyzer.MeasPeak(3 * freq, freqBand) + attenuation;
 
-                BaseHarmBox.Text = basePwr.ToString();
-                ScndHarmBox.Text = secondPwr.ToString();
-                TrdHarmBox.Text = thirdPwr.ToString();
+                //Label.Invoke((MethodInvoker)delegate { BaseHarmBox.Text = basePwr.ToString(); });
+                SetText(BaseHarmBox, basePwr.ToString());
+                SetText(ScndHarmBox, secondPwr.ToString());
+                SetText(TrdHarmBox, thirdPwr.ToString());
 
                 double Vd = dcPowerSupply.ReadVoltage(2);
                 double Id = dcPowerSupply.ReadCurrent(2);
@@ -519,6 +524,10 @@ namespace LoadPullSystemControl
                     return;
                 }
                 backgroundWorker.ReportProgress(progress);
+                if(progress == smithPoints.Count)
+                {
+                    return;
+                }
             }
         }
         /////////////////////////////////////////////////////////
@@ -631,6 +640,7 @@ namespace LoadPullSystemControl
             if (e.Cancelled)
             {
                 LogText("Process was cancelled");
+                backgroundWorker.CancelAsync();
             }
             else if (e.Error != null)
             {
@@ -648,6 +658,15 @@ namespace LoadPullSystemControl
         private void StopBtn_Click(object sender, EventArgs e)
         {
             backgroundWorker.CancelAsync();
+        }
+
+        private void SetText(Control control, string text)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action<Control, string>(SetText), control, text);
+            }
+           control.Text= text;
         }
         /////////////////////////////////////////////////////////
         ///////////////////   UTILITY END   /////////////////////

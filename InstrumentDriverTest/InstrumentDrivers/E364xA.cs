@@ -117,7 +117,7 @@ namespace InstrumentDriverTest.Instruments
 
             string msg = String.Format("INST OUTP{0}", source);
             VisaUtil.SendCmd(visa, msg);
-            msg = String.Format("CURR?");
+            msg = String.Format("MEAS:CURR?");
             double current = VisaUtil.SendReceiveFloatCmd(visa, msg);
             return current;
 
@@ -137,7 +137,7 @@ namespace InstrumentDriverTest.Instruments
 
             string msg = String.Format("INST OUTP{0}", source);
             VisaUtil.SendCmd(visa, msg);
-            msg = String.Format("VOLT?");
+            msg = String.Format("MEAS:VOLT?");
             double voltage = VisaUtil.SendReceiveFloatCmd(visa, msg);
             return voltage;
 
