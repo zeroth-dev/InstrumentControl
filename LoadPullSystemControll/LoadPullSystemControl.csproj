@@ -79,7 +79,6 @@
     <Compile Include="InstrumentDrivers\HP5412x.cs" />
     <Compile Include="InstrumentDrivers\MauryTunerDriver.cs" />
     <Compile Include="InstrumentDrivers\MauryTunerFunctions.cs" />
-    <Compile Include="InstrumentDrivers\MT986.cs" />
     <Compile Include="InstrumentDrivers\N9000A.cs" />
     <Compile Include="InstrumentDrivers\VisaUtil.cs" />
     <Compile Include="LoadPullForm.cs">

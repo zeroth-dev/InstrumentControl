@@ -30,10 +30,10 @@ namespace LoadPullSystemControl.Instruments
 
                 return (visa, idOutput);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine(e.Message);
-                throw new Exception(e.Message);
+                Console.WriteLine(ex.Message);
+                throw ex;
             }
         }
         public static (IMessageBasedSession, string) InitInstrument(string gpibAddress)
@@ -45,10 +45,10 @@ namespace LoadPullSystemControl.Instruments
                 (visa, idOutput) = InitInstrument(gpibAddress, "*IDN?");
                 return (visa, idOutput);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine(e.Message);
-                throw new Exception(e.Message);
+                Console.WriteLine(ex.Message);
+                throw ex;
             }
         }
 
@@ -66,21 +66,41 @@ namespace LoadPullSystemControl.Instruments
         /// <returns>String response from the instrument</returns>
         public static string SendReceiveStringCmd(IMessageBasedSession visa, string msg)
         {
-            
-            visa.RawIO.Write(msg + "\n"); // write to instrument
-            var strOutput = visa.RawIO.ReadString(); // read from instrument
-            Console.WriteLine(strOutput + "\n");
-            return strOutput;
+            try
+            {
+                visa.RawIO.Write(msg + "\n"); // write to instrument
+                var strOutput = visa.RawIO.ReadString(); // read from instrument
+                Console.WriteLine(strOutput + "\n");
+                return strOutput;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
         }
 
+        /// <summary>
+        /// Sends the specified message to the gpib address and gets the text answer from the instrument
+        /// Use only when a return message from the instrument is expected
+        /// </summary>
+        /// <param name="visa">visa object for the instrument</param>
+        /// <param name="msg">Query to be sent</param>
+        /// <param name="count">Number of bytes read from the instrument</param>
+        /// <returns>String response from the instrument</returns>
         public static string SendReceiveStringCmd(IMessageBasedSession visa, string msg, int count)
         {
-
-            visa.RawIO.Write(msg + "\n"); // write to instrument
-            var charOutput = visa.RawIO.Read(count); // read from instrument
-            var strOutput = System.Text.Encoding.ASCII.GetString(charOutput);
-            Console.WriteLine(strOutput + "\n");
-            return strOutput;
+            try
+            {
+                visa.RawIO.Write(msg + "\n"); // write to instrument
+                var charOutput = visa.RawIO.Read(count); // read from instrument
+                var strOutput = System.Text.Encoding.ASCII.GetString(charOutput);
+                Console.WriteLine(strOutput + "\n");
+                return strOutput;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
         }
 
         /// <summary>
@@ -92,12 +112,18 @@ namespace LoadPullSystemControl.Instruments
         /// <returns>Float number received from the instrument</returns>
         public static double SendReceiveFloatCmd(IMessageBasedSession visa, string msg)
         {
-
-            visa.RawIO.Write(msg + "\n"); // write to instrument
-            string outp = visa.RawIO.ReadString();
-            var floatReturn = double.Parse(outp, System.Globalization.NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat); // read from instrument
-            Console.WriteLine(floatReturn + "\n");
-            return floatReturn;
+            try
+            {
+                visa.RawIO.Write(msg + "\n"); // write to instrument
+                string outp = visa.RawIO.ReadString();
+                var floatReturn = double.Parse(outp, System.Globalization.NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat); // read from instrument
+                Console.WriteLine(floatReturn + "\n");
+                return floatReturn;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
         }
 
         /// <summary>
@@ -112,12 +138,19 @@ namespace LoadPullSystemControl.Instruments
         public static string SendReceiveFloatArrayCmd(IMessageBasedSession visa, string msg, int arrSize)
         {
 
-            visa.RawIO.Write(msg + "\n"); // write to instrument
-            var idOutput = visa.RawIO.ReadString(); // read from instrument
-            Console.WriteLine(idOutput + "\n");
-            visa.ReadStatusByte();
-            
-            return idOutput;
+            try
+            {
+                visa.RawIO.Write(msg + "\n"); // write to instrument
+                var idOutput = visa.RawIO.ReadString(); // read from instrument
+                Console.WriteLine(idOutput + "\n");
+                visa.ReadStatusByte();
+
+                return idOutput;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
         }
 
         /// <summary>
@@ -141,10 +174,9 @@ namespace LoadPullSystemControl.Instruments
                     }
                     return resourceList;
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    Console.WriteLine(e.Message);
-                    throw new Exception(e.Message);
+                    throw ex;
                 }
             }
         }

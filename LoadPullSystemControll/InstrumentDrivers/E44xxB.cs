@@ -32,34 +32,58 @@ namespace LoadPullSystemControl.Instruments
             turnedOn= false;
         }
 
-        // Set CW frequency
-
-        public void setCWFrequency(double frequency, string freqBand)
+        /// <summary>
+        /// Sets the continuous wave frequency on the RF source
+        /// </summary>
+        /// <param name="frequency">Wanted frequency</param>
+        /// <param name="freqBand">Specified frequency band {Hz|kHz|MHz|GHz}</param>
+        /// <exception cref="Exception"></exception>
+        public void SetCWFrequency(double frequency, string freqBand)
         {
             if (!initialized)
             {
                 throw new Exception("Instrument not initialized");
             }
-            var msg = String.Format("FREQ {0} {1}", frequency.ToString(CultureInfo.InvariantCulture.NumberFormat), freqBand);
-            VisaUtil.SendCmd(visa, msg);
+            try
+            {
+                var msg = String.Format("FREQ {0} {1}", frequency.ToString(CultureInfo.InvariantCulture.NumberFormat), freqBand);
+                VisaUtil.SendCmd(visa, msg);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
-        // Set CW power
-        public void setCWPower(double power)
+        /// <summary>
+        /// Sets the wanted continuous wave power in dBm on the RF source
+        /// </summary>
+        /// <param name="power">Wanted power in dBm</param>
+        /// <exception cref="Exception"></exception>
+        public void SetCWPower(double power)
         {
             if (!initialized)
             {
                 throw new Exception("Instrument not initialized");
             }
 
-            var msg = String.Format("POW:AMPL {0}", power.ToString(CultureInfo.InvariantCulture.NumberFormat));
-            VisaUtil.SendCmd(visa, msg);
+            try
+            {
+                var msg = String.Format("POW:AMPL {0}", power.ToString(CultureInfo.InvariantCulture.NumberFormat));
+                VisaUtil.SendCmd(visa, msg);
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
         }
 
-        // TODO Add an instrument defined sweep
-
-        // Turn on or off
-        public void turnOnOff(bool turnOn)
+        /// <summary>
+        /// Turns the RF source on or off
+        /// </summary>
+        /// <param name="turnOn">true if turning ON the RF source, false otherwise</param>
+        /// <exception cref="Exception"></exception>
+        public void TurnOnOff(bool turnOn)
         {
             if (!initialized)
             {

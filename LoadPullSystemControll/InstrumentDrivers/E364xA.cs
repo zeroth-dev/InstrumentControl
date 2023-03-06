@@ -55,104 +55,169 @@ namespace LoadPullSystemControl.Instruments
             turnedOn = false;
         }
 
+        /// <summary>
+        /// Sets the maximum current for the specified source
+        /// </summary>
+        /// <param name="source">1 or 2 describing the source being modified</param>
+        /// <param name="limit">Maximum current</param>
+        /// <exception cref="Exception"></exception>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public void SetCurrentLimit(int source, double limit)
         {
             if (!initialized)
             {
-                // Write error message
-                return;
+                throw new Exception("Driver not initialized");
             }
             if (source != 1 && source != 2)
             {
-                // Write error message
-                return;
+                throw new ArgumentOutOfRangeException("Source can only be 1 or 2");
             }
             if (limit > maxCurrent[source-1] || limit < minCurrent[source-1]) 
             {
-                // Write error mesage
-                return;
+                throw new ArgumentOutOfRangeException(String.Format("Specified current outside of range: {0}-{1}", 
+                                                                        minCurrent[source - 1], maxCurrent[source - 1]));
             }
 
-            string msg = String.Format("INST OUTP{0}", source);
-            VisaUtil.SendCmd(visa, msg);
-            msg = String.Format("CURR {0}", limit.ToString(CultureInfo.InvariantCulture.NumberFormat));
-            VisaUtil.SendCmd(visa, msg);
+            try
+            {
+                // Set the chosen source and set the current
+                string msg = String.Format("INST OUTP{0}", source);
+                VisaUtil.SendCmd(visa, msg);
+                msg = String.Format("CURR {0}", limit.ToString(CultureInfo.InvariantCulture.NumberFormat));
+                VisaUtil.SendCmd(visa, msg);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
+        /// <summary>
+        /// Sets the maximum voltage for the specified source
+        /// </summary>
+        /// <param name="source">1 or 2 describing the source being modified</param>
+        /// <param name="limit">Maximum voltage</param>
+        /// <exception cref="Exception"></exception>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public void SetVoltageLimit(int source, double limit)
         {
             if (!initialized)
             {
-                // Write error message
-                return;
+                throw new Exception("Driver not initialized");
             }
             if (source != 1 && source != 2)
             {
-                // Write error message
-                return;
+                throw new ArgumentOutOfRangeException("Source can only be 1 or 2");
             }
             if (limit > maxVoltage[source - 1] || limit < minVoltage[source - 1])
             {
-                // Write error mesage
-                return;
+                throw new ArgumentOutOfRangeException(String.Format("Specified current outside of range: {0}-{1}",
+                                                                        minVoltage[source - 1], maxVoltage[source - 1]));
             }
-
-            string msg = String.Format("INST OUTP{0}", source);
-            VisaUtil.SendCmd(visa, msg);
-            msg = String.Format("VOLT {0}", limit.ToString(CultureInfo.InvariantCulture.NumberFormat));
-            VisaUtil.SendCmd(visa, msg);
+            try
+            {
+                // Sets the chosen source and sets the voltage
+                string msg = String.Format("INST OUTP{0}", source);
+                VisaUtil.SendCmd(visa, msg);
+                msg = String.Format("VOLT {0}", limit.ToString(CultureInfo.InvariantCulture.NumberFormat));
+                VisaUtil.SendCmd(visa, msg);
+            }
+            catch (Exception ex)
+            { 
+                throw ex; 
+            }
         }
 
+        /// <summary>
+        /// Measures the current from the specified source
+        /// </summary>
+        /// <param name="source">1 or 2 describing the source</param>
+        /// <returns>Current output from the specified source</returns>
+        /// <exception cref="Exception"></exception>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public double ReadCurrent(int source)
         {
             if (!initialized)
             {
-                return -10;
+                throw new Exception("Driver not initialized");
             }
             if (source != 1 && source != 2)
             {
-                // Write error message
-                return -10;
+                throw new ArgumentOutOfRangeException("Source can only be 1 or 2");
             }
 
-            string msg = String.Format("INST OUTP{0}", source);
-            VisaUtil.SendCmd(visa, msg);
-            msg = String.Format("MEAS:CURR?");
-            double current = VisaUtil.SendReceiveFloatCmd(visa, msg);
-            return current;
+            try
+            {
+                // Select the specified source and measure its current
+                string msg = String.Format("INST OUTP{0}", source);
+                VisaUtil.SendCmd(visa, msg);
+                msg = String.Format("MEAS:CURR?");
+                double current = VisaUtil.SendReceiveFloatCmd(visa, msg);
+                return current;
+            }
+            catch(Exception ex) 
+            { 
+                throw ex; 
+            }
 
         }
 
+        /// <summary>
+        /// Measures the voltage from the specified source
+        /// </summary>
+        /// <param name="source">1 or 2 describing the source</param>
+        /// <returns>Voltage on the specified output</returns>
+        /// <exception cref="Exception"></exception>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public double ReadVoltage(int source)
         {
             if (!initialized)
             {
-                return -10;
+                throw new Exception("Driver not initialized");
             }
             if (source != 1 && source != 2)
             {
-                // Write error message
-                return -10;
+                throw new ArgumentOutOfRangeException("Source can only be 1 or 2");
             }
 
-            string msg = String.Format("INST OUTP{0}", source);
-            VisaUtil.SendCmd(visa, msg);
-            msg = String.Format("MEAS:VOLT?");
-            double voltage = VisaUtil.SendReceiveFloatCmd(visa, msg);
-            return voltage;
+            try
+            {
+                // Select the specified voltage and measure its current
+                string msg = String.Format("INST OUTP{0}", source);
+                VisaUtil.SendCmd(visa, msg);
+                msg = String.Format("MEAS:VOLT?");
+                double voltage = VisaUtil.SendReceiveFloatCmd(visa, msg);
+                return voltage;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
 
         }
 
+        /// <summary>
+        /// Turns the power supply on or off
+        /// </summary>
+        /// <param name="turnOn">true if turning the power supply ON and false otherwise</param>
+        /// <exception cref="Exception"></exception>
         public void TurnOnOff(bool turnOn)
         {
             if (!initialized)
             {
-                return;
+                throw new Exception("Driver not initialized");
             }
 
-            var msg = string.Format("OUTP {0}", turnOn == true ? "ON" : "OFF");
-            VisaUtil.SendCmd(visa, msg);
-            this.turnedOn = turnOn;
+            try
+            {
+                var msg = string.Format("OUTP {0}", turnOn == true ? "ON" : "OFF");
+                VisaUtil.SendCmd(visa, msg);
+                this.turnedOn = turnOn;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
     }

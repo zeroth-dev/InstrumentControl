@@ -179,7 +179,7 @@ namespace LoadPullSystemControl
             try
             {
                 double freq = double.Parse(CWFreqBox.Text, provider);
-                rfSource.setCWFrequency(freq, FreqBandBox.Text);
+                rfSource.SetCWFrequency(freq, FreqBandBox.Text);
 
                 inputPower = double.Parse(PowerBox.Text, provider);
                 double gain = 0;
@@ -187,7 +187,7 @@ namespace LoadPullSystemControl
                 {
                     gain = double.Parse(PreampGainBox.Text, provider);
                 }
-                rfSource.setCWPower(inputPower - gain);
+                rfSource.SetCWPower(inputPower - gain);
                 LogText(String.Format("Set RF frequency {0} {1} and power {2} dBm", 
                                         freq.ToString(provider), FreqBandBox.Text, (inputPower-gain).ToString(provider)));
             }
@@ -202,7 +202,7 @@ namespace LoadPullSystemControl
             try
             {
                 bool turnOn = !rfSource.turnedOn;
-                rfSource.turnOnOff(turnOn);
+                rfSource.TurnOnOff(turnOn);
 
                 // If we just turned it on, the button say "turn off" and vice-versa
                 TurnOnDCSrcBtn.Text = String.Format("Turn {0}", turnOn ? "off" : "on");
@@ -485,7 +485,7 @@ namespace LoadPullSystemControl
             string freqBand = FreqBandBox.Text;
 
             dcPowerSupply.TurnOnOff(true);
-            rfSource.turnOnOff(true);
+            rfSource.TurnOnOff(true);
 
             backgroundWorker.DoWork += (s, args) => IterateThroughSmith(freq, attenuation, filename, freqBand);
 
@@ -498,8 +498,9 @@ namespace LoadPullSystemControl
         //
         {
             int progress = 0;
-            foreach (Complex point in smithPoints)
+            for (int i = 0; i < smithPoints.Count; i++)
             {
+                var point = smithPoints.ElementAt(i);
                 tuner.MoveTunerToSmithPosition(false, point, freq);
 
                 double basePwr = spectrumAnalyzer.MeasPeak(freq, freqBand) + attenuation;
@@ -650,7 +651,7 @@ namespace LoadPullSystemControl
             {
                 LogText("Process was completed");
 
-                rfSource.turnOnOff(false);
+                rfSource.TurnOnOff(false);
                 dcPowerSupply.TurnOnOff(false);
             }
         }

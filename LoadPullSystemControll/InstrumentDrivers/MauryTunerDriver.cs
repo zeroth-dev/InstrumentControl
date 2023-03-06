@@ -12,6 +12,9 @@ using System.IO;
 
 namespace LoadPullSystemControl.Instruments
 {
+    /// <summary>
+    /// Class <c>MauryTunerDriver</c> handles the tuner controls. Only supports a single input and output tuner
+    /// </summary>
     internal class MauryTunerDriver
     {
         private short controllerNumber {get;}
@@ -54,6 +57,12 @@ namespace LoadPullSystemControl.Instruments
 
         }
 
+        /// <summary>
+        /// Sets the executable arguments for the input and output tuner
+        /// </summary>
+        /// <param name="ctrlDriverPath">Path to the controller driver</param>
+        /// <param name="outTunerCharFilePath">Path to the output tuner characterization file</param>
+        /// <param name="inTunerCharFilePath">Path to the input tuner characterization file</param>
         public void InitTuner(string ctrlDriverPath, string outTunerCharFilePath, string inTunerCharFilePath)
         {
 
@@ -62,7 +71,7 @@ namespace LoadPullSystemControl.Instruments
             string baseArguments = String.Format("init \"{0}\" {1} ", ctrlDriverPath, gpibAddress);
 
             // Tuner number is always 0 because we are only moving only a single tuner at the time
-            string secondArgs = "";
+            string secondArgs;
             if(inTunerCharFilePath.Length > 0 )
             {
                 secondArgs = String.Format("\"{0}\" {1} {2}", inTunerCharFilePath, 0, 1);
@@ -74,10 +83,17 @@ namespace LoadPullSystemControl.Instruments
 
         public void DeinitTuner()
         {
-        
+            throw new NotImplementedException();
 
         }
 
+        /// <summary>
+        /// Moves the tuner to the specified impedance
+        /// </summary>
+        /// <param name="inputTuner">true if the tuner to move is input tuner and false otherwise</param>
+        /// <param name="impedance">Impedance the tuner is set to</param>
+        /// <param name="freq">Frequency for which the tuner is moving</param>
+        /// <param name="sParams">S-parameters for de-embedding</param>
         public void MoveTunerToImpedance(bool inputTuner, Complex impedance, double freq, List<Complex> sParams = null)
         {
             Complex Z0 = new Complex(50, 0);
@@ -89,6 +105,12 @@ namespace LoadPullSystemControl.Instruments
             MoveTunerToSmithPosition(inputTuner, gamma, freq);
         }
 
+        /// <summary>
+        /// Moves the tuner to the specified reflection
+        /// </summary>
+        /// <param name="inputTuner">true if the tuner to move is input tuner and false otherwise</param>
+        /// <param name="reflection">Refletction the tuner is set to</param>
+        /// <param name="freq">Frequency for which the tuner is moving</param>
         public void MoveTunerToSmithPosition(bool inputTuner, Complex reflection, double freq)
         {
             string arguments;
@@ -105,6 +127,12 @@ namespace LoadPullSystemControl.Instruments
             RunProcess(tunerExeFilePath, finalArguments);
         }
 
+        /// <summary>
+        /// Utility method that runs the executable for controlling the tuner
+        /// </summary>
+        /// <param name="path">Path to the executable</param>
+        /// <param name="arguments">Arguments whith which the executable is run</param>
+        /// <returns></returns>
         private string RunProcess(string path, string arguments)
         { 
                 // Get the standard output from the process
