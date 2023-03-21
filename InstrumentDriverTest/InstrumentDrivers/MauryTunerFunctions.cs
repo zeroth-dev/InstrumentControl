@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace InstrumentDriverTest.Instruments
 {
-    internal class MauryTunerFunctions
+    public class MauryTunerFunctions
     {
         [DllImport("MLibTuners.dll", EntryPoint = "add_controller", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public static extern short add_controller(short controller_number,

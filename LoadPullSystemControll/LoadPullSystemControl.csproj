@@ -74,13 +74,6 @@
     <Compile Include="Forms\SmithForm.Designer.cs">
       <DependentUpon>SmithForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="InstrumentDrivers\E364xA.cs" />
-    <Compile Include="InstrumentDrivers\E44xxB.cs" />
-    <Compile Include="InstrumentDrivers\HP5412x.cs" />
-    <Compile Include="InstrumentDrivers\MauryTunerDriver.cs" />
-    <Compile Include="InstrumentDrivers\MauryTunerFunctions.cs" />
-    <Compile Include="InstrumentDrivers\N9000A.cs" />
-    <Compile Include="InstrumentDrivers\VisaUtil.cs" />
     <Compile Include="LoadPullForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -120,7 +113,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="MainFormParts\" />
+    <ProjectReference Include="..\InstrumentDriverTest\InstrumentDriverTest.csproj">
+      <Project>{5657c427-bd63-4aea-b6c5-f307c33e4b10}</Project>
+      <Name>InstrumentDriverTest</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

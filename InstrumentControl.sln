@@ -10,6 +10,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CppDllTest", "CppDllTest\CppDllTest.vcxproj", "{CD754108-C302-442A-B0DF-EC3DF5A1BADD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoadPullSystemControl", "LoadPullSystemControll\LoadPullSystemControl.csproj", "{67E60ABE-0A5F-4028-8E19-38452778281D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5657C427-BD63-4AEA-B6C5-F307C33E4B10} = {5657C427-BD63-4AEA-B6C5-F307C33E4B10}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

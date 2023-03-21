@@ -17,6 +17,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using InstrumentDriverTest.Instruments;
 
 namespace LoadPullSystemControl
 {
@@ -605,7 +606,7 @@ namespace LoadPullSystemControl
                 DCInstrumentList.Items.Clear();
                 RFInstrumentList.Items.Clear();
                 SAInstrumentList.Items.Clear();
-                var deviceList = Instruments.VisaUtil.GetConnectedDeviceList();
+                var deviceList = VisaUtil.GetConnectedDeviceList();
                 foreach (var device in deviceList)
                 {
                     DCInstrumentList.Items.Add(device);
