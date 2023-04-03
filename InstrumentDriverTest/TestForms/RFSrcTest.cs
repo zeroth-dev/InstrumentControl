@@ -70,10 +70,10 @@ namespace InstrumentDriverTest.TestForms
             try
             {
                 double freq = double.Parse(CWFreqBox.Text, provider);
-                rfSource.setCWFrequency(freq, FreqBandBox.Text);
+                rfSource.SetCWFrequency(freq, FreqBandBox.Text);
 
                 double power = double.Parse(PowerBox.Text, provider);
-                rfSource.setCWPower(power);
+                rfSource.SetCWPower(power);
             }
             catch (Exception ex)
             {
@@ -85,7 +85,7 @@ namespace InstrumentDriverTest.TestForms
         {
             try
             {
-                rfSource.turnOn();
+                rfSource.TurnOnOff(true);
             }
             catch (Exception ex)
             {
@@ -97,7 +97,7 @@ namespace InstrumentDriverTest.TestForms
         {
             try
             {
-                rfSource.turnOff();
+                rfSource.TurnOnOff(false);
             }
             catch (Exception ex)
             {

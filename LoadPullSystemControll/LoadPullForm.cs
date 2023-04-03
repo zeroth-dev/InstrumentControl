@@ -1,23 +1,15 @@
 ﻿using LoadPullSystemControl.Forms;
-using LoadPullSystemControl.Instruments;
-using LoadPullSystemControl.Properties;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Numerics;
-using System.Runtime.Remoting.Contexts;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Forms.DataVisualization.Charting;
 using InstrumentDriverTest.Instruments;
+using LoadPullSystemControl.Util;
 
 namespace LoadPullSystemControl
 {
@@ -34,6 +26,9 @@ namespace LoadPullSystemControl
         NumberFormatInfo provider = new NumberFormatInfo();
 
         double inputPower = 0;
+
+        Dictionary<double, List<Complex>> deembeddingDataOut;
+        Dictionary<double, List<Complex>> deembeddingDataIn;
 
         // Object for running a second thread
         BackgroundWorker backgroundWorker;
@@ -301,7 +296,7 @@ namespace LoadPullSystemControl
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
                 openFileDialog.Title = "Tuner characterization file";
-                openFileDialog.Filter = "(*.tun)";
+                openFileDialog.Filter = "(*.tun)|*.tun";
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     InTunerCharFileBox.Text = openFileDialog.FileName;
@@ -314,7 +309,7 @@ namespace LoadPullSystemControl
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
                 openFileDialog.Title = "Tuner characterization file";
-                openFileDialog.Filter = "(*.tun)";
+                openFileDialog.Filter = "(*.tun)|*.tun";
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     OutTunerCharFileBox.Text = openFileDialog.FileName;
@@ -450,13 +445,45 @@ namespace LoadPullSystemControl
             }
             smithForm.UpdatePoints(impedancePoints);
             smithForm.Show();
-            
+
         }
 
-        private void FinalOutSaveOptsBtn_Click(object sender, EventArgs e)
+        private void BrowseInputDeEmbeddingDataBtn_Click(object sender, EventArgs e)
         {
-            
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Title = "De-embedding data";
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    InputDeEmbeddingDataFileBox.Text = openFileDialog.FileName;
+                }
+            }
         }
+
+        private void BrowseOutDeEmbeddingDataBtn_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Title = "De-embedding data";
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    OutputDeEmbeddingDataFileBox.Text = openFileDialog.FileName;
+                }
+            }
+
+        }
+        private void SourceLoadPullRadio_CheckedChanged(object sender, EventArgs e)
+        {
+            if (SourceLoadPullRadio.Checked)
+            {
+                SweepChoicePanel.Visible = true;
+            }
+            else
+            {
+                SweepChoicePanel.Visible = false;
+            }
+        }
+
 
         private void StartBtn_Click(object sender, EventArgs e)
         {
@@ -466,6 +493,7 @@ namespace LoadPullSystemControl
                 LogText("Please initialise all devices before starting the program");
             }
 
+            // TODO: Create meaningful filename
             string filename = "Output.txt";
             if(FileNameBox.Text != "")
             {
@@ -485,6 +513,15 @@ namespace LoadPullSystemControl
             double attenuation = double.Parse(AttBox.Text, provider);
             string freqBand = FreqBandBox.Text;
 
+            if(UseDeembeddingCheck.Checked)
+            {
+                if(OutputDeEmbeddingDataFileBox.Text != "")
+                {
+                    deembeddingDataOut.Add(freq, Utils.GetSParamsFromFile(OutputDeEmbeddingDataFileBox.Text, freq, freqBand));
+                }
+
+            }
+
             dcPowerSupply.TurnOnOff(true);
             rfSource.TurnOnOff(true);
 
@@ -502,6 +539,10 @@ namespace LoadPullSystemControl
             for (int i = 0; i < smithPoints.Count; i++)
             {
                 var point = smithPoints.ElementAt(i);
+                if(deembeddingDataOut.ContainsKey(freq))
+                {
+                    point = ConvertPoint(point, deembeddingDataOut[freq]);
+                }
                 tuner.MoveTunerToSmithPosition(false, point, freq);
 
                 double basePwr = spectrumAnalyzer.MeasPeak(freq, freqBand) + attenuation;
@@ -532,6 +573,31 @@ namespace LoadPullSystemControl
                 }
             }
         }
+
+        private Complex ConvertPoint(Complex point, List<Complex> sParams)
+        {
+            /* 
+             * Assumption for the s-param measurement
+             * 
+             *                  s21
+             *           --->   ------>   ------->
+             *                |        / \
+             *                |         |
+             *  ---->     s11 |         |         ----->   
+             *  |             |         |s22      |   Gamma tuner
+             *  | Gamma       |         |         |
+             *    DUT        \ /        |
+             *          <----   <------   <------- 
+             *                    s12
+             * 
+             * 
+             */
+
+            Complex numerator = point - sParams[0];
+            Complex denominator = sParams[1]*sParams[2]+sParams[3]*(point-sParams[0]);
+            return numerator / denominator;
+        }
+
         /////////////////////////////////////////////////////////
         ////////////////////   SMITH END   //////////////////////
         /////////////////////////////////////////////////////////
@@ -670,6 +736,7 @@ namespace LoadPullSystemControl
             }
            control.Text= text;
         }
+
         /////////////////////////////////////////////////////////
         ///////////////////   UTILITY END   /////////////////////
         /////////////////////////////////////////////////////////

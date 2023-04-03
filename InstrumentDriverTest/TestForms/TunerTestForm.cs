@@ -121,7 +121,6 @@ namespace InstrumentDriverTest.TestForms
             }
 
             tuners.Insert(port-1, tuner);
-            tuner.InitTuner(CtrlDriverBox.Text, TunerCharFileBox.Text, tuners.Count, inputTuner);
             EnableBtns(true);
         }
 
@@ -147,7 +146,6 @@ namespace InstrumentDriverTest.TestForms
                 Complex Z = new Complex(Zreal, Zimag);
                 double freq = double.Parse(FreqBox.Text, CultureInfo.InvariantCulture.NumberFormat);
                 int tunerNumber = TunerSelectCtrlBox.SelectedIndex;
-                tuners.ElementAt(tunerNumber).MoveTunerToImpedance(tunerNumber, Z, freq);
 
             }
             catch (Exception ex)
@@ -167,7 +165,6 @@ namespace InstrumentDriverTest.TestForms
                 Complex gamma = new Complex(gammaReal, gammaImag);
                 double freq = double.Parse(FreqBox.Text, CultureInfo.InvariantCulture.NumberFormat);
                 int tunerNumber = TunerSelectCtrlBox.SelectedIndex;
-                tuners.ElementAt(tunerNumber).MoveTunerToSmithPosition(tunerNumber, gamma, freq);
 
             }
             catch (Exception ex)
@@ -187,7 +184,6 @@ namespace InstrumentDriverTest.TestForms
                 Complex gamma = new Complex(radius*Math.Cos(angle), radius*Math.Sin(angle));
                 double freq = double.Parse(FreqBox.Text, CultureInfo.InvariantCulture.NumberFormat);
                 int tunerNumber = TunerSelectCtrlBox.SelectedIndex;
-                tuners.ElementAt(tunerNumber).MoveTunerToImpedance(tunerNumber, gamma, freq);
 
             }
             catch (Exception ex)
