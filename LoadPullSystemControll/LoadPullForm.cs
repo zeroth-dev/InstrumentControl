@@ -10,6 +10,7 @@ using System.Threading;
 using System.Windows.Forms;
 using InstrumentDriverTest.Instruments;
 using LoadPullSystemControl.Util;
+using System.Threading.Tasks;
 
 namespace LoadPullSystemControl
 {
@@ -27,11 +28,10 @@ namespace LoadPullSystemControl
 
         double inputPower = 0;
 
-        Dictionary<double, List<Complex>> deembeddingDataOut;
-        Dictionary<double, List<Complex>> deembeddingDataIn;
-
-        // Object for running a second thread
-        BackgroundWorker backgroundWorker;
+        Dictionary<(double,string), List<Complex>> deembeddingDataOut = new Dictionary<(double, string), List<Complex>>();
+        Dictionary<(double,string), List<Complex>> deembeddingDataIn = new Dictionary<(double, string), List<Complex>>();
+        CancellationTokenSource tokenSource;
+        CancellationToken token;
 
         public LoadPullForm()
         {
@@ -39,11 +39,8 @@ namespace LoadPullSystemControl
             provider.NumberDecimalSeparator = ".";
             InitFreqBandList();
             InitTunerData();
-            backgroundWorker = new BackgroundWorker();
-            backgroundWorker.ProgressChanged += UpdateProgress;
-            backgroundWorker.RunWorkerCompleted += IterationDone;
-            backgroundWorker.WorkerReportsProgress= true;
-            backgroundWorker.WorkerSupportsCancellation= true;
+            tokenSource= new CancellationTokenSource();
+            token = tokenSource.Token;
         }
 
         /////////////////////////////////////////////////////////
@@ -472,6 +469,7 @@ namespace LoadPullSystemControl
             }
 
         }
+        
         private void SourceLoadPullRadio_CheckedChanged(object sender, EventArgs e)
         {
             if (SourceLoadPullRadio.Checked)
@@ -487,7 +485,7 @@ namespace LoadPullSystemControl
 
         private void StartBtn_Click(object sender, EventArgs e)
         {
-
+            // Setup
             if(dcPowerSupply == null || spectrumAnalyzer == null || tuner == null || rfSource == null)
             {
                 LogText("Please initialise all devices before starting the program");
@@ -517,7 +515,7 @@ namespace LoadPullSystemControl
             {
                 if(OutputDeEmbeddingDataFileBox.Text != "")
                 {
-                    deembeddingDataOut.Add(freq, Utils.GetSParamsFromFile(OutputDeEmbeddingDataFileBox.Text, freq, freqBand));
+                    deembeddingDataOut.Add((freq,freqBand), Utils.GetSParamsFromFile(OutputDeEmbeddingDataFileBox.Text, freq, freqBand));
                 }
 
             }
@@ -525,23 +523,23 @@ namespace LoadPullSystemControl
             dcPowerSupply.TurnOnOff(true);
             rfSource.TurnOnOff(true);
 
-            backgroundWorker.DoWork += (s, args) => IterateThroughSmith(freq, attenuation, filename, freqBand);
-
-            backgroundWorker.RunWorkerAsync();
+            // Start the iteration on a separate thread
+            Task.Factory.StartNew(() =>
+            {
+                IterateThroughSmith(freq, attenuation, filename, freqBand, token);
+            }).ContinueWith(_ => { IterationDone(); });
 
         }
 
-        public void IterateThroughSmith(double freq, double attenuation, string filename, string freqBand)
-        //(object sender, System.ComponentModel.DoWorkEventArgs e)
-        //
+        public void IterateThroughSmith(double freq, double attenuation, string filename, string freqBand, CancellationToken ct)
         {
             int progress = 0;
             for (int i = 0; i < smithPoints.Count; i++)
             {
                 var point = smithPoints.ElementAt(i);
-                if(deembeddingDataOut.ContainsKey(freq))
+                if(deembeddingDataOut.ContainsKey((freq, freqBand)))
                 {
-                    point = ConvertPoint(point, deembeddingDataOut[freq]);
+                    point = ConvertOutputPoint(point, deembeddingDataOut[(freq, freqBand)]);
                 }
                 tuner.MoveTunerToSmithPosition(false, point, freq);
 
@@ -549,7 +547,6 @@ namespace LoadPullSystemControl
                 double secondPwr = spectrumAnalyzer.MeasPeak(2 * freq, freqBand) + attenuation;
                 double thirdPwr = spectrumAnalyzer.MeasPeak(3 * freq, freqBand) + attenuation;
 
-                //Label.Invoke((MethodInvoker)delegate { BaseHarmBox.Text = basePwr.ToString(); });
                 SetText(BaseHarmBox, basePwr.ToString());
                 SetText(ScndHarmBox, secondPwr.ToString());
                 SetText(TrdHarmBox, thirdPwr.ToString());
@@ -560,21 +557,20 @@ namespace LoadPullSystemControl
                 OutputData(filename, point.Real, point.Imaginary, inputPower, basePwr, secondPwr, thirdPwr, Vd, Id);
 
                 progress++;
-                //ProgressLabel.Text = progress + "/" + smithPoints.Count;
-                if (backgroundWorker.CancellationPending)
+                if(ct.IsCancellationRequested)
                 {
-                    backgroundWorker.ReportProgress(progress);
-                    return;
-                }
-                backgroundWorker.ReportProgress(progress);
-                if(progress == smithPoints.Count)
-                {
+                    rfSource.TurnOnOff(false);
+                    dcPowerSupply.TurnOnOff(false);
                     return;
                 }
             }
         }
 
-        
+        private void StopBtn_Click(object sender, EventArgs e)
+        {
+            tokenSource.Cancel();
+        }
+
 
         /////////////////////////////////////////////////////////
         ////////////////////   SMITH END   //////////////////////
@@ -681,29 +677,13 @@ namespace LoadPullSystemControl
             ProgressLabel.Text = String.Format("{0}/{1}", e.ProgressPercentage, smithPoints.Count);
         }
 
-        private void IterationDone(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        private void IterationDone()
         {
-            if (e.Cancelled)
-            {
-                LogText("Process was cancelled");
-                backgroundWorker.CancelAsync();
-            }
-            else if (e.Error != null)
-            {
-               LogText("There was an error running the process. The thread aborted");
-            }
-            else
-            {
-                LogText("Process was completed");
+            LogText("Process was completed");
 
-                rfSource.TurnOnOff(false);
-                dcPowerSupply.TurnOnOff(false);
-            }
-        }
-
-        private void StopBtn_Click(object sender, EventArgs e)
-        {
-            backgroundWorker.CancelAsync();
+            rfSource.TurnOnOff(false);
+            dcPowerSupply.TurnOnOff(false);
+            
         }
 
         private void SetText(Control control, string text)
@@ -715,12 +695,12 @@ namespace LoadPullSystemControl
            control.Text= text;
         }
 
-        private Complex ConvertPoint(Complex point, List<Complex> sParams)
+        private Complex ConvertOutputPoint(Complex point, List<Complex> sParams)
         {
             /* 
              * Assumption for the s-param measurement
              * 
-             *                  s21
+             *                   s21
              *           --->   ------>   ------->
              *                |        / \
              *                |         |
@@ -738,6 +718,7 @@ namespace LoadPullSystemControl
             Complex denominator = sParams[1] * sParams[2] + sParams[3] * (point - sParams[0]);
             return numerator / denominator;
         }
+
         /////////////////////////////////////////////////////////
         ///////////////////   UTILITY END   /////////////////////
         /////////////////////////////////////////////////////////
