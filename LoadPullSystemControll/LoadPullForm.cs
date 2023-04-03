@@ -719,6 +719,29 @@ namespace LoadPullSystemControl
             return numerator / denominator;
         }
 
+        private Complex ConvertInputPoint(Complex point, List<Complex> sParams)
+        {
+            /* 
+             * Assumption for the s-param measurement
+             * 
+             *                   s21
+             *           --->   ------>   ------->
+             *                |        / \
+             *                |         |
+             *  <----     s11 |         |         <----   
+             *      |         |         |s22          | Gamma DUT
+             *      |Gamma    |         |             |
+             *      |tuner   \ /        |
+             *          <----   <------   <------- 
+             *                    s12
+             * 
+             * 
+             */
+
+            Complex numerator = point - sParams[3];
+            Complex denominator = sParams[1] * sParams[2] + sParams[0] * (point - sParams[3]);
+            return numerator / denominator;
+        }
         /////////////////////////////////////////////////////////
         ///////////////////   UTILITY END   /////////////////////
         /////////////////////////////////////////////////////////
