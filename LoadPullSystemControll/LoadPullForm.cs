@@ -574,29 +574,7 @@ namespace LoadPullSystemControl
             }
         }
 
-        private Complex ConvertPoint(Complex point, List<Complex> sParams)
-        {
-            /* 
-             * Assumption for the s-param measurement
-             * 
-             *                  s21
-             *           --->   ------>   ------->
-             *                |        / \
-             *                |         |
-             *  ---->     s11 |         |         ----->   
-             *  |             |         |s22      |   Gamma tuner
-             *  | Gamma       |         |         |
-             *    DUT        \ /        |
-             *          <----   <------   <------- 
-             *                    s12
-             * 
-             * 
-             */
-
-            Complex numerator = point - sParams[0];
-            Complex denominator = sParams[1]*sParams[2]+sParams[3]*(point-sParams[0]);
-            return numerator / denominator;
-        }
+        
 
         /////////////////////////////////////////////////////////
         ////////////////////   SMITH END   //////////////////////
@@ -737,6 +715,29 @@ namespace LoadPullSystemControl
            control.Text= text;
         }
 
+        private Complex ConvertPoint(Complex point, List<Complex> sParams)
+        {
+            /* 
+             * Assumption for the s-param measurement
+             * 
+             *                  s21
+             *           --->   ------>   ------->
+             *                |        / \
+             *                |         |
+             *  ---->     s11 |         |         ----->   
+             *  |             |         |s22      |   Gamma tuner
+             *  | Gamma       |         |         |
+             *    DUT        \ /        |
+             *          <----   <------   <------- 
+             *                    s12
+             * 
+             * 
+             */
+
+            Complex numerator = point - sParams[0];
+            Complex denominator = sParams[1] * sParams[2] + sParams[3] * (point - sParams[0]);
+            return numerator / denominator;
+        }
         /////////////////////////////////////////////////////////
         ///////////////////   UTILITY END   /////////////////////
         /////////////////////////////////////////////////////////
