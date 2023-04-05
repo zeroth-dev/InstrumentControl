@@ -56,8 +56,8 @@ namespace InstrumentDriverTest.Instruments
              * C takes a character array (char[] in C#) as the input instead of a string
              * so you will see a cast to char array being done when calling the tuner functions
              * 
-             * The problem is that C determines that the string is terminated by it ending with a '\0' character
-             * This character does NOT exist in C# strings as the language works differently.
+             * The problem is that C determines when the string is terminated by it ending with a '\0' character
+             * This character is NOT used in C# strings as the language works differently.
              * To avoid errors, and allow the dll file to properly function, it is neccessary to add '\0' to each
              * string being passed to the dll functions.
              * 
@@ -184,7 +184,7 @@ namespace InstrumentDriverTest.Instruments
         /// <param name="freq"></param>
         /// <returns>carriage, p1 and p2 positions for the tuner</returns>
         /// <exception cref="Exception">Throws Exception if an error occurs inside the tuner function</exception>
-        public (int, int, int) GetTunerPositionForReflection(short tunerNumber, Complex reflection, double freq)
+        private (int, int, int) GetTunerPositionForReflection(short tunerNumber, Complex reflection, double freq)
         {
             int carr = 0;
             int p1 = 0;
