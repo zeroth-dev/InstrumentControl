@@ -338,7 +338,10 @@ namespace LoadPullSystemControl
                 double freq = double.Parse(FreqBox.Text, CultureInfo.InvariantCulture.NumberFormat);
 
                 bool inputTuner = TunerSelectCtrlBox.SelectedIndex == 0 ? true : false;
-                tuner.MoveTunerToImpedance(inputTuner, Z, freq);
+
+                Complex Z0 = new Complex(50, 0);
+                Complex gamma = (Z - Z0) / (Z + Z0);
+                MoveTunerToReflection(inputTuner, gamma, freq, UseDeembeddingCheck.Checked);
 
             }
             catch (Exception ex)
@@ -358,7 +361,7 @@ namespace LoadPullSystemControl
                 double freq = double.Parse(FreqBox.Text, provider);
 
                 bool inputTuner = TunerSelectCtrlBox.SelectedIndex == 0 ? true : false;
-                tuner.MoveTunerToSmithPosition(inputTuner, gamma, freq);
+                MoveTunerToReflection(inputTuner, gamma, freq, UseDeembeddingCheck.Checked);
 
             }
             catch (Exception ex)
@@ -377,7 +380,7 @@ namespace LoadPullSystemControl
                 double freq = double.Parse(FreqBox.Text, CultureInfo.InvariantCulture.NumberFormat);
 
                 bool inputTuner = TunerSelectCtrlBox.SelectedIndex == 0 ? true : false;
-                tuner.MoveTunerToImpedance(inputTuner, gamma, freq);
+                MoveTunerToReflection(inputTuner, gamma, freq, UseDeembeddingCheck.Checked);
 
             }
             catch (Exception ex)
@@ -388,9 +391,25 @@ namespace LoadPullSystemControl
 
         }
 
-        private void MoveTunerToReflection(bool inputTuner, Complex reflection)
+        private void MoveTunerToReflection(bool inputTuner, Complex reflection, double freq, bool useDeembedding = true)
         {
+            if(inputTuner)
+            {
+                if(useDeembedding && deembeddingDataIn.ContainsKey((freq, "GHz")))
+                {
+                    reflection = ConvertInputPoint(reflection, deembeddingDataIn[(freq, "GHz")]);
+                }
+                tuner.MoveTunerToSmithPosition(inputTuner, reflection, freq);
+            }
+            else
+            {
+                if (useDeembedding && deembeddingDataOut.ContainsKey((freq, "GHz")))
+                {
+                    reflection = ConvertOutputPoint(reflection, deembeddingDataIn[(freq, "GHz")]);
+                }
+                tuner.MoveTunerToSmithPosition(inputTuner, reflection, freq);
 
+            }
         }
 
         private void InitTunerData()
@@ -439,7 +458,9 @@ namespace LoadPullSystemControl
                 openFileDialog.Title = "De-embedding data";
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    InputDeEmbeddingDataFileBox.Text = openFileDialog.FileName;
+                    double freq = double.Parse(CWFreqBox.Text, provider);
+                    var data = Utils.GetSParamsFromFile(openFileDialog.FileName, freq, "GHz");
+                    deembeddingDataIn.Add((freq, "GHz"), data);
                 }
             }
         }
@@ -451,7 +472,9 @@ namespace LoadPullSystemControl
                 openFileDialog.Title = "De-embedding data";
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    OutputDeEmbeddingDataFileBox.Text = openFileDialog.FileName;
+                    double freq = double.Parse(CWFreqBox.Text, provider);
+                    var data = Utils.GetSParamsFromFile(openFileDialog.FileName, freq, "GHz");
+                    deembeddingDataOut.Add((freq, "GHz"), data);
                 }
             }
 
@@ -494,24 +517,6 @@ namespace LoadPullSystemControl
             double attenuation = double.Parse(AttBox.Text, provider);
             string freqBand = FreqBandBox.Text;
 
-            if (UseDeembeddingCheck.Checked)
-            {
-                if (LoadPullRadio.Checked && OutputDeEmbeddingDataFileBox.Text != "")
-                {
-                    deembeddingDataOut.Add((freq, freqBand), Utils.GetSParamsFromFile(OutputDeEmbeddingDataFileBox.Text, freq, freqBand));
-                }
-                else if (SourcePullRadio.Checked && InputDeEmbeddingDataFileBox.Text != "")
-                {
-                    deembeddingDataIn.Add((freq, freqBand), Utils.GetSParamsFromFile(InputDeEmbeddingDataFileBox.Text, freq, freqBand));
-                }
-                else if (SourceLoadPullRadio.Checked && InputDeEmbeddingDataFileBox.Text != "" && OutputDeEmbeddingDataFileBox.Text != "")
-                {
-                    deembeddingDataOut.Add((freq, freqBand), Utils.GetSParamsFromFile(OutputDeEmbeddingDataFileBox.Text, freq, freqBand));
-                    deembeddingDataIn.Add((freq, freqBand), Utils.GetSParamsFromFile(InputDeEmbeddingDataFileBox.Text, freq, freqBand));
-                }
-            }
-
-
             dcPowerSupply.TurnOnOff(true);
             rfSource.TurnOnOff(true);
 
@@ -524,7 +529,8 @@ namespace LoadPullSystemControl
                 }
                 Task.Factory.StartNew(() =>
                 {
-                    IterateThroughSmithSingle(freq, attenuation, filename, freqBand, SourcePullRadio.Checked, token);
+                    IterateThroughSmithSingle(freq, attenuation, filename, freqBand, 
+                                                SourcePullRadio.Checked, UseDeembeddingCheck.Checked, token);
                 }).ContinueWith(_ => { IterationDone(); });
             }
             else if (SourceLoadPullRadio.Checked)
@@ -533,28 +539,24 @@ namespace LoadPullSystemControl
                 {
                     sw.WriteLine("gammaInX, gammaInY, gammaOutX, gammaOutY, Pin, Pout1, Pout2, Pout3, Vd, Id");
                 }
+                Task.Factory.StartNew(() =>
+                {
+                    IterateThroughSmithDouble(freq, attenuation, filename, freqBand,
+                                                UseDeembeddingCheck.Checked, token);
+                }).ContinueWith(_ => { IterationDone(); });
             }
 
         }
 
         public void IterateThroughSmithSingle(double freq, double attenuation, string filename,
-                                        string freqBand, bool inputSweep, CancellationToken ct)
+                                        string freqBand, bool inputSweep, bool useDeembedding, CancellationToken ct)
         {
             int progress = 0;
             for (int i = 0; i < smithPoints.Count; i++)
             {
                 var point = smithPoints.ElementAt(i);
-                // Check if input tuner sweeping or output tuner sweeping is being done
-                // and de-embed data accordingly if the de-embedding data exists
-                if (!inputSweep && deembeddingDataOut.ContainsKey((freq, freqBand)))
-                {
-                    point = ConvertInputPoint(point, deembeddingDataOut[(freq, freqBand)]);
-                }
-                if (inputSweep && deembeddingDataIn.ContainsKey((freq, freqBand)))
-                {
-                    point = ConvertOutputPoint(point, deembeddingDataIn[(freq, freqBand)]);
-                }
-                tuner.MoveTunerToSmithPosition(inputSweep, point, freq);
+
+                MoveTunerToReflection(inputSweep, point, freq, useDeembedding);
 
                 // Read three harmonics of the output signal and the power supply readings
                 double basePwr, secondPwr, thirdPwr, Vd, Id;
@@ -573,7 +575,7 @@ namespace LoadPullSystemControl
 
 
         public void IterateThroughSmithDouble(double freq, double attenuation, string filename,
-                                        string freqBand, CancellationToken ct)
+                                        string freqBand, bool useDeembedding,  CancellationToken ct)
         {
             int progress = 0;
 
@@ -581,21 +583,12 @@ namespace LoadPullSystemControl
             {
                 // Set and de-embed a point for the input tuner
                 var inputPoint = smithPoints.ElementAt(i);
-                if (deembeddingDataIn.ContainsKey((freq, freqBand)))
-                {
-                    inputPoint = ConvertInputPoint(inputPoint, deembeddingDataOut[(freq, freqBand)]);
-                }
-                tuner.MoveTunerToSmithPosition(false, inputPoint, freq);
+                MoveTunerToReflection(true, inputPoint, freq);
 
                 for (int j = 0; i < smithPoints.Count; j++)
                 {
-                    // Set and de-embed point for the output tuner
                     var outputPoint = smithPoints.ElementAt(i);
-                    if (deembeddingDataOut.ContainsKey((freq, freqBand)))
-                    {
-                        outputPoint = ConvertOutputPoint(outputPoint, deembeddingDataOut[(freq, freqBand)]);
-                    }
-                    tuner.MoveTunerToSmithPosition(false, outputPoint, freq);
+                    MoveTunerToReflection(true, outputPoint, freq);
 
                     // Read three harmonics of the output signal and the power supply readings
                     double basePwr, secondPwr, thirdPwr, Vd, Id;
@@ -862,8 +855,6 @@ namespace LoadPullSystemControl
                 sw.WriteLine("DriverPath=" + CtrlDriverBox.Text);
                 sw.WriteLine("InputTunerCharFile=" + InTunerCharFileBox.Text);
                 sw.WriteLine("OutputTunerCharFile=" + OutTunerCharFileBox.Text);
-                sw.WriteLine("InputDeEmbeddingFile=" + InputDeEmbeddingDataFileBox.Text);
-                sw.WriteLine("OutputDeEmbeddingFile=" + OutputDeEmbeddingDataFileBox.Text);
             }
         }
 
@@ -937,10 +928,6 @@ namespace LoadPullSystemControl
                     InTunerCharFileBox.Text = data[1]; break;
                 case "OutputTunerCharFile":
                     OutTunerCharFileBox.Text = data[1]; break;
-                case "InputDeEmbeddingFile":
-                    InputDeEmbeddingDataFileBox.Text = data[1]; break;
-                case "OutputDeEmbeddingFile":
-                    OutputDeEmbeddingDataFileBox.Text = data[1]; break;
                 default: break;
             }
         }

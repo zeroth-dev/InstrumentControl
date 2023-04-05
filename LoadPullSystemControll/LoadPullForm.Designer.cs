@@ -103,13 +103,9 @@
             this.LoadPullRadio = new System.Windows.Forms.RadioButton();
             this.SourceLoadPullRadio = new System.Windows.Forms.RadioButton();
             this.SourcePullRadio = new System.Windows.Forms.RadioButton();
-            this.label46 = new System.Windows.Forms.Label();
-            this.label37 = new System.Windows.Forms.Label();
             this.BrowseOutDeEmbeddingDataBtn = new System.Windows.Forms.Button();
-            this.OutputDeEmbeddingDataFileBox = new System.Windows.Forms.TextBox();
             this.BrowseInputDeEmbeddingDataBtn = new System.Windows.Forms.Button();
             this.UseDeembeddingCheck = new System.Windows.Forms.CheckBox();
-            this.InputDeEmbeddingDataFileBox = new System.Windows.Forms.TextBox();
             this.StopBtn = new System.Windows.Forms.Button();
             this.label40 = new System.Windows.Forms.Label();
             this.FileNameBox = new System.Windows.Forms.TextBox();
@@ -790,13 +786,9 @@
             // 
             this.groupBox14.Controls.Add(this.SweepChoicePanel);
             this.groupBox14.Controls.Add(this.panel1);
-            this.groupBox14.Controls.Add(this.label46);
-            this.groupBox14.Controls.Add(this.label37);
             this.groupBox14.Controls.Add(this.BrowseOutDeEmbeddingDataBtn);
-            this.groupBox14.Controls.Add(this.OutputDeEmbeddingDataFileBox);
             this.groupBox14.Controls.Add(this.BrowseInputDeEmbeddingDataBtn);
             this.groupBox14.Controls.Add(this.UseDeembeddingCheck);
-            this.groupBox14.Controls.Add(this.InputDeEmbeddingDataFileBox);
             this.groupBox14.Controls.Add(this.StopBtn);
             this.groupBox14.Controls.Add(this.label40);
             this.groupBox14.Controls.Add(this.FileNameBox);
@@ -927,48 +919,23 @@
             this.SourcePullRadio.Text = "Source pull";
             this.SourcePullRadio.UseVisualStyleBackColor = true;
             // 
-            // label46
-            // 
-            this.label46.AutoSize = true;
-            this.label46.Location = new System.Drawing.Point(6, 331);
-            this.label46.Name = "label46";
-            this.label46.Size = new System.Drawing.Size(66, 13);
-            this.label46.TabIndex = 24;
-            this.label46.Text = "Output tuner";
-            // 
-            // label37
-            // 
-            this.label37.AutoSize = true;
-            this.label37.Location = new System.Drawing.Point(9, 302);
-            this.label37.Name = "label37";
-            this.label37.Size = new System.Drawing.Size(58, 13);
-            this.label37.TabIndex = 24;
-            this.label37.Text = "Input tuner";
-            // 
             // BrowseOutDeEmbeddingDataBtn
             // 
-            this.BrowseOutDeEmbeddingDataBtn.Location = new System.Drawing.Point(360, 326);
+            this.BrowseOutDeEmbeddingDataBtn.Location = new System.Drawing.Point(10, 331);
             this.BrowseOutDeEmbeddingDataBtn.Name = "BrowseOutDeEmbeddingDataBtn";
-            this.BrowseOutDeEmbeddingDataBtn.Size = new System.Drawing.Size(75, 23);
+            this.BrowseOutDeEmbeddingDataBtn.Size = new System.Drawing.Size(139, 23);
             this.BrowseOutDeEmbeddingDataBtn.TabIndex = 26;
-            this.BrowseOutDeEmbeddingDataBtn.Text = "Browse";
+            this.BrowseOutDeEmbeddingDataBtn.Text = "Load output s-parameters";
             this.BrowseOutDeEmbeddingDataBtn.UseVisualStyleBackColor = true;
             this.BrowseOutDeEmbeddingDataBtn.Click += new System.EventHandler(this.BrowseOutDeEmbeddingDataBtn_Click);
             // 
-            // OutputDeEmbeddingDataFileBox
-            // 
-            this.OutputDeEmbeddingDataFileBox.Location = new System.Drawing.Point(82, 328);
-            this.OutputDeEmbeddingDataFileBox.Name = "OutputDeEmbeddingDataFileBox";
-            this.OutputDeEmbeddingDataFileBox.Size = new System.Drawing.Size(272, 20);
-            this.OutputDeEmbeddingDataFileBox.TabIndex = 27;
-            // 
             // BrowseInputDeEmbeddingDataBtn
             // 
-            this.BrowseInputDeEmbeddingDataBtn.Location = new System.Drawing.Point(360, 297);
+            this.BrowseInputDeEmbeddingDataBtn.Location = new System.Drawing.Point(10, 302);
             this.BrowseInputDeEmbeddingDataBtn.Name = "BrowseInputDeEmbeddingDataBtn";
-            this.BrowseInputDeEmbeddingDataBtn.Size = new System.Drawing.Size(75, 23);
+            this.BrowseInputDeEmbeddingDataBtn.Size = new System.Drawing.Size(139, 23);
             this.BrowseInputDeEmbeddingDataBtn.TabIndex = 24;
-            this.BrowseInputDeEmbeddingDataBtn.Text = "Browse";
+            this.BrowseInputDeEmbeddingDataBtn.Text = "Load input s-parameters";
             this.BrowseInputDeEmbeddingDataBtn.UseVisualStyleBackColor = true;
             this.BrowseInputDeEmbeddingDataBtn.Click += new System.EventHandler(this.BrowseInputDeEmbeddingDataBtn_Click);
             // 
@@ -981,13 +948,6 @@
             this.UseDeembeddingCheck.TabIndex = 25;
             this.UseDeembeddingCheck.Text = "Use de-embedding data";
             this.UseDeembeddingCheck.UseVisualStyleBackColor = true;
-            // 
-            // InputDeEmbeddingDataFileBox
-            // 
-            this.InputDeEmbeddingDataFileBox.Location = new System.Drawing.Point(82, 299);
-            this.InputDeEmbeddingDataFileBox.Name = "InputDeEmbeddingDataFileBox";
-            this.InputDeEmbeddingDataFileBox.Size = new System.Drawing.Size(272, 20);
-            this.InputDeEmbeddingDataFileBox.TabIndex = 25;
             // 
             // StopBtn
             // 
@@ -1559,11 +1519,7 @@
         private System.Windows.Forms.Button StopBtn;
         private System.Windows.Forms.Button BrowseInputDeEmbeddingDataBtn;
         private System.Windows.Forms.CheckBox UseDeembeddingCheck;
-        private System.Windows.Forms.TextBox InputDeEmbeddingDataFileBox;
-        private System.Windows.Forms.Label label37;
         private System.Windows.Forms.Button BrowseOutDeEmbeddingDataBtn;
-        private System.Windows.Forms.TextBox OutputDeEmbeddingDataFileBox;
-        private System.Windows.Forms.Label label46;
         private System.Windows.Forms.RadioButton SourceLoadPullRadio;
         private System.Windows.Forms.RadioButton SourcePullRadio;
         private System.Windows.Forms.RadioButton LoadPullRadio;
