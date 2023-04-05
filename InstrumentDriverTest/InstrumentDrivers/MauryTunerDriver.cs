@@ -31,13 +31,7 @@ namespace InstrumentDriverTest.Instruments
         string outTunerCharFilePath;
         string ctrlDriverPath;
 
-        string tunerExeFilePath;
 
-        string inTunerArguments = "";
-        string outTunerArguments = "";
-
-        // Checks if tuner controller was already initialised
-        private static bool ctrlInitialised = false;
         public MauryTunerDriver(short gpibAddress, string driverPath,string inTunerCharFilePath, string outTunerCharFilePath)
         {
 
@@ -76,15 +70,18 @@ namespace InstrumentDriverTest.Instruments
 
 
             // Add the input tuner and initialize it
-            int err_code = 0;
+            int err_code;
             char[] error_string = new char[1000];
 
             err_code = MauryTunerFunctions.add_tuner_ex(0, this.ctrlDriverPath.ToCharArray(), tunerModel.ToCharArray(), 1331, gpibAddress, error_string);
             if (err_code != 0) throw new Exception(new string(error_string));
+
             err_code = MauryTunerFunctions.read_tuner_data_file(0, this.inTunerCharFilePath.ToCharArray(), tunerModel.ToCharArray(), error_string);
             if (err_code != 0) throw new Exception(new string(error_string));
+
             err_code = MauryTunerFunctions.add_controller_ex(0, ctrlModel.ToCharArray(), 0, 1, 0, gpibAddress, 0, (short)2048, error_string);
             if (err_code != 0) throw new Exception(new string(error_string));
+
             err_code = MauryTunerFunctions.init_tuners(error_string);
             if (err_code != 0) throw new Exception(new string(error_string));
 
@@ -95,18 +92,23 @@ namespace InstrumentDriverTest.Instruments
 
             err_code = MauryTunerFunctions.add_tuner_ex(0, this.ctrlDriverPath.ToCharArray(), tunerModel.ToCharArray(), 1333, gpibAddress, error_string);
             if (err_code != 0) throw new Exception(new string(error_string));
+
             err_code = MauryTunerFunctions.read_tuner_data_file(0, this.outTunerCharFilePath.ToCharArray(), tunerModel.ToCharArray(), error_string);
             if (err_code != 0) throw new Exception(new string(error_string));
+
             err_code = MauryTunerFunctions.add_controller_ex(0, ctrlModel.ToCharArray(), 0, 2, 0, gpibAddress, 0, (short)2048, error_string);
             if (err_code != 0) throw new Exception(new string(error_string));
+
             err_code = MauryTunerFunctions.init_tuners(error_string);
             if (err_code != 0) throw new Exception(new string(error_string));
 
             // Re-add the input tuner, it doesn't need to be reinitialised again
             err_code = MauryTunerFunctions.add_tuner_ex(1, this.ctrlDriverPath.ToCharArray(), tunerModel.ToCharArray(), 1331, gpibAddress, error_string);
             if (err_code != 0) throw new Exception(new string(error_string));
+
             err_code = MauryTunerFunctions.read_tuner_data_file(1, this.inTunerCharFilePath.ToCharArray(), tunerModel.ToCharArray(), error_string);
             if (err_code != 0) throw new Exception(new string(error_string));
+
             err_code = MauryTunerFunctions.add_controller_ex(1, ctrlModel.ToCharArray(), 0, 1, 0, gpibAddress, 0, (short)2048, error_string);
             if (err_code != 0) throw new Exception(new string(error_string));
 
@@ -174,6 +176,14 @@ namespace InstrumentDriverTest.Instruments
 
         }
 
+        /// <summary>
+        /// Get the position for the tuner motors for the wanted reflection at specified frequency
+        /// </summary>
+        /// <param name="tunerNumber"></param>
+        /// <param name="reflection"></param>
+        /// <param name="freq"></param>
+        /// <returns>carriage, p1 and p2 positions for the tuner</returns>
+        /// <exception cref="Exception">Throws Exception if an error occurs inside the tuner function</exception>
         public (int, int, int) GetTunerPositionForReflection(short tunerNumber, Complex reflection, double freq)
         {
             int carr = 0;
@@ -200,6 +210,14 @@ namespace InstrumentDriverTest.Instruments
             return (carr, p1, p2);
         }
 
+        /// <summary>
+        /// Returns the s parameters for the 3 harmonics for the tuner in the current position.
+        /// </summary>
+        /// <param name="inputTuner">true if getting s-parameters for the input tuner, false otherwise</param>
+        /// <param name="freq">Frequency of operation</param>
+        /// <returns>Dictionary where key is the s-parameter string (ex. "s11") and the value is the three s-parameters
+        ///          one per harmonic</returns>
+        /// <exception cref="Exception">Throws Exception if an error occurs inside the tuner function</exception>
         public Dictionary<string, List<Complex>> GetTunerSParams(bool inputTuner, double freq)
         {
             // Tuner number is 0 for output tuner and 1 for input tuner

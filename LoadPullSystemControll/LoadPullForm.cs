@@ -316,9 +316,17 @@ namespace LoadPullSystemControl
                 return;
             }
 
+            if(TunerInstrumentList.Text == "")
+            {
+                LogText("Please select the gpib address for the tuner controller");
+                return;
+            }
+
             try
             {
-                tuner = new MauryTunerDriver(3, CtrlDriverBox.Text, InTunerCharFileBox.Text, OutTunerCharFileBox.Text);
+                var split = TunerInstrumentList.Text.Split(':');
+                short gpibAddress = short.Parse(split[1]);
+                tuner = new MauryTunerDriver(gpibAddress, CtrlDriverBox.Text, InTunerCharFileBox.Text, OutTunerCharFileBox.Text);
             }
             catch (Exception ex)
             {
