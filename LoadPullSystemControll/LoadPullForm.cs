@@ -324,24 +324,26 @@ namespace LoadPullSystemControl
             //int serial = inputTuner ? 1331 : 1333;
             //int port = inputTuner ? 1 : 2;
 
+            if(OutTunerCharFileBox.Text == "" || InTunerCharFileBox.Text == "")
+            {
+                LogText("Please set both input and output characterization files");
+                return;
+            }
+
+            if(CtrlDriverBox.Text == "")
+            {
+                LogText("Please set location of the controller driver");
+                return;
+            }
+
             try
             {
-
-
-                if (ExeFilePathBox.Text.Length == 0)
-                {
-                    tuner = new MauryTunerDriver(0, 0, (short)1333, 2048, 3, 3);
-                }
-                else
-                {
-                    tuner = new MauryTunerDriver(0, 0, (short)1333, 2048, 3, 3, ExeFilePathBox.Text);
-                }
+                tuner = new MauryTunerDriver(3, CtrlDriverBox.Text, InTunerCharFileBox.Text, OutTunerCharFileBox.Text);
             }
             catch(Exception ex)
             {
                 LogText(ex.Message);
             }
-            tuner.InitTuner(CtrlDriverBox.Text, OutTunerCharFileBox.Text, InTunerCharFileBox.Text);
             StartBtn.Enabled = true;
         }
 
@@ -369,10 +371,10 @@ namespace LoadPullSystemControl
         {
             try
             {
-                double gammaReal = double.Parse(GammaRealBox.Text, CultureInfo.InvariantCulture.NumberFormat);
-                double gammaImag = double.Parse(GammaImagBox.Text, CultureInfo.InvariantCulture.NumberFormat);
+                double gammaReal = double.Parse(GammaRealBox.Text,provider);
+                double gammaImag = double.Parse(GammaImagBox.Text, provider);
                 Complex gamma = new Complex(gammaReal, gammaImag);
-                double freq = double.Parse(FreqBox.Text, CultureInfo.InvariantCulture.NumberFormat);
+                double freq = double.Parse(FreqBox.Text,provider);
 
                 bool inputTuner = TunerSelectCtrlBox.SelectedIndex == 0 ? true : false;
                 tuner.MoveTunerToSmithPosition(inputTuner, gamma, freq);
@@ -414,7 +416,7 @@ namespace LoadPullSystemControl
 
             CtrlDriverBox.Text = "C:\\Users\\korisnik\\Desktop\\Maury\\MLibV04\\Drivers\\Tun986.dll";
             OutTunerCharFileBox.Text = "C:\\Users\\korisnik\\Downloads\\Tuner files\\to send\\to send\\karakterizacija_fund_2400MHz_all.tun";
-            InTunerCharFileBox.Text = "Idk...";
+            InTunerCharFileBox.Text = "C:\\Users\\korisnik\\Downloads\\Tuner files\\to send\\to send\\load_pull_source_2_4_GHz_DEE.tun";
 
             TunerSelectCtrlBox.Items.Add("Input tuner");
             TunerSelectCtrlBox.Items.Add("Output tuner");
@@ -670,6 +672,7 @@ namespace LoadPullSystemControl
                 Invoke(new Action<string>(LogText), msg);
             }
             LogBox.AppendText(msg + Environment.NewLine);
+            LogBox.AppendText("\n");
         }
 
         private void UpdateProgress(object sender, System.ComponentModel.ProgressChangedEventArgs e)

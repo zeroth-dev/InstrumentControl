@@ -27,6 +27,7 @@ namespace InstrumentDriverTest.Instruments
         string tunerModel;
         private string ctrlModel;
 
+        string inTunerCharFilePath;
         string outTunerCharFilePath;
         string ctrlDriverPath;
 
@@ -37,55 +38,80 @@ namespace InstrumentDriverTest.Instruments
 
         // Checks if tuner controller was already initialised
         private static bool ctrlInitialised = false;
-        public MauryTunerDriver(short tunerNumber, short controllerNumber, short serial, short ctrlSerial,
-                            short ctrlPort, short gpibAddress, string tunerExeFilePath = "CppDllTest.exe")
+        public MauryTunerDriver(short gpibAddress, string driverPath,string inTunerCharFilePath, string outTunerCharFilePath)
         {
-            // Leaving all the port and controller initialisation in case someone figures out 
-            // how to use dlls in c# properly without errors.
-            this.tunerNumber = tunerNumber;
-            this.controllerNumber = controllerNumber;
-            this.serial = serial;
-            this.controllerPort = ctrlPort;
+
+            if (!File.Exists(driverPath))
+            {
+                throw new Exception("Driver file not found");
+            }
+            if (!File.Exists(inTunerCharFilePath))
+            {
+                throw new Exception("Input tuner characerization file not found");
+            }
+            if (!File.Exists(outTunerCharFilePath))
+            {
+                throw new Exception("Input tuner characerization file not found");
+            }
+
             this.gpibAddress = gpibAddress;
-            this.ctrlSerial = ctrlSerial;
-            if (!File.Exists(tunerExeFilePath))
+            this.tunerModel = "MT982EU30\0";
+            this.ctrlModel = "MT986B02\0";
+            this.ctrlDriverPath = driverPath + "\0";
+            this.inTunerCharFilePath = inTunerCharFilePath + "\0";
+            this.outTunerCharFilePath = outTunerCharFilePath + "\0";
 
+
+            // Add the input tuner and initialize it
+            int err_code = 0;
+            char[] error_string = new char[1000];
+
+            err_code = MauryTunerFunctions.add_tuner_ex(0, this.ctrlDriverPath.ToCharArray(), tunerModel.ToCharArray(), 1331, gpibAddress, error_string);
+            if (err_code != 0) throw new Exception(new string(error_string));
+            err_code = MauryTunerFunctions.read_tuner_data_file(0, this.inTunerCharFilePath.ToCharArray(), tunerModel.ToCharArray(), error_string);
+            if (err_code != 0) throw new Exception(new string(error_string));
+            err_code = MauryTunerFunctions.add_controller_ex(0, ctrlModel.ToCharArray(), 0, 1, 0, gpibAddress, 0, (short)2048, error_string);
+            if (err_code != 0) throw new Exception(new string(error_string));
+            err_code = MauryTunerFunctions.init_tuners(error_string);
+            if (err_code != 0) throw new Exception(new string(error_string));
+
+            // Remove the first tuner and add the output tuner and initialize it
+
+            err_code = MauryTunerFunctions.delete_tuner_ex(0, error_string);
+            if (err_code != 0) throw new Exception(new string(error_string));
+
+            err_code = MauryTunerFunctions.add_tuner_ex(0, this.ctrlDriverPath.ToCharArray(), tunerModel.ToCharArray(), 1333, gpibAddress, error_string);
+            if (err_code != 0) throw new Exception(new string(error_string));
+            err_code = MauryTunerFunctions.read_tuner_data_file(0, this.outTunerCharFilePath.ToCharArray(), tunerModel.ToCharArray(), error_string);
+            if (err_code != 0) throw new Exception(new string(error_string));
+            err_code = MauryTunerFunctions.add_controller_ex(0, ctrlModel.ToCharArray(), 0, 2, 0, gpibAddress, 0, (short)2048, error_string);
+            if (err_code != 0) throw new Exception(new string(error_string));
+            err_code = MauryTunerFunctions.init_tuners(error_string);
+            if (err_code != 0) throw new Exception(new string(error_string));
+
+            // Re-add the input tuner, it doesn't need to be reinitialised again
+            err_code = MauryTunerFunctions.add_tuner_ex(1, this.ctrlDriverPath.ToCharArray(), tunerModel.ToCharArray(), 1331, gpibAddress, error_string);
+            if (err_code != 0) throw new Exception(new string(error_string));
+            err_code = MauryTunerFunctions.read_tuner_data_file(1, this.inTunerCharFilePath.ToCharArray(), tunerModel.ToCharArray(), error_string);
+            if (err_code != 0) throw new Exception(new string(error_string));
+            err_code = MauryTunerFunctions.add_controller_ex(1, ctrlModel.ToCharArray(), 0, 1, 0, gpibAddress, 0, (short)2048, error_string);
+            if (err_code != 0) throw new Exception(new string(error_string));
+
+            // Move tuners to 0 reflection or 50 ohms
+
+            try
             {
-                throw new Exception("Executable file could not be found");
+                MoveTunerToSmithPosition(true, new Complex(0, 0), 2.4);
+                MoveTunerToSmithPosition(false, new Complex(0, 0), 2.4);
             }
-            this.tunerExeFilePath = tunerExeFilePath;
-
-        }
-
-        /// <summary>
-        /// Sets the executable arguments for the input and output tuner
-        /// </summary>
-        /// <param name="ctrlDriverPath">Path to the controller driver</param>
-        /// <param name="outTunerCharFilePath">Path to the output tuner characterization file</param>
-        /// <param name="inTunerCharFilePath">Path to the input tuner characterization file</param>
-        public void InitTuner(string ctrlDriverPath, string outTunerCharFilePath, string inTunerCharFilePath)
-        {
-
-            this.ctrlDriverPath = ctrlDriverPath;
-            this.outTunerCharFilePath = outTunerCharFilePath;
-            string baseArguments = String.Format("init \"{0}\" {1} ", ctrlDriverPath, gpibAddress);
-
-            // Tuner number is always 0 because we are only moving only a single tuner at the time
-            string secondArgs;
-            if (inTunerCharFilePath.Length > 0)
+            catch (Exception e)
             {
-                secondArgs = String.Format("\"{0}\" {1} {2}", inTunerCharFilePath, 0, 1);
-                this.inTunerArguments = baseArguments + secondArgs;
+                throw e;
             }
-            secondArgs = String.Format("\"{0}\" {1} {2}", outTunerCharFilePath, 0, 0);
-            this.outTunerArguments = baseArguments + secondArgs;
-        }
 
-        public void DeinitTuner()
-        {
-            throw new NotImplementedException();
 
         }
+
 
         /// <summary>
         /// Moves the tuner to the specified impedance
@@ -113,46 +139,47 @@ namespace InstrumentDriverTest.Instruments
         /// <param name="freq">Frequency for which the tuner is moving</param>
         public void MoveTunerToSmithPosition(bool inputTuner, Complex reflection, double freq)
         {
-            string arguments;
-            if (inputTuner)
+            // Tuner number is 0 for output tuner and 1 for input tuner
+            short tunerNumber = (short)(inputTuner ? 1 : 0);
+
+            char[] error_string = new char[1000];
+
+            int carr, p1, p2;
+            try
             {
-                arguments = inTunerArguments;
+                (carr, p1, p2) = GetTunerPositionForReflection(tunerNumber, reflection, freq);
             }
-            else
+            catch (Exception e) 
             {
-                arguments = outTunerArguments;
+                throw e;
             }
-            string finalArguments = String.Format("{0} {1} {2} {3} {4}", arguments, reflection.Real, reflection.Imaginary,
-                                                                        freq.ToString(CultureInfo.InvariantCulture.NumberFormat), 0);
-            RunProcess(tunerExeFilePath, finalArguments);
+            int err_code = MauryTunerFunctions.move_tuner(tunerNumber, carr, p1, p2, error_string); 
+            if (err_code != 0) throw new Exception(new string(error_string));
+
         }
 
-        /// <summary>
-        /// Utility method that runs the executable for controlling the tuner
-        /// </summary>
-        /// <param name="path">Path to the executable</param>
-        /// <param name="arguments">Arguments whith which the executable is run</param>
-        /// <returns></returns>
-        private string RunProcess(string path, string arguments)
+        public (int, int, int) GetTunerPositionForReflection(short tunerNumber, Complex reflection, double freq)
         {
-            // Get the standard output from the process
-            string output = "";
-            using (Process p = new Process())
-            {
-                p.StartInfo.FileName = path;
 
-                p.StartInfo.Arguments = arguments;
-                p.StartInfo.RedirectStandardOutput = true;
-                p.StartInfo.UseShellExecute = false;
-                p.Start();
+            int carr = 0;
+            int p1 = 0;
+            int p2 = 0;
+            double[] s11_x = new double[10];
+            double[] s11_y = new double[10];
+            double[] s21_x = new double[10];
+            double[] s21_y = new double[10];
+            double[] s12_x = new double[10];
+            double[] s12_y = new double[10];
+            double[] s22_x = new double[10];
+            double[] s22_y = new double[10];
+            char[] error_string = new char[1000];
 
-                while (!p.StandardOutput.EndOfStream)
-                {
-                    output += p.StandardOutput.ReadLine() + Environment.NewLine;
-                }
-            }
-            return output;
+            int err_code = MauryTunerFunctions.get_tuner_refl_data(tunerNumber,0, freq, 0, 0, reflection.Real, reflection.Imaginary, 
+                                                                    ref carr, ref p1, ref p2, s11_x, s11_y, s21_x, s21_y, s12_x, s12_y, s22_x, s22_y, error_string);
+            if (err_code != 0) throw new Exception(new string(error_string));
 
+            return (carr, p1, p2);
         }
+
     }
 }

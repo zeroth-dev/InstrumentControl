@@ -106,22 +106,6 @@ namespace InstrumentDriverTest.TestForms
 
         private void InitBtn_Click(object sender, EventArgs e)
         {
-            bool inputTuner = TunerSelectBox.Text == "Input tuner";
-            int serial = inputTuner ? 1331 : 1333;
-            int port = inputTuner ? 1 : 2;
-
-            MauryTunerDriver tuner;
-            if (ExeFilePathBox.Text.Length==0)
-            {
-                tuner = new MauryTunerDriver((short)(port-1), 0, (short)serial, 2048, 3, 3);
-            }
-            else
-            {
-                tuner = new MauryTunerDriver((short)(port-1), 0, (short)serial, 2048, 3, 3, ExeFilePathBox.Text);
-            }
-
-            tuners.Insert(port-1, tuner);
-            EnableBtns(true);
         }
 
         private void TunerSelectBox_SelectedIndexChanged(object sender, EventArgs e)
