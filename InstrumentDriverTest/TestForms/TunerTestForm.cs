@@ -120,7 +120,7 @@ namespace InstrumentDriverTest.TestForms
                 tuner = new MauryTunerDriver((short)(port-1), 0, (short)serial, 2048, 3, 3, ExeFilePathBox.Text);
             }
 
-            tuners.Insert(port-1, tuner);
+            tuners.Add(tuner);
             tuner.InitTuner(CtrlDriverBox.Text, TunerCharFileBox.Text, tuners.Count, inputTuner);
             EnableBtns(true);
         }

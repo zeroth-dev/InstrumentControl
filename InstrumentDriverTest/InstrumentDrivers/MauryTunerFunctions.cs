@@ -7,18 +7,23 @@ using System.Threading.Tasks;
 
 namespace InstrumentDriverTest.Instruments
 {
-    internal class MauryTunerFunctions
+    public class MauryTunerFunctions
     {
         [DllImport("MLibTuners.dll", EntryPoint = "add_controller", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public static extern short add_controller(short controller_number,
-                                                char[] driver, char[] model, int timeout, int address, int delay_ms,
+                                                [In] char[] driver, [In] char[] model, int timeout, int address, int delay_ms,
                                                 short serial_number, [Out] char[] error_string);
+
+        [DllImport("MLibTuners.dll", EntryPoint = "add_controller_ex", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        public static extern short add_controller_ex(short tuner_number, [In] char[] model, int ctrl_num, int ctrl_port, int timeout,
+                                                int address, int delay_ms, short serial_number, [Out] char[] error_string);
+
 
         [DllImport("MLibTuners.dll", EntryPoint = "add_tuner", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public static extern short add_tuner(short tuner_number, char[] model,
                                             short serial_number, short ctlr_num, short ctlr_port, [In, Out] short no_of_motors,
-                                            [In, Out] int[] max_range, [In, Out] double fmin, [In, Out] double fmax, [In, Out] double fcrossover,
-                                            [In, Out] char[] error_string);
+                                            [Out] int[] max_range, [Out] float[] fmin, [Out] float[] fmax, [Out] float[] fcrossover,
+                                            [Out] char[] error_string);
 
 
         [DllImport("MLibTuners.dll", EntryPoint = "add_tuner_ex", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
@@ -33,7 +38,7 @@ namespace InstrumentDriverTest.Instruments
         public static extern short get_tuner_refl_data(short tuner_number,
                                                         short interp_mode, double freq, double gamma_termination_x,
                                                         double gamma_termination_y, double gamma_target_x, double gamma_target_y,
-                                                        [Out] long carr, [Out] long p1, [Out] long p2, [Out] double[] s11_x, [Out] double[] s11_y,
+                                                        [Out] int carr, [Out] int p1, [Out] int p2, [Out] double[] s11_x, [Out] double[] s11_y,
                                                         [Out] double[] s21_x, [Out] double[] s21_y, [Out] double[] s12_x, [Out] double[] s12_y,
                                                         [Out] double[] s22_x, [Out] double[] s22_y, [Out] char[] error_string);
 
@@ -48,12 +53,12 @@ namespace InstrumentDriverTest.Instruments
         public static extern short init_tuners([Out] char[] error_string);
 
         [DllImport("MLibTuners.dll", EntryPoint = "get_tuner_position", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern short get_tuner_position(short tuner_number, [Out] long carr, 
-                                                        [Out] long p1, [Out] long p2, [Out] char[] error_string);
+        public static extern short get_tuner_position(short tuner_number, [Out] int carr, 
+                                                        [Out] int p1, [Out] int p2, [Out] char[] error_string);
 
         [DllImport("MLibTuners.dll", EntryPoint = "get_tuner_position_spara", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public static extern short get_tuner_position_spara(short tuner_number,
-                                                            double freq, short interp_mode, [Out] long carr, [Out] long p1, [Out] long p2,
+                                                            double freq, short interp_mode, [Out] int carr, [Out] int p1, [Out] int p2,
                                                             [Out] double s11_x, [Out] double[] s11_y, [Out] double[] s21_x, [Out] double[] s21_y,
                                                             [Out] double s12_x, [Out] double s12_y, [Out] double[] s22_x, [Out] double[] s22_y,
                                                             [Out] char[] error_string);
@@ -62,6 +67,6 @@ namespace InstrumentDriverTest.Instruments
         public static extern short get_tuner_freqs(short tuner_number, [Out] short numfreq, [Out] double[] freqs, [Out] char[] error_string);
 
         [DllImport("MLibTuners.dll", EntryPoint = "move_tuner", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern short move_tuner(short tuner_number, long carr, long p1, long p2, [Out] char[] error_string);
+        public static extern short move_tuner(short tuner_number, int carr, int p1, int p2, [Out] char[] error_string);
     }
 }
