@@ -58,7 +58,8 @@
             this.ConnectRFBtn = new System.Windows.Forms.Button();
             this.RFInstrumentList = new System.Windows.Forms.ComboBox();
             this.groupBox11 = new System.Windows.Forms.GroupBox();
-            this.label45 = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
+            this.TunerInstrumentList = new System.Windows.Forms.ComboBox();
             this.label13 = new System.Windows.Forms.Label();
             this.label44 = new System.Windows.Forms.Label();
             this.InTunerCharFileBox = new System.Windows.Forms.TextBox();
@@ -86,15 +87,12 @@
             this.ZImagBox = new System.Windows.Forms.TextBox();
             this.ZRealBox = new System.Windows.Forms.TextBox();
             this.MoveTunerZBtn = new System.Windows.Forms.Button();
-            this.label15 = new System.Windows.Forms.Label();
             this.BrowseCtrlDriverPathBtn = new System.Windows.Forms.Button();
             this.label14 = new System.Windows.Forms.Label();
-            this.ExeFilePathBox = new System.Windows.Forms.TextBox();
             this.OutTunerCharFileBox = new System.Windows.Forms.TextBox();
             this.CtrlDriverBox = new System.Windows.Forms.TextBox();
             this.BrowseOutTunerCharFileBtn = new System.Windows.Forms.Button();
             this.label16 = new System.Windows.Forms.Label();
-            this.BrowseExeFileBtn = new System.Windows.Forms.Button();
             this.groupBox14 = new System.Windows.Forms.GroupBox();
             this.SweepChoicePanel = new System.Windows.Forms.Panel();
             this.radioButton4 = new System.Windows.Forms.RadioButton();
@@ -154,6 +152,9 @@
             this.label42 = new System.Windows.Forms.Label();
             this.label41 = new System.Windows.Forms.Label();
             this.RefreshListBtn = new System.Windows.Forms.Button();
+            this.SaveConfigBtn = new System.Windows.Forms.Button();
+            this.LoadConfigBtn = new System.Windows.Forms.Button();
+            this.ClearLogBtn = new System.Windows.Forms.Button();
             this.groupBox2.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -442,7 +443,8 @@
             // 
             // groupBox11
             // 
-            this.groupBox11.Controls.Add(this.label45);
+            this.groupBox11.Controls.Add(this.label15);
+            this.groupBox11.Controls.Add(this.TunerInstrumentList);
             this.groupBox11.Controls.Add(this.label13);
             this.groupBox11.Controls.Add(this.label44);
             this.groupBox11.Controls.Add(this.InTunerCharFileBox);
@@ -451,15 +453,12 @@
             this.groupBox11.Controls.Add(this.InitBtn);
             this.groupBox11.Controls.Add(this.ReadmeBtn);
             this.groupBox11.Controls.Add(this.groupBox15);
-            this.groupBox11.Controls.Add(this.label15);
             this.groupBox11.Controls.Add(this.BrowseCtrlDriverPathBtn);
             this.groupBox11.Controls.Add(this.label14);
-            this.groupBox11.Controls.Add(this.ExeFilePathBox);
             this.groupBox11.Controls.Add(this.OutTunerCharFileBox);
             this.groupBox11.Controls.Add(this.CtrlDriverBox);
             this.groupBox11.Controls.Add(this.BrowseOutTunerCharFileBtn);
             this.groupBox11.Controls.Add(this.label16);
-            this.groupBox11.Controls.Add(this.BrowseExeFileBtn);
             this.groupBox11.Location = new System.Drawing.Point(12, 380);
             this.groupBox11.Name = "groupBox11";
             this.groupBox11.Size = new System.Drawing.Size(761, 268);
@@ -467,20 +466,27 @@
             this.groupBox11.TabStop = false;
             this.groupBox11.Text = "Tuner";
             // 
-            // label45
+            // label15
             // 
-            this.label45.AutoSize = true;
-            this.label45.Location = new System.Drawing.Point(12, 215);
-            this.label45.Name = "label45";
-            this.label45.Size = new System.Drawing.Size(484, 13);
-            this.label45.TabIndex = 23;
-            this.label45.Text = "Note: You don\'t need to load the input tuner characterization file unless you wis" +
-    "h to control it manually";
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(12, 21);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(119, 13);
+            this.label15.TabIndex = 28;
+            this.label15.Text = "Controller GPIB address";
+            // 
+            // TunerInstrumentList
+            // 
+            this.TunerInstrumentList.FormattingEnabled = true;
+            this.TunerInstrumentList.Location = new System.Drawing.Point(136, 17);
+            this.TunerInstrumentList.Name = "TunerInstrumentList";
+            this.TunerInstrumentList.Size = new System.Drawing.Size(135, 21);
+            this.TunerInstrumentList.TabIndex = 27;
             // 
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(21, 112);
+            this.label13.Location = new System.Drawing.Point(15, 93);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(44, 13);
             this.label13.TabIndex = 22;
@@ -489,7 +495,7 @@
             // label44
             // 
             this.label44.AutoSize = true;
-            this.label44.Location = new System.Drawing.Point(15, 99);
+            this.label44.Location = new System.Drawing.Point(9, 80);
             this.label44.Name = "label44";
             this.label44.Size = new System.Drawing.Size(58, 13);
             this.label44.TabIndex = 19;
@@ -497,14 +503,14 @@
             // 
             // InTunerCharFileBox
             // 
-            this.InTunerCharFileBox.Location = new System.Drawing.Point(93, 102);
+            this.InTunerCharFileBox.Location = new System.Drawing.Point(87, 83);
             this.InTunerCharFileBox.Name = "InTunerCharFileBox";
             this.InTunerCharFileBox.Size = new System.Drawing.Size(325, 20);
             this.InTunerCharFileBox.TabIndex = 21;
             // 
             // BrowseInTunerCharFileBtn
             // 
-            this.BrowseInTunerCharFileBtn.Location = new System.Drawing.Point(424, 101);
+            this.BrowseInTunerCharFileBtn.Location = new System.Drawing.Point(418, 82);
             this.BrowseInTunerCharFileBtn.Name = "BrowseInTunerCharFileBtn";
             this.BrowseInTunerCharFileBtn.Size = new System.Drawing.Size(75, 23);
             this.BrowseInTunerCharFileBtn.TabIndex = 20;
@@ -515,7 +521,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(21, 151);
+            this.label9.Location = new System.Drawing.Point(15, 132);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(44, 13);
             this.label9.TabIndex = 18;
@@ -523,7 +529,7 @@
             // 
             // InitBtn
             // 
-            this.InitBtn.Location = new System.Drawing.Point(211, 167);
+            this.InitBtn.Location = new System.Drawing.Point(205, 148);
             this.InitBtn.Name = "InitBtn";
             this.InitBtn.Size = new System.Drawing.Size(75, 23);
             this.InitBtn.TabIndex = 17;
@@ -533,7 +539,7 @@
             // 
             // ReadmeBtn
             // 
-            this.ReadmeBtn.Location = new System.Drawing.Point(211, 71);
+            this.ReadmeBtn.Location = new System.Drawing.Point(6, 182);
             this.ReadmeBtn.Name = "ReadmeBtn";
             this.ReadmeBtn.Size = new System.Drawing.Size(75, 23);
             this.ReadmeBtn.TabIndex = 16;
@@ -728,18 +734,9 @@
             this.MoveTunerZBtn.UseVisualStyleBackColor = true;
             this.MoveTunerZBtn.Click += new System.EventHandler(this.MoveTunerZBtn_Click);
             // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(12, 48);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(68, 13);
-            this.label15.TabIndex = 13;
-            this.label15.Text = "Exe file path:";
-            // 
             // BrowseCtrlDriverPathBtn
             // 
-            this.BrowseCtrlDriverPathBtn.Location = new System.Drawing.Point(424, 17);
+            this.BrowseCtrlDriverPathBtn.Location = new System.Drawing.Point(418, 42);
             this.BrowseCtrlDriverPathBtn.Name = "BrowseCtrlDriverPathBtn";
             this.BrowseCtrlDriverPathBtn.Size = new System.Drawing.Size(75, 23);
             this.BrowseCtrlDriverPathBtn.TabIndex = 3;
@@ -750,36 +747,29 @@
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(12, 138);
+            this.label14.Location = new System.Drawing.Point(6, 119);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(66, 13);
             this.label14.TabIndex = 13;
             this.label14.Text = "Output tuner";
             // 
-            // ExeFilePathBox
-            // 
-            this.ExeFilePathBox.Location = new System.Drawing.Point(93, 45);
-            this.ExeFilePathBox.Name = "ExeFilePathBox";
-            this.ExeFilePathBox.Size = new System.Drawing.Size(325, 20);
-            this.ExeFilePathBox.TabIndex = 15;
-            // 
             // OutTunerCharFileBox
             // 
-            this.OutTunerCharFileBox.Location = new System.Drawing.Point(93, 141);
+            this.OutTunerCharFileBox.Location = new System.Drawing.Point(87, 122);
             this.OutTunerCharFileBox.Name = "OutTunerCharFileBox";
             this.OutTunerCharFileBox.Size = new System.Drawing.Size(325, 20);
             this.OutTunerCharFileBox.TabIndex = 15;
             // 
             // CtrlDriverBox
             // 
-            this.CtrlDriverBox.Location = new System.Drawing.Point(93, 19);
+            this.CtrlDriverBox.Location = new System.Drawing.Point(87, 44);
             this.CtrlDriverBox.Name = "CtrlDriverBox";
             this.CtrlDriverBox.Size = new System.Drawing.Size(325, 20);
             this.CtrlDriverBox.TabIndex = 12;
             // 
             // BrowseOutTunerCharFileBtn
             // 
-            this.BrowseOutTunerCharFileBtn.Location = new System.Drawing.Point(424, 140);
+            this.BrowseOutTunerCharFileBtn.Location = new System.Drawing.Point(418, 121);
             this.BrowseOutTunerCharFileBtn.Name = "BrowseOutTunerCharFileBtn";
             this.BrowseOutTunerCharFileBtn.Size = new System.Drawing.Size(75, 23);
             this.BrowseOutTunerCharFileBtn.TabIndex = 14;
@@ -790,21 +780,11 @@
             // label16
             // 
             this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(12, 22);
+            this.label16.Location = new System.Drawing.Point(12, 49);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(62, 13);
             this.label16.TabIndex = 0;
             this.label16.Text = "Driver path:";
-            // 
-            // BrowseExeFileBtn
-            // 
-            this.BrowseExeFileBtn.Location = new System.Drawing.Point(424, 43);
-            this.BrowseExeFileBtn.Name = "BrowseExeFileBtn";
-            this.BrowseExeFileBtn.Size = new System.Drawing.Size(75, 23);
-            this.BrowseExeFileBtn.TabIndex = 14;
-            this.BrowseExeFileBtn.Text = "Browse";
-            this.BrowseExeFileBtn.UseVisualStyleBackColor = true;
-            this.BrowseExeFileBtn.Click += new System.EventHandler(this.BrowseExeFileBtn_Click);
             // 
             // groupBox14
             // 
@@ -1400,17 +1380,51 @@
             this.RefreshListBtn.UseVisualStyleBackColor = true;
             this.RefreshListBtn.Click += new System.EventHandler(this.RefreshListBtn_Click);
             // 
+            // SaveConfigBtn
+            // 
+            this.SaveConfigBtn.Location = new System.Drawing.Point(12, 654);
+            this.SaveConfigBtn.Name = "SaveConfigBtn";
+            this.SaveConfigBtn.Size = new System.Drawing.Size(75, 23);
+            this.SaveConfigBtn.TabIndex = 16;
+            this.SaveConfigBtn.Text = "Save config";
+            this.SaveConfigBtn.UseVisualStyleBackColor = true;
+            this.SaveConfigBtn.Click += new System.EventHandler(this.SaveConfigBtn_Click);
+            // 
+            // LoadConfigBtn
+            // 
+            this.LoadConfigBtn.Location = new System.Drawing.Point(93, 654);
+            this.LoadConfigBtn.Name = "LoadConfigBtn";
+            this.LoadConfigBtn.Size = new System.Drawing.Size(75, 23);
+            this.LoadConfigBtn.TabIndex = 17;
+            this.LoadConfigBtn.Text = "Load config";
+            this.LoadConfigBtn.UseVisualStyleBackColor = true;
+            this.LoadConfigBtn.Click += new System.EventHandler(this.LoadConfigBtn_Click);
+            // 
+            // ClearLogBtn
+            // 
+            this.ClearLogBtn.Location = new System.Drawing.Point(1004, 654);
+            this.ClearLogBtn.Name = "ClearLogBtn";
+            this.ClearLogBtn.Size = new System.Drawing.Size(75, 23);
+            this.ClearLogBtn.TabIndex = 18;
+            this.ClearLogBtn.Text = "Clear log";
+            this.ClearLogBtn.UseVisualStyleBackColor = true;
+            this.ClearLogBtn.Click += new System.EventHandler(this.ClearLogBtn_Click);
+            // 
             // LoadPullForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1095, 660);
+            this.ClientSize = new System.Drawing.Size(1095, 685);
+            this.Controls.Add(this.ClearLogBtn);
+            this.Controls.Add(this.LoadConfigBtn);
+            this.Controls.Add(this.SaveConfigBtn);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox17);
             this.Controls.Add(this.groupBox9);
             this.Controls.Add(this.LogBox);
             this.Controls.Add(this.groupBox14);
             this.Controls.Add(this.groupBox11);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "LoadPullForm";
             this.Text = "Load pull";
             this.groupBox2.ResumeLayout(false);
@@ -1470,9 +1484,6 @@
         private System.Windows.Forms.TextBox OutTunerCharFileBox;
         private System.Windows.Forms.Button BrowseOutTunerCharFileBtn;
         private System.Windows.Forms.Button ReadmeBtn;
-        private System.Windows.Forms.Label label15;
-        private System.Windows.Forms.TextBox ExeFilePathBox;
-        private System.Windows.Forms.Button BrowseExeFileBtn;
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.TextBox CtrlDriverBox;
         private System.Windows.Forms.Button BrowseCtrlDriverPathBtn;
@@ -1545,7 +1556,6 @@
         private System.Windows.Forms.Label label44;
         private System.Windows.Forms.TextBox InTunerCharFileBox;
         private System.Windows.Forms.Button BrowseInTunerCharFileBtn;
-        private System.Windows.Forms.Label label45;
         private System.Windows.Forms.Button StopBtn;
         private System.Windows.Forms.Button BrowseInputDeEmbeddingDataBtn;
         private System.Windows.Forms.CheckBox UseDeembeddingCheck;
@@ -1563,6 +1573,11 @@
         private System.Windows.Forms.RadioButton radioButton2;
         private System.Windows.Forms.RadioButton radioButton1;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.ComboBox TunerInstrumentList;
+        private System.Windows.Forms.Button SaveConfigBtn;
+        private System.Windows.Forms.Button LoadConfigBtn;
+        private System.Windows.Forms.Button ClearLogBtn;
     }
 }
 

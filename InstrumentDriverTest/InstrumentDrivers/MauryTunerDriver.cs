@@ -55,6 +55,19 @@ namespace InstrumentDriverTest.Instruments
             }
 
             this.gpibAddress = gpibAddress;
+
+            /* Why the \0:
+             * 
+             * The dll file being called is a C-language dll
+             * C takes a character array (char[] in C#) as the input instead of a string
+             * so you will see a cast to char array being done when calling the tuner functions
+             * 
+             * The problem is that C determines that the string is terminated by it ending with a '\0' character
+             * This character does NOT exist in C# strings as the language works differently.
+             * To avoid errors, and allow the dll file to properly function, it is neccessary to add '\0' to each
+             * string being passed to the dll functions.
+             * 
+             */
             this.tunerModel = "MT982EU30\0";
             this.ctrlModel = "MT986B02\0";
             this.ctrlDriverPath = driverPath + "\0";
@@ -75,8 +88,8 @@ namespace InstrumentDriverTest.Instruments
             err_code = MauryTunerFunctions.init_tuners(error_string);
             if (err_code != 0) throw new Exception(new string(error_string));
 
-            // Remove the first tuner and add the output tuner and initialize it
 
+            // Remove the first tuner and add the output tuner and initialize it
             err_code = MauryTunerFunctions.delete_tuner_ex(0, error_string);
             if (err_code != 0) throw new Exception(new string(error_string));
 
@@ -97,8 +110,7 @@ namespace InstrumentDriverTest.Instruments
             err_code = MauryTunerFunctions.add_controller_ex(1, ctrlModel.ToCharArray(), 0, 1, 0, gpibAddress, 0, (short)2048, error_string);
             if (err_code != 0) throw new Exception(new string(error_string));
 
-            // Move tuners to 0 reflection or 50 ohms
-
+            // Move tuners to 0 reflection or 50 ohms, this is not de-embedded so do it manually
             try
             {
                 MoveTunerToSmithPosition(true, new Complex(0, 0), 2.4);
@@ -128,7 +140,11 @@ namespace InstrumentDriverTest.Instruments
             {
                 gamma = (gamma - sParams[0]) / (sParams[3] * (gamma - sParams[3]) + sParams[1] * sParams[2]);
             }
-            MoveTunerToSmithPosition(inputTuner, gamma, freq);
+            try
+            {
+                MoveTunerToSmithPosition(inputTuner, gamma, freq);
+            }
+            catch (Exception e) { throw e; }
         }
 
         /// <summary>
@@ -160,10 +176,11 @@ namespace InstrumentDriverTest.Instruments
 
         public (int, int, int) GetTunerPositionForReflection(short tunerNumber, Complex reflection, double freq)
         {
-
             int carr = 0;
             int p1 = 0;
             int p2 = 0;
+            // These have to be initialised for the function, if you need these s-parameters,
+            // use the GetTunerSParams method
             double[] s11_x = new double[10];
             double[] s11_y = new double[10];
             double[] s21_x = new double[10];
@@ -175,11 +192,83 @@ namespace InstrumentDriverTest.Instruments
             char[] error_string = new char[1000];
 
             int err_code = MauryTunerFunctions.get_tuner_refl_data(tunerNumber,0, freq, 0, 0, reflection.Real, reflection.Imaginary, 
-                                                                    ref carr, ref p1, ref p2, s11_x, s11_y, s21_x, s21_y, s12_x, s12_y, s22_x, s22_y, error_string);
+                                                                    ref carr, ref p1, ref p2, 
+                                                                    s11_x, s11_y, s21_x, s21_y, 
+                                                                    s12_x, s12_y, s22_x, s22_y, error_string);
             if (err_code != 0) throw new Exception(new string(error_string));
 
             return (carr, p1, p2);
         }
 
+        public Dictionary<string, List<Complex>> GetTunerSParams(bool inputTuner, double freq)
+        {
+            // Tuner number is 0 for output tuner and 1 for input tuner
+            short tunerNumber = (short)(inputTuner ? 1 : 0);
+
+            char[] error_string = new char[1000];
+            int carr = 0;
+            int p1 = 0;
+            int p2 = 0;
+
+            double[] s11_x = new double[10];
+            double[] s11_y = new double[10];
+            double[] s21_x = new double[10];
+            double[] s21_y = new double[10];
+            double[] s12_x = new double[10];
+            double[] s12_y = new double[10];
+            double[] s22_x = new double[10];
+            double[] s22_y = new double[10];
+
+            // Get the current Tuner position
+            int err_code = MauryTunerFunctions.get_tuner_position(tunerNumber, ref carr, ref p1, ref p2, error_string);
+            if (err_code != 0) throw new Exception(new string(error_string));
+
+            // Get the s parameters for the current tuner position
+            err_code = MauryTunerFunctions.get_tuner_position_spara(tunerNumber, freq, 0, ref carr, ref p1, ref p2,
+                                                                        s11_x, s11_y, s21_x, s21_y,
+                                                                         s12_x, s12_y, s22_x, s22_y, error_string);
+            if (err_code != 0) throw new Exception(new string(error_string));
+
+            // get_tuner_position_spara returns s parameters for 3 harmonics (supposedly)
+            // We create a dictionary where each key is the s parameter name (ex. "s11")
+            // and the value is a list of 3 s parameters for the harmonics
+            Dictionary<string, List<Complex>> sParams = new Dictionary<string, List<Complex>>
+            {
+                { 
+                    "s11", new List<Complex>
+                    {
+                        new Complex(s11_x[0], s11_y[0]),
+                        new Complex(s11_x[1], s11_y[1]),
+                        new Complex(s11_x[2], s11_y[2]),
+                    }
+                },
+                {
+                    "s12", new List<Complex>
+                    {
+                        new Complex(s12_x[0], s12_y[0]),
+                        new Complex(s12_x[1], s12_y[1]),
+                        new Complex(s12_x[2], s12_y[2]),
+                    }
+                },
+                {
+                    "s21", new List<Complex>
+                    {
+                        new Complex(s21_x[0], s21_y[0]),
+                        new Complex(s21_x[1], s21_y[1]),
+                        new Complex(s21_x[2], s21_y[2]),
+                    }
+                },
+                {
+                    "s22", new List<Complex>
+                    {
+                        new Complex(s22_x[0], s22_y[0]),
+                        new Complex(s22_x[1], s22_y[1]),
+                        new Complex(s22_x[2], s22_y[2]),
+                    }
+                }
+            };
+
+            return sParams;
+        }
     }
 }

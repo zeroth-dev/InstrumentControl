@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InstrumentControl", "InstrumentControl\InstrumentControl.csproj", "{B57A9A91-D599-44FA-87A0-AC18C98C891D}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InstrumentDriverTest", "InstrumentDriverTest\InstrumentDriverTest.csproj", "{5657C427-BD63-4AEA-B6C5-F307C33E4B10}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CppDllTest", "CppDllTest\CppDllTest.vcxproj", "{CD754108-C302-442A-B0DF-EC3DF5A1BADD}"
@@ -23,18 +21,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B57A9A91-D599-44FA-87A0-AC18C98C891D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B57A9A91-D599-44FA-87A0-AC18C98C891D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B57A9A91-D599-44FA-87A0-AC18C98C891D}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{B57A9A91-D599-44FA-87A0-AC18C98C891D}.Debug|x64.Build.0 = Debug|Any CPU
-		{B57A9A91-D599-44FA-87A0-AC18C98C891D}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{B57A9A91-D599-44FA-87A0-AC18C98C891D}.Debug|x86.Build.0 = Debug|Any CPU
-		{B57A9A91-D599-44FA-87A0-AC18C98C891D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B57A9A91-D599-44FA-87A0-AC18C98C891D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B57A9A91-D599-44FA-87A0-AC18C98C891D}.Release|x64.ActiveCfg = Release|Any CPU
-		{B57A9A91-D599-44FA-87A0-AC18C98C891D}.Release|x64.Build.0 = Release|Any CPU
-		{B57A9A91-D599-44FA-87A0-AC18C98C891D}.Release|x86.ActiveCfg = Release|Any CPU
-		{B57A9A91-D599-44FA-87A0-AC18C98C891D}.Release|x86.Build.0 = Release|Any CPU
 		{5657C427-BD63-4AEA-B6C5-F307C33E4B10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5657C427-BD63-4AEA-B6C5-F307C33E4B10}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5657C427-BD63-4AEA-B6C5-F307C33E4B10}.Debug|x64.ActiveCfg = Debug|Any CPU
