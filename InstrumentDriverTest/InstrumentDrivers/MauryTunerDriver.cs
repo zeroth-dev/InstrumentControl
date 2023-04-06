@@ -32,7 +32,7 @@ namespace InstrumentDriverTest.Instruments
         string ctrlDriverPath;
 
 
-        public MauryTunerDriver(short gpibAddress, string driverPath,string inTunerCharFilePath, string outTunerCharFilePath)
+        public MauryTunerDriver(short gpibAddress, string driverPath,string inTunerCharFilePath, string outTunerCharFilePath, double freq)
         {
 
             if (!File.Exists(driverPath))
@@ -69,26 +69,9 @@ namespace InstrumentDriverTest.Instruments
             this.outTunerCharFilePath = outTunerCharFilePath + "\0";
 
 
-            // Add the input tuner and initialize it
+            // Add the tuners
             int err_code;
             char[] error_string = new char[1000];
-
-            err_code = MauryTunerFunctions.add_tuner_ex(0, this.ctrlDriverPath.ToCharArray(), tunerModel.ToCharArray(), 1331, gpibAddress, error_string);
-            if (err_code != 0) throw new Exception(new string(error_string));
-
-            err_code = MauryTunerFunctions.read_tuner_data_file(0, this.inTunerCharFilePath.ToCharArray(), tunerModel.ToCharArray(), error_string);
-            if (err_code != 0) throw new Exception(new string(error_string));
-
-            err_code = MauryTunerFunctions.add_controller_ex(0, ctrlModel.ToCharArray(), 0, 1, 0, gpibAddress, 0, (short)2048, error_string);
-            if (err_code != 0) throw new Exception(new string(error_string));
-
-            err_code = MauryTunerFunctions.init_tuners(error_string);
-            if (err_code != 0) throw new Exception(new string(error_string));
-
-
-            // Remove the first tuner and add the output tuner and initialize it
-            err_code = MauryTunerFunctions.delete_tuner_ex(0, error_string);
-            if (err_code != 0) throw new Exception(new string(error_string));
 
             err_code = MauryTunerFunctions.add_tuner_ex(0, this.ctrlDriverPath.ToCharArray(), tunerModel.ToCharArray(), 1333, gpibAddress, error_string);
             if (err_code != 0) throw new Exception(new string(error_string));
@@ -99,10 +82,6 @@ namespace InstrumentDriverTest.Instruments
             err_code = MauryTunerFunctions.add_controller_ex(0, ctrlModel.ToCharArray(), 0, 2, 0, gpibAddress, 0, (short)2048, error_string);
             if (err_code != 0) throw new Exception(new string(error_string));
 
-            err_code = MauryTunerFunctions.init_tuners(error_string);
-            if (err_code != 0) throw new Exception(new string(error_string));
-
-            // Re-add the input tuner, it doesn't need to be reinitialised again
             err_code = MauryTunerFunctions.add_tuner_ex(1, this.ctrlDriverPath.ToCharArray(), tunerModel.ToCharArray(), 1331, gpibAddress, error_string);
             if (err_code != 0) throw new Exception(new string(error_string));
 
@@ -115,8 +94,8 @@ namespace InstrumentDriverTest.Instruments
             // Move tuners to 0 reflection or 50 ohms, this is not de-embedded so do it manually
             try
             {
-                MoveTunerToSmithPosition(true, new Complex(0, 0), 2.4);
-                MoveTunerToSmithPosition(false, new Complex(0, 0), 2.4);
+                MoveTunerToSmithPosition(true, new Complex(0, 0), freq);
+                MoveTunerToSmithPosition(false, new Complex(0, 0), freq);
             }
             catch (Exception e)
             {

@@ -40,8 +40,6 @@ namespace LoadPullSystemControl
             provider.NumberDecimalSeparator = ".";
             InitFreqBandList();
             InitTunerData();
-            tokenSource = new CancellationTokenSource();
-            token = tokenSource.Token;
         }
 
         /////////////////////////////////////////////////////////
@@ -324,9 +322,10 @@ namespace LoadPullSystemControl
 
             try
             {
-                var split = TunerInstrumentList.Text.Split(':');
+                var split = TunerInstrumentList.Text.Split(new char[] {':'}, StringSplitOptions.RemoveEmptyEntries);
                 short gpibAddress = short.Parse(split[1]);
-                tuner = new MauryTunerDriver(gpibAddress, CtrlDriverBox.Text, InTunerCharFileBox.Text, OutTunerCharFileBox.Text);
+                double freq = double.Parse(FreqBox.Text, provider);
+                tuner = new MauryTunerDriver(gpibAddress, CtrlDriverBox.Text, InTunerCharFileBox.Text, OutTunerCharFileBox.Text, freq);
             }
             catch (Exception ex)
             {
@@ -509,6 +508,9 @@ namespace LoadPullSystemControl
                 LogText("Please initialise all devices before starting the program");
             }
 
+            tokenSource = new CancellationTokenSource();
+            token = tokenSource.Token;
+
             // TODO: Create meaningful filename
             string filename = "Output.txt";
             if (FileNameBox.Text != "")
@@ -520,9 +522,19 @@ namespace LoadPullSystemControl
             {
                 smithPoints = GeneratePoints();
             }
-            ProgressLabel.Text = "0/" + smithPoints.Count;
+            
+
+            if(CWFreqBox.Text == "")
+            {
+                LogText("Please input the wanted frequency");
+            }
             double freq = double.Parse(CWFreqBox.Text, provider);
-            double attenuation = double.Parse(AttBox.Text, provider);
+
+            double attenuation = 0;
+            if (AttBox.Text != "")
+            {
+                attenuation = double.Parse(AttBox.Text, provider);
+            }
             string freqBand = FreqBandBox.Text;
 
             dcPowerSupply.TurnOnOff(true);
@@ -531,6 +543,8 @@ namespace LoadPullSystemControl
             // Start the iteration on a separate thread
             if (LoadPullRadio.Checked || SourcePullRadio.Checked)
             {
+
+                ProgressLabel.Text = "0/" + smithPoints.Count;
                 using (StreamWriter sw = File.CreateText(filename))
                 {
                     sw.WriteLine("gammaX, gammaY, Pin, Pout1, Pout2, Pout3, Vd, Id");
@@ -543,6 +557,8 @@ namespace LoadPullSystemControl
             }
             else if (SourceLoadPullRadio.Checked)
             {
+
+                ProgressLabel.Text = "0/" + smithPoints.Count*smithPoints.Count;
                 using (StreamWriter sw = File.CreateText(filename))
                 {
                     sw.WriteLine("gammaInX, gammaInY, gammaOutX, gammaOutY, Pin, Pout1, Pout2, Pout3, Vd, Id");
@@ -572,6 +588,7 @@ namespace LoadPullSystemControl
 
                 OutputDataSingle(filename, point.Real, point.Imaginary, inputPower, basePwr, secondPwr, thirdPwr, Vd, Id);
                 progress++;
+                UpdateProgress(progress, smithPoints.Count);
                 if (ct.IsCancellationRequested)
                 {
                     rfSource.TurnOnOff(false);
@@ -595,8 +612,8 @@ namespace LoadPullSystemControl
 
                 for (int j = 0; i < smithPoints.Count; j++)
                 {
-                    var outputPoint = smithPoints.ElementAt(i);
-                    MoveTunerToReflection(true, outputPoint, freq);
+                    var outputPoint = smithPoints.ElementAt(j);
+                    MoveTunerToReflection(false, outputPoint, freq);
 
                     // Read three harmonics of the output signal and the power supply readings
                     double basePwr, secondPwr, thirdPwr, Vd, Id;
@@ -606,6 +623,7 @@ namespace LoadPullSystemControl
                                         inputPower, basePwr, secondPwr, thirdPwr, Vd, Id);
 
                     progress++;
+                    UpdateProgress(progress, smithPoints.Count * smithPoints.Count);
                     if (ct.IsCancellationRequested)
                     {
                         rfSource.TurnOnOff(false);
@@ -711,16 +729,19 @@ namespace LoadPullSystemControl
                 DCInstrumentList.Items.Clear();
                 RFInstrumentList.Items.Clear();
                 SAInstrumentList.Items.Clear();
+                TunerInstrumentList.Items.Clear();
                 var deviceList = VisaUtil.GetConnectedDeviceList();
                 foreach (var device in deviceList)
                 {
                     DCInstrumentList.Items.Add(device);
                     RFInstrumentList.Items.Add(device);
                     SAInstrumentList.Items.Add(device);
+                    TunerInstrumentList.Items.Add(device);
                 }
                 DCInstrumentList.SelectedIndex = 0;
                 RFInstrumentList.SelectedIndex = 0;
                 SAInstrumentList.SelectedIndex = 0;
+                TunerInstrumentList.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
@@ -733,20 +754,31 @@ namespace LoadPullSystemControl
             if (InvokeRequired)
             {
                 Invoke(new Action<string>(LogText), msg);
+                return;
             }
             LogBox.AppendText(msg + Environment.NewLine);
-            LogBox.AppendText("\n");
         }
 
-        private void UpdateProgress(object sender, System.ComponentModel.ProgressChangedEventArgs e)
+        private void UpdateProgress(int done, int total)
         {
-            ProgressLabel.Text = String.Format("{0}/{1}", e.ProgressPercentage, smithPoints.Count);
+
+            if (InvokeRequired)
+            {
+                Invoke(new Action<int, int>(UpdateProgress), done, total);
+            }
+            ProgressLabel.Text = String.Format("{0}/{1}", done, total);
         }
 
         private void IterationDone()
         {
-            LogText("Process was completed");
-
+            if (token.IsCancellationRequested)
+            {
+                LogText("Process was cancelled by the user");
+            }
+            else
+            {
+                LogText("Process was completed");
+            }
             rfSource.TurnOnOff(false);
             dcPowerSupply.TurnOnOff(false);
             deembeddingDataIn.Clear();
@@ -854,7 +886,7 @@ namespace LoadPullSystemControl
                 sw.WriteLine("DCSource1Current=" + Src1CurrentBox.Text);
                 sw.WriteLine("DCSource2Voltage=" + Src2VoltageBox.Text);
                 sw.WriteLine("DCSource2Current=" + Src2CurrentBox.Text);
-                sw.WriteLine("Frequency=" + FreqBox.Text);
+                sw.WriteLine("Frequency=" + CWFreqBox.Text);
                 sw.WriteLine("FrequencyBand=" + FreqBandBox.Text);
                 sw.WriteLine("InputPower=" + PowerBox.Text);
                 sw.WriteLine("InputGain=" + PreampGainBox.Text);
