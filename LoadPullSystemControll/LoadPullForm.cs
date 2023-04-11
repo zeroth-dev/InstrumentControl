@@ -448,20 +448,13 @@ namespace LoadPullSystemControl
         {
             smithPoints = GeneratePoints();
             ViewDistBtn.Enabled = true;
-            if(smithForm != null)
-            {
-                smithForm.ChangePoints(smithPoints, true);
-            }
+            smithForm = new SmithForm(smithPoints, true);
         }
 
         private void ViewDistBtn_Click(object sender, EventArgs e)
         {
-            if (smithPoints == null) return;
+            if (smithPoints == null || smithForm == null) return;
 
-            if (smithForm == null)
-            {
-                smithForm = new SmithForm(smithPoints, true);
-            }
             smithForm.Show();
         }
 
@@ -529,6 +522,7 @@ namespace LoadPullSystemControl
             {
                 smithPoints = GeneratePoints();
                 ViewDistBtn.Enabled = true;
+                smithForm = new SmithForm(smithPoints, true);
             }
             
 
@@ -587,7 +581,7 @@ namespace LoadPullSystemControl
             for (int i = 0; i < smithPoints.Count; i++)
             {
                 var point = smithPoints.ElementAt(i);
-
+                smithForm.UpdateCurrPoint(point, true);
                 MoveTunerToReflection(inputSweep, point, freq, useDeembedding);
 
                 // Read three harmonics of the output signal and the power supply readings
@@ -597,6 +591,8 @@ namespace LoadPullSystemControl
                 OutputDataSingle(filename, point.Real, point.Imaginary, inputPower, basePwr, secondPwr, thirdPwr, Vd, Id);
                 progress++;
                 UpdateProgress(progress, smithPoints.Count);
+                smithForm.FinishedPoint(point, true);
+
                 if (ct.IsCancellationRequested)
                 {
                     rfSource.TurnOnOff(false);
