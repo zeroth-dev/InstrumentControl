@@ -1,5 +1,4 @@
-﻿using LoadPullSystemControl.Forms;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -12,6 +11,7 @@ using InstrumentDriverTest.Instruments;
 using LoadPullSystemControl.Util;
 using System.Threading.Tasks;
 using System.Drawing;
+using SmithPlot;
 
 namespace LoadPullSystemControl
 {
@@ -444,18 +444,25 @@ namespace LoadPullSystemControl
         /////////////////////////////////////////////////////////
 
 
-        private void ViewDistBtn_Click(object sender, EventArgs e)
+        private void GenerateDistributionBtn_Click(object sender, EventArgs e)
         {
             smithPoints = GeneratePoints();
+            ViewDistBtn.Enabled = true;
+            if(smithForm != null)
+            {
+                smithForm.ChangePoints(smithPoints, true);
+            }
+        }
 
-            var impedancePoints = GammaToImpedance(smithPoints);
+        private void ViewDistBtn_Click(object sender, EventArgs e)
+        {
+            if (smithPoints == null) return;
+
             if (smithForm == null)
             {
-                smithForm = new SmithForm();
+                smithForm = new SmithForm(smithPoints, true);
             }
-            smithForm.UpdatePoints(impedancePoints);
             smithForm.Show();
-
         }
 
         private void BrowseInputDeEmbeddingDataBtn_Click(object sender, EventArgs e)
@@ -521,6 +528,7 @@ namespace LoadPullSystemControl
             if (smithPoints == null || smithPoints.Count == 0)
             {
                 smithPoints = GeneratePoints();
+                ViewDistBtn.Enabled = true;
             }
             
 
@@ -971,6 +979,7 @@ namespace LoadPullSystemControl
                 default: break;
             }
         }
+
         /////////////////////////////////////////////////////////
         ///////////////////   UTILITY END   /////////////////////
         /////////////////////////////////////////////////////////

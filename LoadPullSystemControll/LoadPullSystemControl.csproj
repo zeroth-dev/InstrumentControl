@@ -62,12 +62,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Forms\ChartForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\ChartForm.Designer.cs">
-      <DependentUpon>ChartForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\SmithForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -117,6 +111,10 @@
     <ProjectReference Include="..\InstrumentDriverTest\InstrumentDriverTest.csproj">
       <Project>{5657c427-bd63-4aea-b6c5-f307c33e4b10}</Project>
       <Name>InstrumentDriverTest</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SmithPlot\SmithPlot.csproj">
+      <Project>{4D9C4C3B-B374-4735-91B3-3CD5883AC7F4}</Project>
+      <Name>SmithPlot</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

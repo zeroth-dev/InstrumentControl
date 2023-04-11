@@ -25,23 +25,12 @@ namespace SmithPlot
         List<Complex> PointsToUpdate = new List<Complex>();
         public SmithForm()
         {
-            SmithPoints = new List<Complex>
-            {
-                new Complex(0,0),
-                new Complex(50, 0),
-                new Complex(0, 10),
-                new Complex(0, -10),
-                new Complex(50, 10),
-                new Complex(50, -10)
-            };
-
-            this.SmithPoints = ConvertImpedanceToReflection(SmithPoints);
-            InitializeComponent();
-            Thread.Sleep(1000);
-            UpdateCurrPoint(new Complex(50, 0), false);
+            this.DrawPanel.Paint += DrawPanel_Paint;
         }
+
         public SmithForm(List<Complex> SmithPoints, bool IsReflection)
         {
+
             updateSingle = false;
             updateMultiple = false;
             if (IsReflection)
@@ -56,9 +45,7 @@ namespace SmithPlot
         }
 
         private void DrawPanel_Paint(object sender, PaintEventArgs e)
-
         {
-
             float radius = DrawPanel.Size.Height / 2-50;
 
 
@@ -89,7 +76,7 @@ namespace SmithPlot
 
         }
 
-        private void UpdateCurrPoint(Complex SmithPoint, bool IsReflection)
+        public void UpdateCurrPoint(Complex SmithPoint, bool IsReflection)
         {
             Complex Z0 = new Complex(50, 0);
             if(!IsReflection)
@@ -101,7 +88,7 @@ namespace SmithPlot
             this.Invalidate();
         }
 
-        private void FinishedPoint(Complex SmithPoint, bool IsReflection)
+        public void FinishedPoint(Complex SmithPoint, bool IsReflection)
         {
             Complex Z0 = new Complex(50, 0);
             if (!IsReflection)
@@ -112,6 +99,23 @@ namespace SmithPlot
             this.updateMultiple = true;
             this.Invalidate();
         }
+
+        public void ChangePoints(List<Complex> SmithPoints, bool IsReflection)
+        {
+
+            updateSingle = false;
+            updateMultiple = false;
+            if (IsReflection)
+            {
+                this.SmithPoints = SmithPoints;
+            }
+            else
+            {
+                this.SmithPoints = ConvertImpedanceToReflection(SmithPoints);
+            }
+            PointsToUpdate = new List<Complex>();
+        }
+
         private void DrawSmithPoints(Brush brush, Graphics g, List<Complex> SmithPoints, float radius, int offset)
         {
             foreach (Complex gamma in SmithPoints)
@@ -249,6 +253,7 @@ namespace SmithPlot
 
             return points;
         }
+
         private Point[] GetRealPointListPosImag(int Zreal, float radius)
         {
             Point[] points = new Point[]
@@ -283,6 +288,7 @@ namespace SmithPlot
 
             return points;
         }
+
         private Point[] GetImagPointList(int Zimag, float radius)
         {
             Point[] points = new Point[]
@@ -323,7 +329,7 @@ namespace SmithPlot
 
         private Point Gamma2Point(Complex gamma, float radius)
         {
-
+            gamma = new Complex(gamma.Real, -1 * gamma.Imaginary);
             Complex offset = new Complex(radius, radius);
 
             gamma *= radius;
@@ -338,6 +344,12 @@ namespace SmithPlot
                 points[i].Offset(offsetX, offsetY);
             }
                 
+        }
+
+        private void SmithForm_FormClosing(Object sender, FormClosingEventArgs e)
+        {
+            this.Hide();
+            e.Cancel= true;
         }
     }
 }

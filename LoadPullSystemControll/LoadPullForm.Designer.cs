@@ -151,6 +151,7 @@
             this.SaveConfigBtn = new System.Windows.Forms.Button();
             this.LoadConfigBtn = new System.Windows.Forms.Button();
             this.ClearLogBtn = new System.Windows.Forms.Button();
+            this.GenerateDistributionBtn = new System.Windows.Forms.Button();
             this.groupBox2.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -784,6 +785,7 @@
             // 
             // groupBox14
             // 
+            this.groupBox14.Controls.Add(this.GenerateDistributionBtn);
             this.groupBox14.Controls.Add(this.SweepChoicePanel);
             this.groupBox14.Controls.Add(this.panel1);
             this.groupBox14.Controls.Add(this.BrowseOutDeEmbeddingDataBtn);
@@ -825,7 +827,7 @@
             this.SweepChoicePanel.Controls.Add(this.radioButton3);
             this.SweepChoicePanel.Controls.Add(this.radioButton2);
             this.SweepChoicePanel.Controls.Add(this.radioButton1);
-            this.SweepChoicePanel.Location = new System.Drawing.Point(106, 139);
+            this.SweepChoicePanel.Location = new System.Drawing.Point(106, 168);
             this.SweepChoicePanel.Name = "SweepChoicePanel";
             this.SweepChoicePanel.Size = new System.Drawing.Size(329, 23);
             this.SweepChoicePanel.TabIndex = 32;
@@ -880,7 +882,7 @@
             this.panel1.Controls.Add(this.LoadPullRadio);
             this.panel1.Controls.Add(this.SourceLoadPullRadio);
             this.panel1.Controls.Add(this.SourcePullRadio);
-            this.panel1.Location = new System.Drawing.Point(106, 110);
+            this.panel1.Location = new System.Drawing.Point(106, 139);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(264, 23);
             this.panel1.TabIndex = 31;
@@ -1006,7 +1008,8 @@
             // 
             // ViewDistBtn
             // 
-            this.ViewDistBtn.Location = new System.Drawing.Point(9, 110);
+            this.ViewDistBtn.Enabled = false;
+            this.ViewDistBtn.Location = new System.Drawing.Point(106, 108);
             this.ViewDistBtn.Name = "ViewDistBtn";
             this.ViewDistBtn.Size = new System.Drawing.Size(91, 23);
             this.ViewDistBtn.TabIndex = 8;
@@ -1370,6 +1373,16 @@
             this.ClearLogBtn.UseVisualStyleBackColor = true;
             this.ClearLogBtn.Click += new System.EventHandler(this.ClearLogBtn_Click);
             // 
+            // GenerateDistributionBtn
+            // 
+            this.GenerateDistributionBtn.Location = new System.Drawing.Point(9, 108);
+            this.GenerateDistributionBtn.Name = "GenerateDistributionBtn";
+            this.GenerateDistributionBtn.Size = new System.Drawing.Size(91, 23);
+            this.GenerateDistributionBtn.TabIndex = 33;
+            this.GenerateDistributionBtn.Text = "Generate";
+            this.GenerateDistributionBtn.UseVisualStyleBackColor = true;
+            this.GenerateDistributionBtn.Click += new System.EventHandler(this.GenerateDistributionBtn_Click);
+            // 
             // LoadPullForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1534,6 +1547,7 @@
         private System.Windows.Forms.Button SaveConfigBtn;
         private System.Windows.Forms.Button LoadConfigBtn;
         private System.Windows.Forms.Button ClearLogBtn;
+        private System.Windows.Forms.Button GenerateDistributionBtn;
     }
 }
 

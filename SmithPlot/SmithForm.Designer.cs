@@ -50,11 +50,12 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "SmithForm";
             this.Text = "Smith plot";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SmithForm_FormClosing);
             this.ResumeLayout(false);
 
         }
         #endregion
-
+        
         private System.Windows.Forms.Panel DrawPanel;
     }
 }
