@@ -9,6 +9,8 @@ using System.Threading;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using Ivi.Driver.Interop;
+using Agilent.AgilentE36xx.Interop;
 
 namespace InstrumentDriverTest.Instruments
 {

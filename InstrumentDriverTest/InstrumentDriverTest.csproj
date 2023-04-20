@@ -78,11 +78,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="InstrumentDrivers\E36300.cs" />
+    <Compile Include="InstrumentDrivers\HP8350B.cs" />
     <Compile Include="InstrumentDrivers\E364xA.cs" />
     <Compile Include="InstrumentDrivers\E44xxB.cs" />
     <Compile Include="InstrumentDrivers\HP5412x.cs" />
     <Compile Include="InstrumentDrivers\MauryTunerDriver.cs" />
     <Compile Include="InstrumentDrivers\MauryTunerFunctions.cs" />
+    <Compile Include="InstrumentDrivers\MS710.cs" />
     <Compile Include="InstrumentDrivers\N9000A.cs" />
     <Compile Include="InstrumentDrivers\VisaUtil.cs" />
     <Compile Include="MainApp.cs">
