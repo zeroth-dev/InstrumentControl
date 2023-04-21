@@ -84,6 +84,10 @@
       <Project>{67e60abe-0a5f-4028-8e19-38452778281d}</Project>
       <Name>LoadPullSystemControl</Name>
     </ProjectReference>
+    <ProjectReference Include="..\PAPowerSweep\PAPowerSweep.csproj">
+      <Project>{f0eb81ce-47b0-4356-bd23-78b7013b0e48}</Project>
+      <Name>PAPowerSweep</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

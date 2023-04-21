@@ -15,22 +15,23 @@ namespace InstrumentDriverTest.InstrumentDrivers
 
         string gpibAddress { get; }
         private IMessageBasedSession visa = null;
+        public bool turnedOn { get; set; }
 
         public HP8350B(string gpibAddress)
         {
             this.gpibAddress = gpibAddress;
-            string res = "";
             try
             {
-                (visa, res) = VisaUtil.InitInstrument(this.gpibAddress);
+                (visa, _) = VisaUtil.InitInstrument(this.gpibAddress);
             }
             catch (Exception ex)
             {
                 throw ex;
             }
+            turnedOn = false;
         }
 
-        public void SetFrequency(double frequency, string freqBand)
+        public void SetCWFrequency(double frequency, string freqBand)
         {
             string band = "";
             if(freqBand.ToLower().Equals("mhz"))
@@ -56,7 +57,7 @@ namespace InstrumentDriverTest.InstrumentDrivers
             }
         }
 
-        public void SetRFPower(double power)
+        public void SetCWPower(double power)
         {
             string cmd = String.Format("PL{0}", power.ToString(CultureInfo.InvariantCulture.NumberFormat));
             try
@@ -69,12 +70,13 @@ namespace InstrumentDriverTest.InstrumentDrivers
             }
         }
 
-        public void TurnRFOnOff(bool turnOn)
+        public void TurnOnOff(bool turnOn)
         {
             string cmd = String.Format("RF{0}", turnOn);
             try
             {
                 VisaUtil.SendCmd(visa, cmd);
+                turnedOn = turnOn;
             }
             catch (Exception ex)
             {

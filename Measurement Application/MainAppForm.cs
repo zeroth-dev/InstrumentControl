@@ -1,4 +1,5 @@
 ﻿using LoadPullSystemControl;
+using PAPowerSweep;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -26,7 +27,11 @@ namespace Measurement_Application
                 case "Load pull app":
                     LoadPullForm app = new LoadPullForm();
                     app.ShowDialog();
-                        return;
+                    break;
+                case "Power sweep app":
+                    PowerSweepForm PowerSweepApp = new PowerSweepForm();
+                    PowerSweepApp.ShowDialog();
+                    break;
                 default:
                     break;
             }
@@ -35,6 +40,7 @@ namespace Measurement_Application
         private void InitAppList()
         {
             AppListBox.Items.Add("Load pull app");
+            AppListBox.Items.Add("Power sweep app");
         }
     }
 }

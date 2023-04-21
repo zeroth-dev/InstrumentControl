@@ -13,19 +13,24 @@ namespace InstrumentDriverTest.InstrumentDrivers
     {
         string gpibAddress { get; }
         private IMessageBasedSession visa = null;
+        public string idMsg { get; }
+        public bool[] turnedOn { get; set; }
 
         public E36300(string gpibAddress)
         {
             this.gpibAddress = gpibAddress;
-            string res = "";
             try
             {
-                (visa, res) = VisaUtil.InitInstrument(this.gpibAddress);
+                (visa, idMsg) = VisaUtil.InitInstrument(this.gpibAddress);
             }
             catch (Exception ex)
             {
                 throw ex;
             }
+
+            turnedOn = new bool[2];
+            turnedOn[0] = false;
+            turnedOn[1] = false;
         }
 
         /// <summary>
