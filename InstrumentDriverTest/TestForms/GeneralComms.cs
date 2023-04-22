@@ -22,7 +22,7 @@ namespace InstrumentDriverTest.TestForms
             try
             {
                 InstrumentList.Items.Clear();
-                var deviceList = Instruments.VisaUtil.GetConnectedDeviceList();
+                var deviceList = InstrumentDrivers.VisaUtil.GetConnectedDeviceList();
                 foreach (var device in deviceList)
                 {
                     InstrumentList.Items.Add(device);
@@ -42,7 +42,7 @@ namespace InstrumentDriverTest.TestForms
             {
                 var gpibAddress = InstrumentList.Text;
                 var cmd = CmdBox.Text;
-                var output = Instruments.VisaUtil.SendReceiveStringCmd(gpibAddress, cmd);
+                var output = InstrumentDrivers.VisaUtil.SendReceiveStringCmd(gpibAddress, cmd);
                 LogBox.AppendText(output + Environment.NewLine);
             }
             catch (Exception ex)

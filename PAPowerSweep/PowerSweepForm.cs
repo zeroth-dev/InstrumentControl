@@ -1,5 +1,7 @@
 ﻿using InstrumentDriverTest.InstrumentDrivers;
-using InstrumentDriverTest.Instruments;
+using InstrumentDriverTest.InstrumentDrivers.DCPowerSupply;
+using InstrumentDriverTest.InstrumentDrivers.RFSource;
+using InstrumentDriverTest.InstrumentDrivers.SpectrumAnalyzer;
 using PAPowerSweep.Properties;
 using System;
 using System.Collections.Generic;
@@ -19,9 +21,9 @@ namespace PAPowerSweep
     public partial class PowerSweepForm : Form
     {
 
-        E36300 dcPowerSupply;
-        HP8350B rfSource;
-        MS710 spectrumAnalyzer;
+        DCPowerSupply dcPowerSupply;
+        RFSource rfSource;
+        SpectrumAnalyzer spectrumAnalyzer;
         int count = 0;
 
         NumberFormatInfo provider = new NumberFormatInfo();
@@ -111,7 +113,7 @@ namespace PAPowerSweep
             }
             try
             {
-                bool turnOn = !dcPowerSupply.turnedOn[0];
+                bool turnOn = !dcPowerSupply.IsTurnedOn(0);
                 dcPowerSupply.TurnOnOff(1, turnOn);
 
                 // If we just turned it on, the button say "turn off" and vice-versa
@@ -132,7 +134,7 @@ namespace PAPowerSweep
             }
             try
             {
-                bool turnOn = !dcPowerSupply.turnedOn[1];
+                bool turnOn = !dcPowerSupply.IsTurnedOn(1);
                 dcPowerSupply.TurnOnOff(2, turnOn);
 
                 // If we just turned it on, the button say "turn off" and vice-versa
@@ -356,9 +358,9 @@ namespace PAPowerSweep
         }
         private (double, double, double, double, double, double) ReadData(double freq, string freqBand, double attenuation)
         {
-            double basePwr = spectrumAnalyzer.MeasAtFrequency(freq, freqBand) + attenuation;
-            double secondPwr = spectrumAnalyzer.MeasAtFrequency(2 * freq, freqBand) + attenuation;
-            double thirdPwr = spectrumAnalyzer.MeasAtFrequency(3 * freq, freqBand) + attenuation;
+            double basePwr = spectrumAnalyzer.MeasPeak(freq, freqBand) + attenuation;
+            double secondPwr = spectrumAnalyzer.MeasPeak(2 * freq, freqBand) + attenuation;
+            double thirdPwr = spectrumAnalyzer.MeasPeak(3 * freq, freqBand) + attenuation;
 
             SetText(BaseHarmBox, basePwr.ToString());
             SetText(ScndHarmBox, secondPwr.ToString());

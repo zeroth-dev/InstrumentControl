@@ -7,20 +7,24 @@ using System.Linq;
 using System.Numerics;
 using System.Threading;
 using System.Windows.Forms;
-using InstrumentDriverTest.Instruments;
 using LoadPullSystemControl.Util;
 using System.Threading.Tasks;
 using System.Drawing;
 using SmithPlot;
+using InstrumentDriverTest.InstrumentDrivers.DCPowerSupply;
+using InstrumentDriverTest.InstrumentDrivers.RFSource;
+using InstrumentDriverTest.InstrumentDrivers.SpectrumAnalyzer;
+using InstrumentDriverTest.InstrumentDrivers.Other;
+using InstrumentDriverTest.InstrumentDrivers;
 
 namespace LoadPullSystemControl
 {
     public partial class LoadPullForm : Form
     {
 
-        private E364xA dcPowerSupply;
-        private E44xxB rfSource;
-        N9000A spectrumAnalyzer;
+        private DCPowerSupply dcPowerSupply;
+        private RFSource rfSource;
+        SpectrumAnalyzer spectrumAnalyzer;
         MauryTunerDriver tuner;
         List<Complex> smithPoints;
 
@@ -51,7 +55,7 @@ namespace LoadPullSystemControl
             string gpibAddress = DCInstrumentList.Text;
             try
             {
-                dcPowerSupply = new E364xA(gpibAddress);
+                dcPowerSupply = new E364xA_2(gpibAddress);
                 LogText("Registered device:");
                 LogText(dcPowerSupply.idMsg);
             }
@@ -119,8 +123,8 @@ namespace LoadPullSystemControl
             }
             try
             {
-                bool turnOn = !dcPowerSupply.turnedOn;
-                dcPowerSupply.TurnOnOff(turnOn);
+                bool turnOn = !dcPowerSupply.IsTurnedOn(1);
+                dcPowerSupply.TurnAllOnOff(turnOn);
 
                 // If we just turned it on, the button say "turn off" and vice-versa
                 TurnOnDCSrcBtn.Text = String.Format("Turn {0}", turnOn ? "off" : "on");
@@ -539,7 +543,8 @@ namespace LoadPullSystemControl
             }
             string freqBand = FreqBandBox.Text;
 
-            dcPowerSupply.TurnOnOff(true);
+            dcPowerSupply.TurnOnOff(1, true);
+            dcPowerSupply.TurnOnOff(2, true);
             rfSource.TurnOnOff(true);
 
             // Start the iteration on a separate thread
@@ -596,7 +601,7 @@ namespace LoadPullSystemControl
                 if (ct.IsCancellationRequested)
                 {
                     rfSource.TurnOnOff(false);
-                    dcPowerSupply.TurnOnOff(false);
+                    dcPowerSupply.TurnAllOnOff(false);
                     return;
                 }
             }
@@ -631,7 +636,7 @@ namespace LoadPullSystemControl
                     if (ct.IsCancellationRequested)
                     {
                         rfSource.TurnOnOff(false);
-                        dcPowerSupply.TurnOnOff(false);
+                        dcPowerSupply.TurnAllOnOff(false);
                         return;
                     }
                 }
@@ -784,7 +789,7 @@ namespace LoadPullSystemControl
                 LogText("Process was completed");
             }
             rfSource.TurnOnOff(false);
-            dcPowerSupply.TurnOnOff(false);
+            dcPowerSupply.TurnAllOnOff(false);
             deembeddingDataIn.Clear();
             deembeddingDataOut.Clear();
 

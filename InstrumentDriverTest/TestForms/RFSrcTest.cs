@@ -1,4 +1,5 @@
-﻿using InstrumentDriverTest.Instruments;
+﻿using InstrumentDriverTest.InstrumentDrivers;
+using InstrumentDriverTest.InstrumentDrivers.RFSource;
 using Ivi.Visa;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace InstrumentDriverTest.TestForms
 {
     public partial class RFSrcTest : Form
     {
-        private E44xxB rfSource = null;
+        private RFSource rfSource = null;
         NumberFormatInfo provider = new NumberFormatInfo();
         public RFSrcTest()
         {
@@ -35,7 +36,7 @@ namespace InstrumentDriverTest.TestForms
             try
             {
                 InstrumentList.Items.Clear();
-                var deviceList = Instruments.VisaUtil.GetConnectedDeviceList();
+                var deviceList = InstrumentDrivers.VisaUtil.GetConnectedDeviceList();
                 foreach (var device in deviceList)
                 {
                     InstrumentList.Items.Add(device);
@@ -109,7 +110,7 @@ namespace InstrumentDriverTest.TestForms
         {
             try
             {
-                var output = Instruments.VisaUtil.SendReceiveStringCmd(rfSource.visa, CmdBox.Text);
+                var output = InstrumentDrivers.VisaUtil.SendReceiveStringCmd(rfSource.visa, CmdBox.Text);
                 LogBox.AppendText(output + Environment.NewLine);
             }
             catch (Exception ex)

@@ -1,4 +1,4 @@
-﻿using InstrumentDriverTest.Instruments;
+﻿using InstrumentDriverTest.InstrumentDrivers.DCPowerSupply;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,7 +14,7 @@ namespace InstrumentDriverTest.TestForms
 {
     public partial class DCTestForm : Form
     {
-        private E364xA dcPowerSupply;
+        private DCPowerSupply dcPowerSupply;
 
 
         NumberFormatInfo provider = new NumberFormatInfo();
@@ -29,7 +29,7 @@ namespace InstrumentDriverTest.TestForms
             try
             {
                 InstrumentList.Items.Clear();
-                var deviceList = Instruments.VisaUtil.GetConnectedDeviceList();
+                var deviceList = InstrumentDrivers.VisaUtil.GetConnectedDeviceList();
                 foreach(var device in deviceList)
                 {
                     InstrumentList.Items.Add(device);
@@ -48,7 +48,7 @@ namespace InstrumentDriverTest.TestForms
             string gpibAddress = InstrumentList.Text;
             try
             {
-                dcPowerSupply = new E364xA(gpibAddress);
+                dcPowerSupply = new E364xA_2(gpibAddress);
             }
             catch (Exception ex)
             {
@@ -103,7 +103,7 @@ namespace InstrumentDriverTest.TestForms
 
             try
             {
-                dcPowerSupply.TurnOnOff(true);
+                dcPowerSupply.TurnOnOff(1, true);
             }
             catch (Exception ex)
             {
@@ -121,7 +121,7 @@ namespace InstrumentDriverTest.TestForms
             }
             try
             {
-                dcPowerSupply.TurnOnOff(false);
+                dcPowerSupply.TurnOnOff(1, false);
             }
             catch(Exception ex)
             {
@@ -162,7 +162,7 @@ namespace InstrumentDriverTest.TestForms
 
             try
             {
-                dcPowerSupply.TurnOnOff(true);
+                dcPowerSupply.TurnOnOff(2, true);
             }
             catch (Exception ex)
             {
@@ -181,7 +181,7 @@ namespace InstrumentDriverTest.TestForms
 
             try
             {
-                dcPowerSupply.TurnOnOff(false);
+                dcPowerSupply.TurnOnOff(2, false);
             }
             catch (Exception ex)
             {
@@ -194,7 +194,7 @@ namespace InstrumentDriverTest.TestForms
         {
             try
             {
-                var output = Instruments.VisaUtil.SendReceiveStringCmd(dcPowerSupply.visa, CmdBox.Text);
+                var output = InstrumentDrivers.VisaUtil.SendReceiveStringCmd(dcPowerSupply.visa, CmdBox.Text);
                 LogBox.AppendText(output + Environment.NewLine);
             } 
             catch (Exception ex)

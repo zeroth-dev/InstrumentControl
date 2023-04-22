@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace InstrumentDriverTest.Instruments
+namespace InstrumentDriverTest.InstrumentDrivers.Other
 {
     public class MauryTunerFunctions
     {

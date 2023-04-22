@@ -5,9 +5,8 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 
-namespace InstrumentDriverTest.Instruments
+namespace InstrumentDriverTest.InstrumentDrivers.Oscilloscope
 {
     public class HP5412x
     {
@@ -162,7 +161,7 @@ namespace InstrumentDriverTest.Instruments
                 //time = (time - Xref) * Xinc + Xor;
                 List<double> yOutput = new List<double>();
                 List<double> xOutput = new List<double>();
-                List<double> baseX = Range(1, intData.Length);
+                List<double> baseX = Util.Range(1, intData.Length);
                 for (int i = 0; i < intData.Length; i++)
                 {
                     var y = intData[i];
@@ -193,21 +192,6 @@ namespace InstrumentDriverTest.Instruments
 
         }
 
-        /// <summary>
-        /// Utility function that returns a list of linear values increasing by 1 [min, max]
-        /// </summary>
-        /// <param name="min">Starting number in range</param>
-        /// <param name="max">Ending number in range</param>
-        /// <returns></returns>
-        private List<double> Range(double min, double max)
-        {
-            List<double> res = new List<double>();
-            for (; min <= max; min++)
-            {
-                res.Add(min);
-            }
-            return res;
-        }
     }
 
 }

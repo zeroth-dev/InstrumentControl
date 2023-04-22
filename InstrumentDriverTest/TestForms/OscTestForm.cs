@@ -1,4 +1,5 @@
-﻿using InstrumentDriverTest.Instruments;
+﻿using InstrumentDriverTest.InstrumentDrivers;
+using InstrumentDriverTest.InstrumentDrivers.Oscilloscope;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -27,7 +28,7 @@ namespace InstrumentDriverTest.TestForms
             try
             {
                 InstrumentList.Items.Clear();
-                var deviceList = Instruments.VisaUtil.GetConnectedDeviceList();
+                var deviceList = InstrumentDrivers.VisaUtil.GetConnectedDeviceList();
                 foreach (var device in deviceList)
                 {
                     InstrumentList.Items.Add(device);

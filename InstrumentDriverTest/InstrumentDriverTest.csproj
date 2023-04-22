@@ -27,6 +27,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -78,15 +79,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="InstrumentDrivers\E36300.cs" />
-    <Compile Include="InstrumentDrivers\HP8350B.cs" />
-    <Compile Include="InstrumentDrivers\E364xA.cs" />
-    <Compile Include="InstrumentDrivers\E44xxB.cs" />
-    <Compile Include="InstrumentDrivers\HP5412x.cs" />
-    <Compile Include="InstrumentDrivers\MauryTunerDriver.cs" />
-    <Compile Include="InstrumentDrivers\MauryTunerFunctions.cs" />
-    <Compile Include="InstrumentDrivers\MS710.cs" />
-    <Compile Include="InstrumentDrivers\N9000A.cs" />
+    <Compile Include="InstrumentDrivers\DCPowerSupply\E36300.cs" />
+    <Compile Include="InstrumentDrivers\RFSource\HP8350B.cs" />
+    <Compile Include="InstrumentDrivers\DCPowerSupply\E364xA_2.cs" />
+    <Compile Include="InstrumentDrivers\RFSource\E44xxB.cs" />
+    <Compile Include="InstrumentDrivers\Oscilloscope\HP5412x.cs" />
+    <Compile Include="InstrumentDrivers\Other\MauryTunerDriver.cs" />
+    <Compile Include="InstrumentDrivers\Other\MauryTunerFunctions.cs" />
+    <Compile Include="InstrumentDrivers\SpectrumAnalyzer\MS710.cs" />
+    <Compile Include="InstrumentDrivers\SpectrumAnalyzer\N9000A.cs" />
+    <Compile Include="InstrumentDrivers\DCPowerSupply\DCPowerSupply.cs" />
+    <Compile Include="InstrumentDrivers\GeneralDevice.cs" />
+    <Compile Include="InstrumentDrivers\RFSource\RFSource.cs" />
+    <Compile Include="InstrumentDrivers\SpectrumAnalyzer\SpectrumAnalyzer.cs" />
+    <Compile Include="InstrumentDrivers\Util.cs" />
     <Compile Include="InstrumentDrivers\VisaUtil.cs" />
     <Compile Include="MainApp.cs">
       <SubType>Form</SubType>
@@ -149,6 +155,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <EmbeddedResource Include="TestForms\DCTestForm.resx">
       <DependentUpon>DCTestForm.cs</DependentUpon>
@@ -193,6 +200,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="InstrumentDrivers\VNA\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,4 +1,5 @@
-﻿using InstrumentDriverTest.Instruments;
+﻿using InstrumentDriverTest.InstrumentDrivers;
+using InstrumentDriverTest.InstrumentDrivers.SpectrumAnalyzer;
 using InstrumentDriverTest.Properties;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ namespace InstrumentDriverTest.TestForms
     public partial class SATestForm : Form
     {
 
-        N9000A spectrumAnalyzer;
+        SpectrumAnalyzer spectrumAnalyzer;
 
         NumberFormatInfo provider = new NumberFormatInfo();
         public SATestForm()
@@ -37,7 +38,7 @@ namespace InstrumentDriverTest.TestForms
             try
             {
                 InstrumentList.Items.Clear();
-                var deviceList = Instruments.VisaUtil.GetConnectedDeviceList();
+                var deviceList = InstrumentDrivers.VisaUtil.GetConnectedDeviceList();
                 foreach (var device in deviceList)
                 {
                     InstrumentList.Items.Add(device);

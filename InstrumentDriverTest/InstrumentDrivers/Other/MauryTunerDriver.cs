@@ -10,7 +10,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 
-namespace InstrumentDriverTest.Instruments
+namespace InstrumentDriverTest.InstrumentDrivers.Other
 {
     /// <summary>
     /// Class <c>MauryTunerDriver</c> handles the tuner controls. Only supports a single input and output tuner

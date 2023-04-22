@@ -5,15 +5,14 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using InstrumentDriverTest.InstrumentDrivers.DCPowerSupply;
 using Ivi.Visa;
 
-namespace InstrumentDriverTest.Instruments
+namespace InstrumentDriverTest.InstrumentDrivers.DCPowerSupply
 {
-    public class E364xA
+    public class E364xA_2 : DCPowerSupply
     {
-        public string gpibAddress { get; }
-        public bool initialized = false;
-        public IMessageBasedSession visa = null;
+        const int NoOfSources = 2;
 
         // Defaults are the lower of the two options for the device
         double[] maxCurrent = { 1.4, 1.4 };
@@ -21,22 +20,9 @@ namespace InstrumentDriverTest.Instruments
         double[] maxVoltage = { 35, 35 };
         double[] minVoltage = { 0, 0 };
 
-        public bool turnedOn { get; set; }
-        public string idMsg { get; }
-        public E364xA(string gpibAddress)
-        {
-            this.gpibAddress = gpibAddress;
-            try
-            {
-                (visa, idMsg) = VisaUtil.InitInstrument(gpibAddress);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                throw ex;
-            }
-            initialized = true;
 
+        public E364xA_2(string gpibAddress) : base(gpibAddress)
+        {
             // Check the maximum and minimum currents for each terminal
             VisaUtil.SendCmd(visa, "INST OUTP1");
 
@@ -52,23 +38,12 @@ namespace InstrumentDriverTest.Instruments
             maxVoltage[1] = VisaUtil.SendReceiveFloatCmd(visa, "VOLT? MAX");
             minVoltage[1] = VisaUtil.SendReceiveFloatCmd(visa, "CURR? MIN");
 
-            turnedOn = false;
+            turnedOn = new bool[] { false };
         }
 
-        /// <summary>
-        /// Sets the maximum current for the specified source
-        /// </summary>
-        /// <param name="source">1 or 2 describing the source being modified</param>
-        /// <param name="limit">Maximum current</param>
-        /// <exception cref="Exception"></exception>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public void SetCurrentLimit(int source, double limit)
+        public override void SetCurrentLimit(int source, double limit)
         {
-            if (!initialized)
-            {
-                throw new Exception("Driver not initialized");
-            }
-            if (source != 1 && source != 2)
+            if (source < NoOfSources || source > NoOfSources)
             {
                 throw new ArgumentOutOfRangeException("Source can only be 1 or 2");
             }
@@ -92,20 +67,9 @@ namespace InstrumentDriverTest.Instruments
             }
         }
 
-        /// <summary>
-        /// Sets the maximum voltage for the specified source
-        /// </summary>
-        /// <param name="source">1 or 2 describing the source being modified</param>
-        /// <param name="limit">Maximum voltage</param>
-        /// <exception cref="Exception"></exception>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public void SetVoltageLimit(int source, double limit)
+        public override void SetVoltageLimit(int source, double limit)
         {
-            if (!initialized)
-            {
-                throw new Exception("Driver not initialized");
-            }
-            if (source != 1 && source != 2)
+            if (source < NoOfSources || source > NoOfSources)
             {
                 throw new ArgumentOutOfRangeException("Source can only be 1 or 2");
             }
@@ -128,20 +92,9 @@ namespace InstrumentDriverTest.Instruments
             }
         }
 
-        /// <summary>
-        /// Measures the current from the specified source
-        /// </summary>
-        /// <param name="source">1 or 2 describing the source</param>
-        /// <returns>Current output from the specified source</returns>
-        /// <exception cref="Exception"></exception>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public double ReadCurrent(int source)
+        public override double ReadCurrent(int source)
         {
-            if (!initialized)
-            {
-                throw new Exception("Driver not initialized");
-            }
-            if (source != 1 && source != 2)
+            if (source < NoOfSources || source > NoOfSources)
             {
                 throw new ArgumentOutOfRangeException("Source can only be 1 or 2");
             }
@@ -162,20 +115,9 @@ namespace InstrumentDriverTest.Instruments
 
         }
 
-        /// <summary>
-        /// Measures the voltage from the specified source
-        /// </summary>
-        /// <param name="source">1 or 2 describing the source</param>
-        /// <returns>Voltage on the specified output</returns>
-        /// <exception cref="Exception"></exception>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public double ReadVoltage(int source)
+        public override double ReadVoltage(int source)
         {
-            if (!initialized)
-            {
-                throw new Exception("Driver not initialized");
-            }
-            if (source != 1 && source != 2)
+            if (source < NoOfSources || source > NoOfSources)
             {
                 throw new ArgumentOutOfRangeException("Source can only be 1 or 2");
             }
@@ -196,23 +138,13 @@ namespace InstrumentDriverTest.Instruments
 
         }
 
-        /// <summary>
-        /// Turns the power supply on or off
-        /// </summary>
-        /// <param name="turnOn">true if turning the power supply ON and false otherwise</param>
-        /// <exception cref="Exception"></exception>
-        public void TurnOnOff(bool turnOn)
+        public override void TurnAllOnOff(bool turnOn)
         {
-            if (!initialized)
-            {
-                throw new Exception("Driver not initialized");
-            }
-
             try
             {
                 var msg = string.Format("OUTP {0}", turnOn == true ? "ON" : "OFF");
                 VisaUtil.SendCmd(visa, msg);
-                this.turnedOn = turnOn;
+                this.turnedOn[0] = turnOn;
             }
             catch (Exception ex)
             {
@@ -220,5 +152,21 @@ namespace InstrumentDriverTest.Instruments
             }
         }
 
+        public override void TurnOnOff(int source, bool turnOn)
+        {
+            // This device doesn't support turning on and off separate sources
+            TurnAllOnOff(turnOn);
+        }
+
+        public override bool IsTurnedOn(int source)
+        {
+            // This device doesn't support turning on and off separate sources
+            return IsTurnedOn();
+        }
+
+        public override bool IsTurnedOn()
+        {
+            return turnedOn[0];
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿using InstrumentDriverTest.Instruments;
+﻿using InstrumentDriverTest.InstrumentDrivers;
 using Ivi.Visa;
 using System;
 using System.Collections.Generic;
@@ -6,32 +6,27 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
 
-namespace InstrumentDriverTest.InstrumentDrivers
+namespace InstrumentDriverTest.InstrumentDrivers.RFSource
 {
-    public class HP8350B
+    public class HP8350B : RFSource
     {
 
-        string gpibAddress { get; }
-        private IMessageBasedSession visa = null;
-        public bool turnedOn { get; set; }
-
-        public HP8350B(string gpibAddress)
+        public HP8350B(string gpibAddress) : base()
         {
-            this.gpibAddress = gpibAddress;
+            base.gpibAddress = gpibAddress;
             try
             {
-                (visa, _) = VisaUtil.InitInstrument(this.gpibAddress);
+                (base.visa, _) = VisaUtil.InitInstrument(this.gpibAddress, "");
             }
             catch (Exception ex)
             {
                 throw ex;
             }
-            turnedOn = false;
+            base.turnedOn = false;
         }
 
-        public void SetCWFrequency(double frequency, string freqBand)
+        public override void SetCWFrequency(double frequency, string freqBand)
         {
             string band = "";
             if(freqBand.ToLower().Equals("mhz"))
@@ -57,7 +52,7 @@ namespace InstrumentDriverTest.InstrumentDrivers
             }
         }
 
-        public void SetCWPower(double power)
+        public override void SetCWPower(double power)
         {
             string cmd = String.Format("PL{0}", power.ToString(CultureInfo.InvariantCulture.NumberFormat));
             try
@@ -70,7 +65,7 @@ namespace InstrumentDriverTest.InstrumentDrivers
             }
         }
 
-        public void TurnOnOff(bool turnOn)
+        public override void TurnOnOff(bool turnOn)
         {
             string cmd = String.Format("RF{0}", turnOn);
             try

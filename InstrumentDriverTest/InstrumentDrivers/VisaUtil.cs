@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Ivi.Visa;
 using NationalInstruments.Visa;
-namespace InstrumentDriverTest.Instruments
+namespace InstrumentDriverTest.InstrumentDrivers
 {
     public class VisaUtil
     {
@@ -26,8 +26,10 @@ namespace InstrumentDriverTest.Instruments
 
                 // Get Intrument ID to verify that the connection works
                 visa = GlobalResourceManager.Open(gpibAddress) as IMessageBasedSession;
-                idOutput = SendReceiveStringCmd(visa, idMsg);
-
+                if (idMsg != "")
+                {
+                    idOutput = SendReceiveStringCmd(visa, idMsg);
+                }
                 return (visa, idOutput);
             }
             catch (Exception ex)

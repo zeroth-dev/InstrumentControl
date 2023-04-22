@@ -1,4 +1,5 @@
-﻿using InstrumentDriverTest.Instruments;
+﻿using InstrumentDriverTest.InstrumentDrivers;
+using InstrumentDriverTest.InstrumentDrivers.Other;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

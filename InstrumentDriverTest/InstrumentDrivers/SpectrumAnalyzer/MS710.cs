@@ -1,4 +1,4 @@
-﻿using InstrumentDriverTest.Instruments;
+﻿using InstrumentDriverTest.InstrumentDrivers;
 using Ivi.Visa;
 using Syncfusion.WinForms.SmithChart;
 using System;
@@ -8,14 +8,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace InstrumentDriverTest.InstrumentDrivers
+namespace InstrumentDriverTest.InstrumentDrivers.SpectrumAnalyzer
 {
-    public class MS710
+    public class MS710 : SpectrumAnalyzer
     {
-        string gpibAddress { get; }
-        private IMessageBasedSession visa = null;
-
-        public MS710(string gpibAddress)
+        
+        public MS710(string gpibAddress) : base()
         {
             this.gpibAddress = gpibAddress;
             string res = "";
@@ -29,16 +27,7 @@ namespace InstrumentDriverTest.InstrumentDrivers
             }
         } 
 
-        /// <summary>
-        /// Set the starting and final frequency for the measurement
-        /// </summary>
-        /// <param name="startFreq">Starting frequency</param>
-        /// <param name="stopFreq">Final frequency</param>
-        /// <param name="freqBandStart">Frequency band of the starting frequency</param>
-        /// <param name="freqBandStop">Frequency band of the final frequency</param>
-        /// <exception cref="Exception"></exception>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public void SetCentralFrequency(double frequency, string freqBand)
+        public override void SetCentralFrequency(double frequency, double span, string freqBand)
         {
 
             if (frequency < 0)
@@ -56,12 +45,7 @@ namespace InstrumentDriverTest.InstrumentDrivers
             }
         }
 
-        /// <summary>
-        /// Measures the power at the central frequency from the SA
-        /// </summary>
-        /// <returns>Measured power in dBm</returns>
-        /// <exception cref="Exception"></exception>
-        public double MeasCentralPower()
+        public override double MeasCentralPower()
         {
             try
             {
@@ -86,13 +70,23 @@ namespace InstrumentDriverTest.InstrumentDrivers
         {
             try
             {
-                SetCentralFrequency(frequency, freqBand);
+                SetCentralFrequency(frequency, 0, freqBand);
                 return MeasCentralPower();
             }
             catch(Exception ex)
             {
                 throw ex;
             }
+        }
+
+        public override void SetStartStopFrequency(int startFreq, int stopFreq, string freqBandStart, string freqBandStop)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override double MeasPeak(double frequency, string freqBand)
+        {
+            throw new NotImplementedException();
         }
     }
 }
