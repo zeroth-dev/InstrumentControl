@@ -43,7 +43,7 @@ namespace InstrumentDriverTest.InstrumentDrivers.DCPowerSupply
 
         public override void SetCurrentLimit(int source, double limit)
         {
-            if (source < NoOfSources || source > NoOfSources)
+            if (source < 1 || source > NoOfSources)
             {
                 throw new ArgumentOutOfRangeException("Source can only be 1 or 2");
             }
@@ -69,7 +69,7 @@ namespace InstrumentDriverTest.InstrumentDrivers.DCPowerSupply
 
         public override void SetVoltageLimit(int source, double limit)
         {
-            if (source < NoOfSources || source > NoOfSources)
+            if (source < 1 || source > NoOfSources)
             {
                 throw new ArgumentOutOfRangeException("Source can only be 1 or 2");
             }
@@ -94,7 +94,7 @@ namespace InstrumentDriverTest.InstrumentDrivers.DCPowerSupply
 
         public override double ReadCurrent(int source)
         {
-            if (source < NoOfSources || source > NoOfSources)
+            if (source < 1 || source > NoOfSources)
             {
                 throw new ArgumentOutOfRangeException("Source can only be 1 or 2");
             }
@@ -117,7 +117,7 @@ namespace InstrumentDriverTest.InstrumentDrivers.DCPowerSupply
 
         public override double ReadVoltage(int source)
         {
-            if (source < NoOfSources || source > NoOfSources)
+            if (source < 1 || source > NoOfSources)
             {
                 throw new ArgumentOutOfRangeException("Source can only be 1 or 2");
             }

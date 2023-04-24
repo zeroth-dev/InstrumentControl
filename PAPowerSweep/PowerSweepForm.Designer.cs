@@ -392,6 +392,7 @@
             this.RefreshListBtn.TabIndex = 3;
             this.RefreshListBtn.Text = "Refresh list";
             this.RefreshListBtn.UseVisualStyleBackColor = true;
+            this.RefreshListBtn.Click += new System.EventHandler(this.RefreshListBtn_Click);
             // 
             // groupBox9
             // 
@@ -471,7 +472,6 @@
             // 
             // StartBtn
             // 
-            this.StartBtn.Enabled = false;
             this.StartBtn.Location = new System.Drawing.Point(8, 367);
             this.StartBtn.Name = "StartBtn";
             this.StartBtn.Size = new System.Drawing.Size(91, 23);

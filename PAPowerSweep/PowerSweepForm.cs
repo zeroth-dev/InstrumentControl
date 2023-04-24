@@ -45,7 +45,7 @@ namespace PAPowerSweep
             string gpibAddress = DCInstrumentList.Text;
             try
             {
-                dcPowerSupply = new E36300(gpibAddress);
+                dcPowerSupply = new E364xA_2(gpibAddress);
                 LogText("Registered device:");
                 LogText(dcPowerSupply.idMsg);
             }
@@ -169,7 +169,9 @@ namespace PAPowerSweep
             string gpibAddress = RFInstrumentList.Text;
             try
             {
-                rfSource = new HP8350B(gpibAddress);
+                rfSource = new E44xxB(gpibAddress);
+                LogText("Registered device:");
+                LogText(rfSource.idMsg);
             }
             catch (Exception ex)
             {
@@ -246,7 +248,9 @@ namespace PAPowerSweep
             string gpibAddress = SAInstrumentList.Text;
             try
             {
-                spectrumAnalyzer = new MS710(gpibAddress);
+                spectrumAnalyzer = new N9000A(gpibAddress);
+                LogText("Registered device:");
+                LogText(spectrumAnalyzer.idMsg);
             }
             catch (Exception ex)
             {
@@ -330,6 +334,9 @@ namespace PAPowerSweep
             count = (int)((endPower - startPower) / step);
 
             ProgressLabel.Text = "0/" + count;
+            rfSource.TurnOnOff(true);
+            dcPowerSupply.TurnOnOff(1, true);
+            dcPowerSupply.TurnOnOff(2, true);
             Task.Factory.StartNew(() =>
             {
                 IteratePower(filename, freq, freqBand, startPower, endPower, step, attenuation, gain);
@@ -347,15 +354,17 @@ namespace PAPowerSweep
                 double basePwr, secondPwr, thirdPwr, Vd, Id, Vg;
                 (basePwr, secondPwr, thirdPwr, Vd, Id, Vg) = ReadData(freq, freqBand, attenuation);
 
-                OutputData(filename, Vg, Vd, Id, power, basePwr+attenuation, secondPwr+attenuation, thirdPwr+attenuation);
+                OutputData(filename, Vg, Vd, Id, power, basePwr, secondPwr, thirdPwr);
                 progress++;
                 UpdateProgress(progress, count);
 
-                rfSource.TurnOnOff(false);
-                dcPowerSupply.TurnOnOff(1, false);
-                dcPowerSupply.TurnOnOff(2, false);
             }
+
+            rfSource.TurnOnOff(false);
+            dcPowerSupply.TurnOnOff(1, false);
+            dcPowerSupply.TurnOnOff(2, false);
         }
+
         private (double, double, double, double, double, double) ReadData(double freq, string freqBand, double attenuation)
         {
             double basePwr = spectrumAnalyzer.MeasPeak(freq, freqBand) + attenuation;
@@ -411,6 +420,31 @@ namespace PAPowerSweep
             rfSource.TurnOnOff(false);
             dcPowerSupply.TurnOnOff(2, false);
             dcPowerSupply.TurnOnOff(1, false);
+        }
+
+        private void RefreshListBtn_Click(object sender, EventArgs e)
+        {
+
+            try
+            {
+                DCInstrumentList.Items.Clear();
+                RFInstrumentList.Items.Clear();
+                SAInstrumentList.Items.Clear();
+                var deviceList = VisaUtil.GetConnectedDeviceList();
+                foreach (var device in deviceList)
+                {
+                    DCInstrumentList.Items.Add(device);
+                    RFInstrumentList.Items.Add(device);
+                    SAInstrumentList.Items.Add(device);
+                }
+                DCInstrumentList.SelectedIndex = 0;
+                RFInstrumentList.SelectedIndex = 0;
+                SAInstrumentList.SelectedIndex = 0;
+            }
+            catch (Exception ex)
+            {
+                LogBox.AppendText(ex.Message + Environment.NewLine);
+            }
         }
     }
 

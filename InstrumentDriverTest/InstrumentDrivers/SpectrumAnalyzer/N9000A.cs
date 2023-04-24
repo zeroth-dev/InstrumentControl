@@ -81,7 +81,7 @@ namespace InstrumentDriverTest.InstrumentDrivers.SpectrumAnalyzer
             {
                 SetCentralFrequency(frequency, 0.1, freqBand);
 
-                Thread.Sleep(100);
+                Thread.Sleep(2000);
                 var msg = string.Format("CALC:MARK1:MAX");
                 VisaUtil.SendCmd(visa, msg);
                 Thread.Sleep(100);
