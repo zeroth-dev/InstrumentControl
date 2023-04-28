@@ -61,7 +61,7 @@ namespace InstrumentDriverTest.InstrumentDrivers.DCPowerSupply
         {
             try
             {
-                string msg = String.Format("MEAS:CURR? CH{0}", source);
+                string msg = String.Format("MEAS:CURR? (@{0})", source);
                 double current = VisaUtil.SendReceiveFloatCmd(visa, msg);
                 return current;
             }
@@ -75,7 +75,7 @@ namespace InstrumentDriverTest.InstrumentDrivers.DCPowerSupply
         {
             try
             {
-                string msg = String.Format("MEAS:VOLT? CH{0}", source);
+                string msg = String.Format("MEAS:VOLT? (@{0})", source);
                 double current = VisaUtil.SendReceiveFloatCmd(visa, msg);
                 return current;
             }
