@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4016DDF7-1DA3-47D6-8DD8-D2A390AD078B}</ProjectGuid>
+    <ProjectGuid>{B2D0A82E-6BB3-4296-8EA4-DF3D85D56524}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>Measurement_Application</RootNamespace>
-    <AssemblyName>Measurement Application</AssemblyName>
+    <RootNamespace>Tone_2Test</RootNamespace>
+    <AssemblyName>Tone_2Test</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -46,16 +46,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MainAppForm.cs">
+    <Compile Include="Tone_2Test.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainAppForm.Designer.cs">
-      <DependentUpon>MainAppForm.cs</DependentUpon>
+    <Compile Include="Tone_2Test.Designer.cs">
+      <DependentUpon>Tone_2Test.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="MainAppForm.resx">
-      <DependentUpon>MainAppForm.cs</DependentUpon>
+    <EmbeddedResource Include="Tone_2Test.resx">
+      <DependentUpon>Tone_2Test.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -80,21 +80,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\LoadPullSystemControll\LoadPullSystemControl.csproj">
-      <Project>{67e60abe-0a5f-4028-8e19-38452778281d}</Project>
-      <Name>LoadPullSystemControl</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\PAPowerSweep\PAPowerSweep.csproj">
-      <Project>{f0eb81ce-47b0-4356-bd23-78b7013b0e48}</Project>
-      <Name>PAPowerSweep</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Tone_2Test\Tone_2Test.csproj">
-      <Project>{b2d0a82e-6bb3-4296-8ea4-df3d85d56524}</Project>
-      <Name>Tone_2Test</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TransistorOutputChars\TransistorOutputChars.csproj">
-      <Project>{0c3ba578-6cad-415a-8af2-864e24593f02}</Project>
-      <Name>TransistorOutputChars</Name>
+    <ProjectReference Include="..\InstrumentDriverTest\InstrumentDriverTest.csproj">
+      <Project>{5657c427-bd63-4aea-b6c5-f307c33e4b10}</Project>
+      <Name>InstrumentDriverTest</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -9,6 +9,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Tone_2Test;
+using TransistorOutputChars;
 
 namespace Measurement_Application
 {
@@ -32,6 +34,14 @@ namespace Measurement_Application
                     PowerSweepForm PowerSweepApp = new PowerSweepForm();
                     PowerSweepApp.ShowDialog();
                     break;
+                case "2 Tone test app":
+                    Tone_2Test_Form tone_2Test = new Tone_2Test_Form();
+                    tone_2Test.ShowDialog();
+                    break;
+                case "DC Characteristics":
+                    TransistorOutputCharsForm transistorOutputCharsForm = new TransistorOutputCharsForm();
+                    transistorOutputCharsForm.ShowDialog();
+                    break;
                 default:
                     break;
             }
@@ -41,6 +51,8 @@ namespace Measurement_Application
         {
             AppListBox.Items.Add("Load pull app");
             AppListBox.Items.Add("Power sweep app");
+            AppListBox.Items.Add("2 Tone test app");
+            AppListBox.Items.Add("DC Characteristics");
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace TransistorOutputChars
+namespace Tone_2Test
 {
     internal static class Program
     {
@@ -16,7 +16,7 @@ namespace TransistorOutputChars
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new TransistorOutputCharsForm());
+            Application.Run(new Tone_2Test_Form());
         }
     }
 }

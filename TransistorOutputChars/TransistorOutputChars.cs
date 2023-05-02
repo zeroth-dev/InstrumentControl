@@ -19,11 +19,11 @@ using TransistorOutputChars.Properties;
 
 namespace TransistorOutputChars
 {
-    public partial class TransistorOutputChars : Form
+    public partial class TransistorOutputCharsForm : Form
     {
         DCPowerSupply dcPowerSupply;
         NumberFormatInfo provider = new NumberFormatInfo();
-        public TransistorOutputChars()
+        public TransistorOutputCharsForm()
         {
             InitializeComponent();
             provider.NumberDecimalSeparator = ".";

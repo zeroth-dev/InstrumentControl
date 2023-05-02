@@ -1,6 +1,6 @@
 ﻿namespace TransistorOutputChars
 {
-    partial class TransistorOutputChars
+    partial class TransistorOutputCharsForm
     {
         /// <summary>
         /// Required designer variable.
