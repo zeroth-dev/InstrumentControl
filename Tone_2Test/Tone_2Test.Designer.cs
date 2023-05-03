@@ -93,6 +93,10 @@
             this.SetRFPowerBox = new System.Windows.Forms.Label();
             this.BaseHarmBox = new System.Windows.Forms.TextBox();
             this.LogBox = new System.Windows.Forms.RichTextBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.label14 = new System.Windows.Forms.Label();
+            this.textBox2 = new System.Windows.Forms.TextBox();
             this.groupBox2.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -431,6 +435,10 @@
             // 
             // groupBox9
             // 
+            this.groupBox9.Controls.Add(this.label14);
+            this.groupBox9.Controls.Add(this.textBox2);
+            this.groupBox9.Controls.Add(this.label13);
+            this.groupBox9.Controls.Add(this.textBox1);
             this.groupBox9.Controls.Add(this.StopBtn);
             this.groupBox9.Controls.Add(this.label10);
             this.groupBox9.Controls.Add(this.OffsetFreqBox);
@@ -522,6 +530,7 @@
             this.BrowseSaveFileBtn.TabIndex = 29;
             this.BrowseSaveFileBtn.Text = "Browse";
             this.BrowseSaveFileBtn.UseVisualStyleBackColor = true;
+            this.BrowseSaveFileBtn.Click += new System.EventHandler(this.BrowseSaveFileBtn_Click);
             // 
             // label40
             // 
@@ -692,7 +701,7 @@
             // 
             this.CWFreqBox.Location = new System.Drawing.Point(5, 46);
             this.CWFreqBox.Name = "CWFreqBox";
-            this.CWFreqBox.Size = new System.Drawing.Size(100, 20);
+            this.CWFreqBox.Size = new System.Drawing.Size(87, 20);
             this.CWFreqBox.TabIndex = 2;
             // 
             // StartBox
@@ -735,7 +744,39 @@
             this.LogBox.TabIndex = 35;
             this.LogBox.Text = "";
             // 
-            // Tone_2Test
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(98, 28);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(63, 13);
+            this.label13.TabIndex = 36;
+            this.label13.Text = "Span [MHz]";
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(98, 46);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(87, 20);
+            this.textBox1.TabIndex = 35;
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(191, 27);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(53, 13);
+            this.label14.TabIndex = 38;
+            this.label14.Text = "BW [kHz]";
+            // 
+            // textBox2
+            // 
+            this.textBox2.Location = new System.Drawing.Point(191, 46);
+            this.textBox2.Name = "textBox2";
+            this.textBox2.Size = new System.Drawing.Size(87, 20);
+            this.textBox2.TabIndex = 37;
+            // 
+            // Tone_2Test_Form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -744,7 +785,7 @@
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox17);
             this.Controls.Add(this.groupBox9);
-            this.Name = "Tone_2Test";
+            this.Name = "Tone_2Test_Form";
             this.Text = "2 Tone Test";
             this.groupBox2.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
@@ -826,6 +867,10 @@
         private System.Windows.Forms.TextBox BaseHarmBox;
         private System.Windows.Forms.Button StopBtn;
         private System.Windows.Forms.RichTextBox LogBox;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.TextBox textBox1;
     }
 }
 

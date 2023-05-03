@@ -448,5 +448,17 @@ namespace Tone_2Test
         {
             tokenSource.Cancel();
         }
+
+        private void BrowseSaveFileBtn_Click(object sender, EventArgs e)
+        {
+            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+            {
+                saveFileDialog.Title = "De-embedding data";
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    FileNameBox.Text = saveFileDialog.FileName;
+                }
+            }
+        }
     }
 }

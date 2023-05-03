@@ -20,7 +20,11 @@ namespace InstrumentDriverTest.InstrumentDrivers.SpectrumAnalyzer
         /// <param name="freqBand">Frequency band for the specified frequency</param>
         /// <exception cref="Exception"></exception>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public abstract void SetCentralFrequency(double frequency, double span, string freqBand);
+        public abstract void SetCentralFrequency(double frequency, string freqBand);
+
+        public abstract void SetSpan(double span, string freqBand);
+
+        public abstract void SetBW(double bw, string freqBand);
 
         /// <summary>
         /// Set the starting and final frequency for the measurement

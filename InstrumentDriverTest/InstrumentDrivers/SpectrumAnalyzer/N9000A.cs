@@ -18,21 +18,54 @@ namespace InstrumentDriverTest.InstrumentDrivers.SpectrumAnalyzer
             VisaUtil.SendCmd(visa, "FORM:DATA ASCII");
         }
 
-        public override void SetCentralFrequency(double frequency, double span, string freqBand)
+        public override void SetCentralFrequency(double frequency, string freqBand)
         {
-            if (frequency < 0 || span < 0)
+            if (frequency < 0)
             {
-                throw new ArgumentOutOfRangeException("Frequency and bandwith cannot be negative");
+                throw new ArgumentOutOfRangeException("Frequency cannot be negative");
             }
 
             try
             {
                 var msg = string.Format("FREQ:CENT {0} {1}", frequency.ToString(CultureInfo.InvariantCulture.NumberFormat), freqBand);
                 VisaUtil.SendCmd(visa, msg);
-                msg = string.Format("FREQ:SPAN {0} {1}", span.ToString(CultureInfo.InvariantCulture.NumberFormat), freqBand);
-                VisaUtil.SendCmd(visa, msg);
+               
             }
             catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public override void SetSpan(double span, string freqBand)
+        {
+            if (span < 0)
+            {
+                throw new ArgumentOutOfRangeException("Span cannot be negative");
+            }
+            try 
+            {
+                string msg = string.Format("FREQ:SPAN {0} {1}", span.ToString(CultureInfo.InvariantCulture.NumberFormat), freqBand);
+                VisaUtil.SendCmd(visa, msg);
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public override void SetBW(double bw, string freqBand)
+        {
+            if(bw < 0)
+            { 
+                throw new ArgumentOutOfRangeException("Bandwith cannot be negative"); 
+            }
+            try
+            {
+                string msg = string.Format("OBW:BAND {0} {1}", bw.ToString(CultureInfo.InvariantCulture.NumberFormat), freqBand);
+                VisaUtil.SendCmd(visa, msg);
+            }
+            catch(Exception ex)
             {
                 throw ex;
             }
@@ -79,10 +112,11 @@ namespace InstrumentDriverTest.InstrumentDrivers.SpectrumAnalyzer
 
             try
             {
-                SetCentralFrequency(frequency, 0.1, freqBand);
-
-                Thread.Sleep(2000);
-                var msg = string.Format("CALC:MARK1:MAX");
+                SetCentralFrequency(frequency, freqBand);
+                var msg = string.Format("ACP:SWE:TIME?");
+                double sweepTime = VisaUtil.SendReceiveFloatCmd(visa, msg);
+                Thread.Sleep((int)sweepTime);
+                msg = string.Format("CALC:MARK1:X {0} {1}", frequency, freqBand);
                 VisaUtil.SendCmd(visa, msg);
                 Thread.Sleep(100);
                 msg = string.Format("CALC:MARK1:Y?");

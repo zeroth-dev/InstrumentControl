@@ -34,18 +34,12 @@
             this.DCInstrumentList = new System.Windows.Forms.ComboBox();
             this.RefreshListBtn = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.Src1CurrentBox = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.Src1MinVBox = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.Src1MaxVBox = new System.Windows.Forms.TextBox();
-            this.label11 = new System.Windows.Forms.Label();
-            this.Src1StepVBox = new System.Windows.Forms.TextBox();
+            this.BrowseSaveFileBtn = new System.Windows.Forms.Button();
+            this.label40 = new System.Windows.Forms.Label();
+            this.FileNameBox = new System.Windows.Forms.TextBox();
+            this.StartBtn = new System.Windows.Forms.Button();
+            this.label17 = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label5 = new System.Windows.Forms.Label();
             this.Src2StepVBox = new System.Windows.Forms.TextBox();
@@ -58,18 +52,26 @@
             this.label13 = new System.Windows.Forms.Label();
             this.Src2MinVBox = new System.Windows.Forms.TextBox();
             this.label14 = new System.Windows.Forms.Label();
-            this.label15 = new System.Windows.Forms.Label();
             this.MaxPowerBox = new System.Windows.Forms.TextBox();
-            this.label17 = new System.Windows.Forms.Label();
-            this.StartBtn = new System.Windows.Forms.Button();
-            this.BrowseSaveFileBtn = new System.Windows.Forms.Button();
-            this.label40 = new System.Windows.Forms.Label();
-            this.FileNameBox = new System.Windows.Forms.TextBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.Src1StepVBox = new System.Windows.Forms.TextBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.Src1MaxVBox = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.Src1CurrentBox = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.Src1MinVBox = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.LogBox = new System.Windows.Forms.RichTextBox();
+            this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.groupBox17.SuspendLayout();
             this.groupBox2.SuspendLayout();
-            this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.groupBox3.SuspendLayout();
+            this.toolStripContainer1.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox17
@@ -140,116 +142,59 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "DC setup";
             // 
-            // groupBox3
+            // BrowseSaveFileBtn
             // 
-            this.groupBox3.Controls.Add(this.label11);
-            this.groupBox3.Controls.Add(this.Src1StepVBox);
-            this.groupBox3.Controls.Add(this.label10);
-            this.groupBox3.Controls.Add(this.Src1MaxVBox);
-            this.groupBox3.Controls.Add(this.label9);
-            this.groupBox3.Controls.Add(this.label3);
-            this.groupBox3.Controls.Add(this.Src1CurrentBox);
-            this.groupBox3.Controls.Add(this.label4);
-            this.groupBox3.Controls.Add(this.label2);
-            this.groupBox3.Controls.Add(this.Src1MinVBox);
-            this.groupBox3.Controls.Add(this.label1);
-            this.groupBox3.Location = new System.Drawing.Point(6, 19);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(269, 188);
-            this.groupBox3.TabIndex = 4;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Source 1";
+            this.BrowseSaveFileBtn.Location = new System.Drawing.Point(662, 121);
+            this.BrowseSaveFileBtn.Name = "BrowseSaveFileBtn";
+            this.BrowseSaveFileBtn.Size = new System.Drawing.Size(75, 23);
+            this.BrowseSaveFileBtn.TabIndex = 32;
+            this.BrowseSaveFileBtn.Text = "Browse";
+            this.BrowseSaveFileBtn.UseVisualStyleBackColor = true;
+            this.BrowseSaveFileBtn.Click += new System.EventHandler(this.BrowseSaveFileBtn_Click);
             // 
-            // label3
+            // label40
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(84, 108);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(14, 13);
-            this.label3.TabIndex = 7;
-            this.label3.Text = "A";
+            this.label40.AutoSize = true;
+            this.label40.Location = new System.Drawing.Point(554, 108);
+            this.label40.Name = "label40";
+            this.label40.Size = new System.Drawing.Size(52, 13);
+            this.label40.TabIndex = 31;
+            this.label40.Text = "File name";
             // 
-            // Src1CurrentBox
+            // FileNameBox
             // 
-            this.Src1CurrentBox.Location = new System.Drawing.Point(6, 101);
-            this.Src1CurrentBox.Name = "Src1CurrentBox";
-            this.Src1CurrentBox.Size = new System.Drawing.Size(75, 20);
-            this.Src1CurrentBox.TabIndex = 5;
+            this.FileNameBox.Location = new System.Drawing.Point(556, 124);
+            this.FileNameBox.Name = "FileNameBox";
+            this.FileNameBox.Size = new System.Drawing.Size(100, 20);
+            this.FileNameBox.TabIndex = 30;
             // 
-            // label4
+            // StartBtn
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 85);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(59, 13);
-            this.label4.TabIndex = 6;
-            this.label4.Text = "Set current";
+            this.StartBtn.Location = new System.Drawing.Point(556, 164);
+            this.StartBtn.Name = "StartBtn";
+            this.StartBtn.Size = new System.Drawing.Size(75, 23);
+            this.StartBtn.TabIndex = 25;
+            this.StartBtn.Text = "Start";
+            this.StartBtn.UseVisualStyleBackColor = true;
+            this.StartBtn.Click += new System.EventHandler(this.StartBtn_Click);
             // 
-            // label2
+            // label17
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(249, 61);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(14, 13);
-            this.label2.TabIndex = 4;
-            this.label2.Text = "V";
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(637, 80);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(18, 13);
+            this.label17.TabIndex = 16;
+            this.label17.Text = "W";
             // 
-            // Src1MinVBox
+            // label15
             // 
-            this.Src1MinVBox.Location = new System.Drawing.Point(6, 58);
-            this.Src1MinVBox.Name = "Src1MinVBox";
-            this.Src1MinVBox.Size = new System.Drawing.Size(75, 20);
-            this.Src1MinVBox.TabIndex = 2;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 23);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(61, 13);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "Set voltage";
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(6, 42);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(24, 13);
-            this.label9.TabIndex = 8;
-            this.label9.Text = "Min";
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(87, 42);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(27, 13);
-            this.label10.TabIndex = 10;
-            this.label10.Text = "Max";
-            // 
-            // Src1MaxVBox
-            // 
-            this.Src1MaxVBox.Location = new System.Drawing.Point(87, 58);
-            this.Src1MaxVBox.Name = "Src1MaxVBox";
-            this.Src1MaxVBox.Size = new System.Drawing.Size(75, 20);
-            this.Src1MaxVBox.TabIndex = 9;
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(168, 42);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(29, 13);
-            this.label11.TabIndex = 12;
-            this.label11.Text = "Step";
-            // 
-            // Src1StepVBox
-            // 
-            this.Src1StepVBox.Location = new System.Drawing.Point(168, 58);
-            this.Src1StepVBox.Name = "Src1StepVBox";
-            this.Src1StepVBox.Size = new System.Drawing.Size(75, 20);
-            this.Src1StepVBox.TabIndex = 11;
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(556, 61);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(59, 13);
+            this.label15.TabIndex = 14;
+            this.label15.Text = "Max power";
             // 
             // groupBox1
             // 
@@ -362,15 +307,6 @@
             this.label14.TabIndex = 3;
             this.label14.Text = "Set voltage";
             // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(556, 61);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(59, 13);
-            this.label15.TabIndex = 14;
-            this.label15.Text = "Max power";
-            // 
             // MaxPowerBox
             // 
             this.MaxPowerBox.Location = new System.Drawing.Point(556, 77);
@@ -378,50 +314,117 @@
             this.MaxPowerBox.Size = new System.Drawing.Size(75, 20);
             this.MaxPowerBox.TabIndex = 13;
             // 
-            // label17
+            // groupBox3
             // 
-            this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(637, 80);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(18, 13);
-            this.label17.TabIndex = 16;
-            this.label17.Text = "W";
+            this.groupBox3.Controls.Add(this.toolStripContainer1);
+            this.groupBox3.Controls.Add(this.label11);
+            this.groupBox3.Controls.Add(this.Src1StepVBox);
+            this.groupBox3.Controls.Add(this.label10);
+            this.groupBox3.Controls.Add(this.Src1MaxVBox);
+            this.groupBox3.Controls.Add(this.label9);
+            this.groupBox3.Controls.Add(this.label3);
+            this.groupBox3.Controls.Add(this.Src1CurrentBox);
+            this.groupBox3.Controls.Add(this.label4);
+            this.groupBox3.Controls.Add(this.label2);
+            this.groupBox3.Controls.Add(this.Src1MinVBox);
+            this.groupBox3.Controls.Add(this.label1);
+            this.groupBox3.Location = new System.Drawing.Point(6, 19);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(269, 188);
+            this.groupBox3.TabIndex = 4;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Source 1";
             // 
-            // StartBtn
+            // label11
             // 
-            this.StartBtn.Location = new System.Drawing.Point(556, 164);
-            this.StartBtn.Name = "StartBtn";
-            this.StartBtn.Size = new System.Drawing.Size(75, 23);
-            this.StartBtn.TabIndex = 25;
-            this.StartBtn.Text = "Start";
-            this.StartBtn.UseVisualStyleBackColor = true;
-            this.StartBtn.Click += new System.EventHandler(this.StartBtn_Click);
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(168, 42);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(29, 13);
+            this.label11.TabIndex = 12;
+            this.label11.Text = "Step";
             // 
-            // BrowseSaveFileBtn
+            // Src1StepVBox
             // 
-            this.BrowseSaveFileBtn.Location = new System.Drawing.Point(662, 121);
-            this.BrowseSaveFileBtn.Name = "BrowseSaveFileBtn";
-            this.BrowseSaveFileBtn.Size = new System.Drawing.Size(75, 23);
-            this.BrowseSaveFileBtn.TabIndex = 32;
-            this.BrowseSaveFileBtn.Text = "Browse";
-            this.BrowseSaveFileBtn.UseVisualStyleBackColor = true;
-            this.BrowseSaveFileBtn.Click += new System.EventHandler(this.BrowseSaveFileBtn_Click);
+            this.Src1StepVBox.Location = new System.Drawing.Point(168, 58);
+            this.Src1StepVBox.Name = "Src1StepVBox";
+            this.Src1StepVBox.Size = new System.Drawing.Size(75, 20);
+            this.Src1StepVBox.TabIndex = 11;
             // 
-            // label40
+            // label10
             // 
-            this.label40.AutoSize = true;
-            this.label40.Location = new System.Drawing.Point(554, 108);
-            this.label40.Name = "label40";
-            this.label40.Size = new System.Drawing.Size(52, 13);
-            this.label40.TabIndex = 31;
-            this.label40.Text = "File name";
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(87, 42);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(27, 13);
+            this.label10.TabIndex = 10;
+            this.label10.Text = "Max";
             // 
-            // FileNameBox
+            // Src1MaxVBox
             // 
-            this.FileNameBox.Location = new System.Drawing.Point(556, 124);
-            this.FileNameBox.Name = "FileNameBox";
-            this.FileNameBox.Size = new System.Drawing.Size(100, 20);
-            this.FileNameBox.TabIndex = 30;
+            this.Src1MaxVBox.Location = new System.Drawing.Point(87, 58);
+            this.Src1MaxVBox.Name = "Src1MaxVBox";
+            this.Src1MaxVBox.Size = new System.Drawing.Size(75, 20);
+            this.Src1MaxVBox.TabIndex = 9;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(6, 42);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(24, 13);
+            this.label9.TabIndex = 8;
+            this.label9.Text = "Min";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(84, 108);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(14, 13);
+            this.label3.TabIndex = 7;
+            this.label3.Text = "A";
+            // 
+            // Src1CurrentBox
+            // 
+            this.Src1CurrentBox.Location = new System.Drawing.Point(6, 101);
+            this.Src1CurrentBox.Name = "Src1CurrentBox";
+            this.Src1CurrentBox.Size = new System.Drawing.Size(75, 20);
+            this.Src1CurrentBox.TabIndex = 5;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(6, 85);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(59, 13);
+            this.label4.TabIndex = 6;
+            this.label4.Text = "Set current";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(249, 61);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(14, 13);
+            this.label2.TabIndex = 4;
+            this.label2.Text = "V";
+            // 
+            // Src1MinVBox
+            // 
+            this.Src1MinVBox.Location = new System.Drawing.Point(6, 58);
+            this.Src1MinVBox.Name = "Src1MinVBox";
+            this.Src1MinVBox.Size = new System.Drawing.Size(75, 20);
+            this.Src1MinVBox.TabIndex = 2;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 23);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(61, 13);
+            this.label1.TabIndex = 3;
+            this.label1.Text = "Set voltage";
             // 
             // LogBox
             // 
@@ -431,7 +434,19 @@
             this.LogBox.TabIndex = 20;
             this.LogBox.Text = "";
             // 
-            // TransistorOutputChars
+            // toolStripContainer1
+            // 
+            // 
+            // toolStripContainer1.ContentPanel
+            // 
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(150, 125);
+            this.toolStripContainer1.Location = new System.Drawing.Point(113, 0);
+            this.toolStripContainer1.Name = "toolStripContainer1";
+            this.toolStripContainer1.Size = new System.Drawing.Size(150, 175);
+            this.toolStripContainer1.TabIndex = 13;
+            this.toolStripContainer1.Text = "toolStripContainer1";
+            // 
+            // TransistorOutputCharsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -439,16 +454,18 @@
             this.Controls.Add(this.LogBox);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox17);
-            this.Name = "TransistorOutputChars";
+            this.Name = "TransistorOutputCharsForm";
             this.Text = "Output characteristics";
             this.groupBox17.ResumeLayout(false);
             this.groupBox17.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
+            this.toolStripContainer1.ResumeLayout(false);
+            this.toolStripContainer1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -493,6 +510,7 @@
         private System.Windows.Forms.Label label40;
         private System.Windows.Forms.TextBox FileNameBox;
         private System.Windows.Forms.RichTextBox LogBox;
+        private System.Windows.Forms.ToolStripContainer toolStripContainer1;
     }
 }
 

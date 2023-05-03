@@ -27,7 +27,7 @@ namespace InstrumentDriverTest.InstrumentDrivers.SpectrumAnalyzer
             }
         } 
 
-        public override void SetCentralFrequency(double frequency, double span, string freqBand)
+        public override void SetCentralFrequency(double frequency, string freqBand)
         {
 
             if (frequency < 0)
@@ -70,7 +70,7 @@ namespace InstrumentDriverTest.InstrumentDrivers.SpectrumAnalyzer
         {
             try
             {
-                SetCentralFrequency(frequency, 0, freqBand);
+                SetCentralFrequency(frequency, freqBand);
                 return MeasCentralPower();
             }
             catch(Exception ex)
@@ -85,6 +85,16 @@ namespace InstrumentDriverTest.InstrumentDrivers.SpectrumAnalyzer
         }
 
         public override double MeasPeak(double frequency, string freqBand)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void SetSpan(double span, string freqBand)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void SetBW(double bw, string freqBand)
         {
             throw new NotImplementedException();
         }
