@@ -113,10 +113,41 @@ namespace InstrumentDriverTest.InstrumentDrivers.SpectrumAnalyzer
             try
             {
                 SetCentralFrequency(frequency, freqBand);
-                var msg = string.Format("ACP:SWE:TIME?");
+                var msg = string.Format("SWEep:TIME?");
                 double sweepTime = VisaUtil.SendReceiveFloatCmd(visa, msg);
-                Thread.Sleep((int)sweepTime);
-                msg = string.Format("CALC:MARK1:X {0} {1}", frequency, freqBand);
+                Thread.Sleep((int)(sweepTime*1000));
+                msg = string.Format("CALC:MARK1:MAX");
+                VisaUtil.SendCmd(visa, msg);
+                Thread.Sleep(100);
+                msg = string.Format("CALC:MARK1:Y?");
+                double measurement = VisaUtil.SendReceiveFloatCmd(visa, msg);
+
+                return measurement;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public override double MeasAtFrequency(double frequency, string freqBand)
+        {
+
+            if (frequency < 0)
+            {
+                throw new ArgumentOutOfRangeException("Frequency cannot be negative");
+            }
+
+            try
+            {
+                var msg = string.Format("SWE:TIME?");
+                double sweepTime = VisaUtil.SendReceiveFloatCmd(visa, msg);
+                Thread.Sleep((int)(sweepTime * 1000));
+                msg = string.Format("CALC:MARK1:MODE:POS");
+                VisaUtil.SendCmd(visa, msg);
+                msg = string.Format("CALC:MARK1:STAT ON");
+                VisaUtil.SendCmd(visa, msg);
+                msg = string.Format("CALC:MARK1:X {0}", frequency*1e9);
                 VisaUtil.SendCmd(visa, msg);
                 Thread.Sleep(100);
                 msg = string.Format("CALC:MARK1:Y?");

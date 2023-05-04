@@ -54,5 +54,7 @@ namespace InstrumentDriverTest.InstrumentDrivers.SpectrumAnalyzer
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public abstract double MeasPeak(double frequency, string freqBand);
 
+        public abstract double MeasAtFrequency(double frequency, string freqBand);
+
     }
 }

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace InstrumentDriverTest.InstrumentDrivers.SpectrumAnalyzer
@@ -66,19 +67,6 @@ namespace InstrumentDriverTest.InstrumentDrivers.SpectrumAnalyzer
             }
         }
 
-        public double MeasAtFrequency(double frequency, string freqBand)
-        {
-            try
-            {
-                SetCentralFrequency(frequency, freqBand);
-                return MeasCentralPower();
-            }
-            catch(Exception ex)
-            {
-                throw ex;
-            }
-        }
-
         public override void SetStartStopFrequency(int startFreq, int stopFreq, string freqBandStart, string freqBandStop)
         {
             throw new NotImplementedException();
@@ -86,7 +74,15 @@ namespace InstrumentDriverTest.InstrumentDrivers.SpectrumAnalyzer
 
         public override double MeasPeak(double frequency, string freqBand)
         {
-            throw new NotImplementedException();
+            try
+            {
+                SetCentralFrequency(frequency, freqBand);
+                return MeasCentralPower();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         public override void SetSpan(double span, string freqBand)
@@ -96,6 +92,12 @@ namespace InstrumentDriverTest.InstrumentDrivers.SpectrumAnalyzer
 
         public override void SetBW(double bw, string freqBand)
         {
+            throw new NotImplementedException();
+        }
+
+        public override double MeasAtFrequency(double frequency, string freqBand)
+        {
+
             throw new NotImplementedException();
         }
     }

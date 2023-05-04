@@ -62,6 +62,10 @@
             this.DCInstrumentList = new System.Windows.Forms.ComboBox();
             this.RefreshListBtn = new System.Windows.Forms.Button();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
+            this.label14 = new System.Windows.Forms.Label();
+            this.BWBox = new System.Windows.Forms.TextBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.SpanBox = new System.Windows.Forms.TextBox();
             this.StopBtn = new System.Windows.Forms.Button();
             this.label10 = new System.Windows.Forms.Label();
             this.OffsetFreqBox = new System.Windows.Forms.TextBox();
@@ -93,10 +97,6 @@
             this.SetRFPowerBox = new System.Windows.Forms.Label();
             this.BaseHarmBox = new System.Windows.Forms.TextBox();
             this.LogBox = new System.Windows.Forms.RichTextBox();
-            this.label13 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.label14 = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
             this.groupBox2.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -436,9 +436,9 @@
             // groupBox9
             // 
             this.groupBox9.Controls.Add(this.label14);
-            this.groupBox9.Controls.Add(this.textBox2);
+            this.groupBox9.Controls.Add(this.BWBox);
             this.groupBox9.Controls.Add(this.label13);
-            this.groupBox9.Controls.Add(this.textBox1);
+            this.groupBox9.Controls.Add(this.SpanBox);
             this.groupBox9.Controls.Add(this.StopBtn);
             this.groupBox9.Controls.Add(this.label10);
             this.groupBox9.Controls.Add(this.OffsetFreqBox);
@@ -477,6 +477,38 @@
             this.groupBox9.TabIndex = 21;
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = "RF setup";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(191, 27);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(53, 13);
+            this.label14.TabIndex = 38;
+            this.label14.Text = "BW [kHz]";
+            // 
+            // BWBox
+            // 
+            this.BWBox.Location = new System.Drawing.Point(191, 46);
+            this.BWBox.Name = "BWBox";
+            this.BWBox.Size = new System.Drawing.Size(87, 20);
+            this.BWBox.TabIndex = 37;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(98, 28);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(63, 13);
+            this.label13.TabIndex = 36;
+            this.label13.Text = "Span [MHz]";
+            // 
+            // SpanBox
+            // 
+            this.SpanBox.Location = new System.Drawing.Point(98, 46);
+            this.SpanBox.Name = "SpanBox";
+            this.SpanBox.Size = new System.Drawing.Size(87, 20);
+            this.SpanBox.TabIndex = 35;
             // 
             // StopBtn
             // 
@@ -644,12 +676,11 @@
             // 
             // TurnOnRFBtn
             // 
-            this.TurnOnRFBtn.Enabled = false;
             this.TurnOnRFBtn.Location = new System.Drawing.Point(86, 232);
             this.TurnOnRFBtn.Name = "TurnOnRFBtn";
             this.TurnOnRFBtn.Size = new System.Drawing.Size(75, 23);
             this.TurnOnRFBtn.TabIndex = 4;
-            this.TurnOnRFBtn.Text = "Turn On";
+            this.TurnOnRFBtn.Text = " ";
             this.TurnOnRFBtn.UseVisualStyleBackColor = true;
             this.TurnOnRFBtn.Click += new System.EventHandler(this.TurnOnRFBtn_Click);
             // 
@@ -680,7 +711,6 @@
             // 
             // ApplyRFBtn
             // 
-            this.ApplyRFBtn.Enabled = false;
             this.ApplyRFBtn.Location = new System.Drawing.Point(5, 232);
             this.ApplyRFBtn.Name = "ApplyRFBtn";
             this.ApplyRFBtn.Size = new System.Drawing.Size(75, 23);
@@ -743,38 +773,6 @@
             this.LogBox.Size = new System.Drawing.Size(298, 118);
             this.LogBox.TabIndex = 35;
             this.LogBox.Text = "";
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(98, 28);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(63, 13);
-            this.label13.TabIndex = 36;
-            this.label13.Text = "Span [MHz]";
-            // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(98, 46);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(87, 20);
-            this.textBox1.TabIndex = 35;
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(191, 27);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(53, 13);
-            this.label14.TabIndex = 38;
-            this.label14.Text = "BW [kHz]";
-            // 
-            // textBox2
-            // 
-            this.textBox2.Location = new System.Drawing.Point(191, 46);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(87, 20);
-            this.textBox2.TabIndex = 37;
             // 
             // Tone_2Test_Form
             // 
@@ -868,9 +866,9 @@
         private System.Windows.Forms.Button StopBtn;
         private System.Windows.Forms.RichTextBox LogBox;
         private System.Windows.Forms.Label label14;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox BWBox;
         private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox SpanBox;
     }
 }
 

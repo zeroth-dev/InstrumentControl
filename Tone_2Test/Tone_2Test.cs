@@ -229,7 +229,7 @@ namespace Tone_2Test
                 rfSource1.SetCWFrequency(freq, "GHz");
 
                 double offset = double.Parse(OffsetFreqBox.Text, provider);
-                rfSource2.SetCWFrequency(freq - offset, "GHz");
+                rfSource2.SetCWFrequency(freq - offset/1000.0f, "GHz");
 
                 double inputPower = double.Parse(StartBox.Text, provider);
                 double gain = 0;
@@ -241,6 +241,15 @@ namespace Tone_2Test
                 rfSource2.SetCWPower(inputPower - gain);
                 LogText(String.Format("Set RF frequency {0} {1} and power {2} dBm",
                                         freq.ToString(provider), "GHz", (inputPower - gain).ToString(provider)));
+
+                spectrumAnalyzer.SetCentralFrequency(freq, "GHz");
+
+                double span = double.Parse(SpanBox.Text, provider);
+                spectrumAnalyzer.SetSpan(span, "MHz");
+
+                double bw = double.Parse(BWBox.Text, provider);
+                spectrumAnalyzer.SetBW(bw, "kHz");
+
             }
             catch (Exception ex)
             {
@@ -368,9 +377,9 @@ namespace Tone_2Test
 
         private (double, double, double, double, double, double) ReadData(double freq, string freqBand, double offset, double attenuation)
         {
-            double basePwr = spectrumAnalyzer.MeasPeak(freq, freqBand) + attenuation;
-            double secondPwr = spectrumAnalyzer.MeasPeak(freq + offset/1000.0f, freqBand) + attenuation;
-            double thirdPwr = spectrumAnalyzer.MeasPeak(freq + offset / 1000.0f, freqBand) + attenuation;
+            double basePwr = spectrumAnalyzer.MeasAtFrequency(freq, freqBand) + attenuation;
+            double secondPwr = spectrumAnalyzer.MeasAtFrequency(freq + offset/1000.0f, freqBand) + attenuation;
+            double thirdPwr = spectrumAnalyzer.MeasAtFrequency(freq + 2*(offset / 1000.0f), freqBand) + attenuation;
 
             SetText(BaseHarmBox, basePwr.ToString());
             SetText(ScndHarmBox, secondPwr.ToString());
