@@ -680,7 +680,7 @@
             this.TurnOnRFBtn.Name = "TurnOnRFBtn";
             this.TurnOnRFBtn.Size = new System.Drawing.Size(75, 23);
             this.TurnOnRFBtn.TabIndex = 4;
-            this.TurnOnRFBtn.Text = " ";
+            this.TurnOnRFBtn.Text = "Turn On";
             this.TurnOnRFBtn.UseVisualStyleBackColor = true;
             this.TurnOnRFBtn.Click += new System.EventHandler(this.TurnOnRFBtn_Click);
             // 
