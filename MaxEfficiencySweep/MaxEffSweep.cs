@@ -29,6 +29,15 @@ namespace MaxEfficiencySweep
         CancellationToken token;
 
         NumberFormatInfo provider = new NumberFormatInfo();
+
+
+        double Vg = 0;
+        double Vd = 0;
+        double Id = 0;
+        double Pin = 0;
+        double Pout = 0;
+        double eff = 0;
+
         public MaxEffSweepForm()
         {
             InitializeComponent();
@@ -282,6 +291,12 @@ namespace MaxEfficiencySweep
             var DC2VoltageList = Array.ConvertAll(Src2VoltageBox.Text.Split(','), double.Parse);
             var powerList = Array.ConvertAll(PowerBox.Text.Split(','), double.Parse);
 
+            Vg = 0;
+            Vd = 0;
+            Id = 0;
+            eff = 0;
+            Pin = 0;
+            Pout = 0;
 
 
             count = DC1VoltageList.Length*DC2VoltageList.Length*powerList.Length;
@@ -318,7 +333,9 @@ namespace MaxEfficiencySweep
 
                         foreach (var dc2 in dc2VoltageList)
                         {
+                            dcPowerSupply.SetVoltageLimit(2, dc2);
                             double basePwr, Vd, Id, Vg, eff;
+                            Thread.Sleep(1000 * 60);
                             (basePwr, Vd, Id, Vg, eff) = ReadData(freq, freqBand, attenuation);
 
                             double inPwrWatts = Math.Pow(10, (power - 30) / 10.0f);
@@ -326,6 +343,17 @@ namespace MaxEfficiencySweep
                             double PAE = (outPwrWatts - inPwrWatts) / (Vd * Id);
 
                             OutputData(filename, Vg, Vd, Id, power, basePwr, eff, PAE);
+
+                            if(eff > this.eff)
+                            {
+                                this.Vd = Vd;
+                                this.Vg = Vg;
+                                this.eff = eff;
+                                this.Pin = power;
+                                this.Id = Id;
+                                this.Pout = basePwr;
+                            }
+
                             progress++;
                             UpdateProgress(progress, count);
 
@@ -413,6 +441,8 @@ namespace MaxEfficiencySweep
             rfSource.TurnOnOff(false);
             dcPowerSupply.TurnOnOff(2, false);
             dcPowerSupply.TurnOnOff(1, false);
+
+            LogText(String.Format("Maximum efficiency is {0} which is obtained for Vg={1} V, Vd={2} V, Id={3} A, Pin={4} dBm and giving Pout={5} dBm", eff, -1*Vg, Vd, Id, Pin, Pout));
         }
 
         private void LogText(string msg)

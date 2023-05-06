@@ -115,7 +115,7 @@ namespace InstrumentDriverTest.InstrumentDrivers.SpectrumAnalyzer
                 SetCentralFrequency(frequency, freqBand);
                 var msg = string.Format("SWEep:TIME?");
                 double sweepTime = VisaUtil.SendReceiveFloatCmd(visa, msg);
-                Thread.Sleep((int)(sweepTime*1000));
+                Thread.Sleep((int)(sweepTime*1000+100));
                 msg = string.Format("CALC:MARK1:MAX");
                 VisaUtil.SendCmd(visa, msg);
                 Thread.Sleep(100);
