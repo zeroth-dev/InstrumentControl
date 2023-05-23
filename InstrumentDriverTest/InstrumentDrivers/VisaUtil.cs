@@ -206,5 +206,20 @@ namespace InstrumentDriverTest.InstrumentDrivers
                 throw ex;
             }
         }
+
+        public static byte[] SendReceiveByteArray(IMessageBasedSession visa, string msg)
+        {
+            try
+            {
+                visa.RawIO.Write(msg + "\n"); // write to instrument
+                var output = visa.RawIO.Read(); // read from instrument
+                
+                return output;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

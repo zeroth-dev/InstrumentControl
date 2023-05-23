@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Runtime.Remoting.Channels;
 using System.Text;
@@ -34,7 +35,7 @@ namespace InstrumentDriverTest.InstrumentDrivers.Oscilloscope
 
                 return 0;
             }
-            catch(Exception e) 
+            catch (Exception e)
             {
                 throw e;
             }
@@ -48,13 +49,13 @@ namespace InstrumentDriverTest.InstrumentDrivers.Oscilloscope
                 double vpp = VisaUtil.SendReceiveFloatCmd(visa, msg);
                 return vpp;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 throw e;
             }
         }
 
-        public override (List<double>, List<double>) GetWaveform(int channel)
+        public override (List<double>, List<double>) GetWaveform(int channel, AcquisitionType acquisitionType, UInt16 count = 0)
         {
             try
             {
@@ -70,15 +71,74 @@ namespace InstrumentDriverTest.InstrumentDrivers.Oscilloscope
                 msg = String.Format("WAVEFORM:FORMAT ASCII");
                 VisaUtil.SendCmd(visa, msg);
 
-                msg = String.Format("WAV:SOUR WMEM{0}; FORM ASCII", channel);
+                // Set Acquisition type
+                msg = String.Format("ACQUIRE:TYPE {0}", GetNameFromAcquisitionType(acquisitionType));
                 VisaUtil.SendCmd(visa, msg);
+
+                // Set number of averages if that mode is selected
+                if (acquisitionType == AcquisitionType.AVERAGE)
+                {
+                    msg = String.Format("ACQUIRE:COUNT {0}", count.ToString());
+                }
+
+                // Get timebase
+                msg = String.Format("TIMEBASE:RANGE?");
+                var timebaseString = VisaUtil.SendReceiveStringCmd(visa, msg);
+                var timebaseArr = timebaseString.Split(' ');
+                double timeSize = 0;
+                switch (timebaseArr[1])
+                {
+                    case "s":
+                        timeSize = 1;
+                        break;
+                    case "ms":
+                        timeSize = 1000;
+                        break;
+                    case "us":
+                        timeSize = 1e6;
+                        break;
+                    case "ns":
+                        timeSize = 1e9;
+                        break;
+                    default: timeSize = 0; 
+                        break;
+                }
+                double timebase = Double.Parse(timebaseArr[0], CultureInfo.InvariantCulture.NumberFormat) / timeSize;
 
                 // Get data
                 var data = VisaUtil.SendReceiveFloatArrayCmd(visa, "WAVEFORM:DATA?", 8192);
                 var intData = Array.ConvertAll<string, int>(data.Split(','), Convert.ToInt32);
                 // TODO: postprocessing
 
-                msg = String.Format("WAVEFORM:PREAMBLE");
+                // Xinc, Xor, Yinc, Yor, Yref, Xref, Yref
+                List<double> preambleData = GetPreamble();
+                //
+                //value = (Waveform - Yref) * Yinc + Yor;
+                //
+                //time = 1:length(value);
+                //time = (time - Xref) * Xinc + Xor;
+                List<double> yOutput = new List<double>();
+                List<double> xOutput = new List<double>();
+                List<double> baseX = Util.Range(0, intData.Length);
+                for (int i = 0; i < intData.Length; i++)
+                {
+                    var y = intData[i];
+                    yOutput.Add(preambleData[2] * (((double)y) - preambleData[4]) + preambleData[3]);
+                    xOutput.Add(preambleData[0] * (baseX[i] - preambleData[5]) + preambleData[1]);
+                }
+                return (xOutput, yOutput);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public override List<double> GetPreamble()
+        {
+            try
+            {
+                var msg = String.Format("WAVEFORM:PREAMBLE");
                 var preamble = VisaUtil.SendReceiveStringCmd(visa, msg);
                 var preambleNums = preamble.Split(',');
                 var Xinc = double.Parse(preambleNums[4], System.Globalization.NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat);
@@ -87,25 +147,32 @@ namespace InstrumentDriverTest.InstrumentDrivers.Oscilloscope
                 var Yinc = double.Parse(preambleNums[7], System.Globalization.NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat);
                 var Yor = double.Parse(preambleNums[8], System.Globalization.NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat);
                 var Yref = double.Parse(preambleNums[9], System.Globalization.NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat);
-                //
-                //value = (Waveform - Yref) * Yinc + Yor;
-                //
-                //time = 1:length(value);
-                //time = (time - Xref) * Xinc + Xor;
-                List<double> yOutput = new List<double>();
-                List<double> xOutput = new List<double>();
-                List<double> baseX = Util.Range(1, intData.Length);
-                for (int i = 0; i < intData.Length; i++)
+
+                List<double> data = new List<double>
                 {
-                    var y = intData[i];
-                    yOutput.Add(Yinc * (((double)y) - Yref) + Yor);
-                    xOutput.Add(Xinc * (baseX[i] - Xref) + Xor);
-                }
-                return (xOutput, yOutput);
+                    Xinc, Xinc, Xor, Yinc, Yor, Yref, Xref, Yref
+                };
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                throw ex;
+                throw e;
+            }
+            return new List<double>();
+        }
+
+        public override void SaveImage(string filename)
+        {
+            try
+            {
+                visa.TimeoutMilliseconds = 15000;
+                var msg = "DISPlay:DATA? PNG, SCReen, COLor";
+                var img = VisaUtil.SendReceiveByteArray(visa, msg);
+
+                File.WriteAllBytes(filename, img);
+            }
+            catch(Exception e) 
+            { 
+                throw e; 
             }
         }
     }
