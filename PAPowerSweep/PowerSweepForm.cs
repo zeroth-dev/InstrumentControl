@@ -331,7 +331,7 @@ namespace PAPowerSweep
             double endPower = double.Parse(StopBox.Text, provider);
             double step = double.Parse(StepBox.Text, provider);
 
-            count = (int)((endPower - startPower) / step);
+            count = (int)((endPower - startPower) / step) + 1;
 
             ProgressLabel.Text = "0/" + count;
             rfSource.TurnOnOff(true);

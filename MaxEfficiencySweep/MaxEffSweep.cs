@@ -323,19 +323,17 @@ namespace MaxEfficiencySweep
             try
             {
                 int progress = 0;
-                foreach (var power in powerList)
+                foreach (var dc1 in dc1VoltageList)
                 {
-                    rfSource.SetCWPower(power - gain);
-
-                    foreach (var dc1 in dc1VoltageList)
+                    dcPowerSupply.SetVoltageLimit(1, dc1);
+                    foreach (var power in powerList)
                     {
-                        dcPowerSupply.SetVoltageLimit(1, dc1);
+                        rfSource.SetCWPower(power - gain);
 
                         foreach (var dc2 in dc2VoltageList)
                         {
                             dcPowerSupply.SetVoltageLimit(2, dc2);
                             double basePwr, Vd, Id, Vg, eff;
-                            Thread.Sleep(1000 * 60);
                             (basePwr, Vd, Id, Vg, eff) = ReadData(freq, freqBand, attenuation);
 
                             double inPwrWatts = Math.Pow(10, (power - 30) / 10.0f);

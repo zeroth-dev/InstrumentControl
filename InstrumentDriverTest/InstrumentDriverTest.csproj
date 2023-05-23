@@ -80,6 +80,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="InstrumentDrivers\DCPowerSupply\E36300.cs" />
+    <Compile Include="InstrumentDrivers\Oscilloscope\Oscilloscope.cs" />
     <Compile Include="InstrumentDrivers\RFSource\HP8350B.cs" />
     <Compile Include="InstrumentDrivers\DCPowerSupply\E364xA_2.cs" />
     <Compile Include="InstrumentDrivers\RFSource\E44xxB.cs" />
@@ -94,6 +95,8 @@
     <Compile Include="InstrumentDrivers\SpectrumAnalyzer\SpectrumAnalyzer.cs" />
     <Compile Include="InstrumentDrivers\Util.cs" />
     <Compile Include="InstrumentDrivers\VisaUtil.cs" />
+    <Compile Include="InstrumentDrivers\WaveformGenerator\WG33600A.cs" />
+    <Compile Include="InstrumentDrivers\WaveformGenerator\WaveformGenerator.cs" />
     <Compile Include="MainApp.cs">
       <SubType>Form</SubType>
     </Compile>
