@@ -49,6 +49,6 @@ namespace InstrumentDriverTest.InstrumentDrivers.Oscilloscope
             }
         }
 
-        public abstract void SaveImage(string filename);
+        public abstract byte[] GetImage();
     }
 }

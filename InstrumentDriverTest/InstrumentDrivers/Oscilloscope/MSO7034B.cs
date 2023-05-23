@@ -160,15 +160,14 @@ namespace InstrumentDriverTest.InstrumentDrivers.Oscilloscope
             return new List<double>();
         }
 
-        public override void SaveImage(string filename)
+        public override byte[] GetImage()
         {
             try
             {
                 visa.TimeoutMilliseconds = 15000;
                 var msg = "DISPlay:DATA? PNG, SCReen, COLor";
                 var img = VisaUtil.SendReceiveByteArray(visa, msg);
-
-                File.WriteAllBytes(filename, img);
+                return img;
             }
             catch(Exception e) 
             { 

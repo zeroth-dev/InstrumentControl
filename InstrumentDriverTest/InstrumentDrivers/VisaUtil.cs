@@ -168,7 +168,7 @@ namespace InstrumentDriverTest.InstrumentDrivers
                 try
                 {
                     var resourceList = new List<string>();
-                    IEnumerable<string> resources = rm.Find("GPIB?*");
+                    IEnumerable<string> resources = rm.Find("(ASRL|GPIB|TCPIP|USB)?*");
                     foreach (string s in resources)
                     {
                         ParseResult parseResult = rm.Parse(s);
