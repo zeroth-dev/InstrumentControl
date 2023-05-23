@@ -80,6 +80,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="InstrumentDrivers\DCPowerSupply\E36300.cs" />
+    <Compile Include="InstrumentDrivers\Oscilloscope\MSO7034B.cs" />
     <Compile Include="InstrumentDrivers\Oscilloscope\Oscilloscope.cs" />
     <Compile Include="InstrumentDrivers\RFSource\HP8350B.cs" />
     <Compile Include="InstrumentDrivers\DCPowerSupply\E364xA_2.cs" />
