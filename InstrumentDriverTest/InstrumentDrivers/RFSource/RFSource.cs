@@ -9,6 +9,7 @@ namespace InstrumentDriverTest.InstrumentDrivers.RFSource
     public abstract class RFSource : GeneralDevice
     {
         public bool turnedOn { get; protected set; }
+        public bool AMWBTurnedOn { get; protected set; }
         protected RFSource(string gpibAddress) : base(gpibAddress)
         {
         }

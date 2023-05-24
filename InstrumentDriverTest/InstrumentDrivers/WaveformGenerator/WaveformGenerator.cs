@@ -8,7 +8,7 @@ namespace InstrumentDriverTest.InstrumentDrivers.WaveformGenerator
 {
     public abstract class WaveformGenerator : GeneralDevice
     {
-
+        public bool turnedOn { get; protected set; }
         protected WaveformGenerator(string gpibAddress) : base(gpibAddress)
         {
         }

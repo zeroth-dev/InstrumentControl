@@ -30,7 +30,7 @@ namespace InstrumentDriverTest.InstrumentDrivers.WaveformGenerator
         {
             try
             {
-
+                turnedOn = turnOn;
                 string msg = string.Format("SOURCE{0}:OUTPUT {1}", source.ToString(), turnOn==true ? "1" : "0");
                 VisaUtil.SendCmd(visa, msg);
             }

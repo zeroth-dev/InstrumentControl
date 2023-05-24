@@ -10,7 +10,7 @@ using static InstrumentDriverTest.InstrumentDrivers.Oscilloscope.Oscilloscope;
 
 namespace InstrumentDriverTest.InstrumentDrivers.Oscilloscope
 {
-    internal class MSO7034B : Oscilloscope
+    public class MSO7034B : Oscilloscope
     {
         public MSO7034B(string gpibAddress) : base(gpibAddress) { }
 

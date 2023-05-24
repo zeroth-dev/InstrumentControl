@@ -63,6 +63,7 @@ namespace InstrumentDriverTest.InstrumentDrivers.RFSource
 
             try
             {
+                AMWBTurnedOn = WBOn;
                 string onMsg = WBOn ? "ON" : "OFF";
                 var msg = String.Format("AM:WIDEBAND:STATE {0}", onMsg);
                 VisaUtil.SendCmd(visa, msg);
