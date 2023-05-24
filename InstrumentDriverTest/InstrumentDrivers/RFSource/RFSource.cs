@@ -36,5 +36,9 @@ namespace InstrumentDriverTest.InstrumentDrivers.RFSource
         /// <param name="turnOn">true if turning ON the RF source, false otherwise</param>
         /// <exception cref="Exception"></exception>
         public abstract void TurnOnOff(bool turnOn);
+
+        public abstract void TurnAMWBOnOff(bool WBOn);
+
+        public abstract void TurnAMOnOff(int AMSource, bool turnOn);
     }
 }

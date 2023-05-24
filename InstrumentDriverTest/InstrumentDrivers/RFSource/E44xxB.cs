@@ -58,6 +58,36 @@ namespace InstrumentDriverTest.InstrumentDrivers.RFSource
             }
         }
 
+        public override void TurnAMWBOnOff(bool WBOn)
+        {
+
+            try
+            {
+                string onMsg = WBOn ? "ON" : "OFF";
+                var msg = String.Format("AM:WIDEBAND:STATE {0}", onMsg);
+                VisaUtil.SendCmd(visa, msg);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public override void TurnAMOnOff(int AMSource, bool turnOn)
+        {
+            try
+            {
+                string onMsg = turnOn ? "ON" : "OFF";
+                var msg = String.Format("AM{0}:STATE", onMsg);
+                VisaUtil.SendCmd(visa, msg);
+                turnedOn = turnOn;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
     }
 
 }

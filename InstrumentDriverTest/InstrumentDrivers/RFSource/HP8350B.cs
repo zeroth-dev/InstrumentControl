@@ -26,6 +26,7 @@ namespace InstrumentDriverTest.InstrumentDrivers.RFSource
             base.turnedOn = false;
         }
 
+
         public override void SetCWFrequency(double frequency, string freqBand)
         {
             string band = "";
@@ -63,6 +64,16 @@ namespace InstrumentDriverTest.InstrumentDrivers.RFSource
             {
                 throw ex;
             }
+        }
+
+        public override void TurnAMOnOff(int AMSource, bool turnOn)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void TurnAMWBOnOff(bool WBOn)
+        {
+            throw new NotImplementedException();
         }
 
         public override void TurnOnOff(bool turnOn)
