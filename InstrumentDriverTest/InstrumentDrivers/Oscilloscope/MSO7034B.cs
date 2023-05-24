@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.Remoting.Channels;
 using System.Text;
 using System.Threading.Tasks;
+using static InstrumentDriverTest.InstrumentDrivers.Oscilloscope.Oscilloscope;
 
 namespace InstrumentDriverTest.InstrumentDrivers.Oscilloscope
 {
@@ -13,12 +14,71 @@ namespace InstrumentDriverTest.InstrumentDrivers.Oscilloscope
     {
         public MSO7034B(string gpibAddress) : base(gpibAddress) { }
 
-        public override List<double> GetFFT(int channel)
+        public override (List<double>, List<double>) GetFFT(int channel, AcquisitionType acquisitionType, UInt16 count = 0)
+        {
+            try
+            {
+
+                var msg = String.Format("FUNCTION:GOFT:SOURCE{0}", channel.ToString());
+                VisaUtil.SendCmd(visa, msg);
+                msg = String.Format("FUNCTION:OPERATION FFT");
+                VisaUtil.SendCmd(visa, msg);
+
+                msg = String.Format("WAVEFORM:SOURCE MATH", channel.ToString());
+                VisaUtil.SendCmd(visa, msg);
+
+                // Set 1000 points for gathering
+                msg = String.Format("WAVEFORM:POINTS 1000");
+                VisaUtil.SendCmd(visa, msg);
+
+                // Specify ASCII form for data
+                msg = String.Format("WAVEFORM:FORMAT BYTE");
+                VisaUtil.SendCmd(visa, msg);
+
+                // Set Acquisition type
+                msg = String.Format("ACQUIRE:TYPE {0}", GetNameFromAcquisitionType(acquisitionType));
+                VisaUtil.SendCmd(visa, msg);
+
+                // Set number of averages if that mode is selected
+                if (acquisitionType == AcquisitionType.AVERAGE)
+                {
+                    msg = String.Format("ACQUIRE:COUNT {0}", count.ToString());
+                }
+
+                // Get data
+                var data = VisaUtil.SendReceiveIEEE488_2ByteArray(visa, "WAVEFORM:DATA?");
+                // TODO: postprocessing
+
+                // Xinc, Xor, Xref, Yinc, Yor, Yref
+                List<double> preambleData = GetPreamble();
+                //
+                //value = (Waveform - Yref) * Yinc + Yor;
+                //
+                //time = 1:length(value);
+                //time = (time - Xref) * Xinc + Xor;
+                List<double> yOutput = new List<double>();
+                List<double> xOutput = new List<double>();
+                List<double> baseX = Util.Range(0, data.Length - 1);
+                for (int i = 0; i < data.Length; i++)
+                {
+                    var y = data[i];
+                    yOutput.Add(preambleData[3] * (((double)y) - preambleData[5]) + preambleData[4]);
+                    xOutput.Add(preambleData[0] * (baseX[i] - preambleData[2]) + preambleData[1]);
+                }
+                return (xOutput, yOutput);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public override double GetPeakFFTAtFreq(int channel, double frequency, string freqBand)
         {
             throw new NotImplementedException();
         }
 
-        public override double GetPeakFFTAtFreq(int channel, double frequency, string freqBand)
+        public override double GetPeakFFT(int channel)
         {
             try
             {
@@ -26,16 +86,12 @@ namespace InstrumentDriverTest.InstrumentDrivers.Oscilloscope
                 VisaUtil.SendCmd(visa, msg);
                 msg = String.Format("FUNCTION:OPERATION FFT");
                 VisaUtil.SendCmd(visa, msg);
+                msg = String.Format("MEASURE:VMAX? MATH");
+                double peak = VisaUtil.SendReceiveFloatCmd(visa, msg);
 
-                msg = String.Format("MARKER:X1Y1source MATH");
-                VisaUtil.SendCmd(visa, msg);
-                msg = String.Format("MARKER:X1POSITION {0} {1}", frequency.ToString(), freqBand);
-                VisaUtil.SendCmd(visa, msg);
-
-
-                return 0;
+                return peak;
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 throw e;
             }
@@ -45,7 +101,7 @@ namespace InstrumentDriverTest.InstrumentDrivers.Oscilloscope
         {
             try
             {
-                var msg = String.Format("MEASURE:VPP? {0}", channel.ToString());
+                var msg = String.Format("MEASURE:VPP? CHANNEL{0}", channel.ToString());
                 double vpp = VisaUtil.SendReceiveFloatCmd(visa, msg);
                 return vpp;
             }
@@ -68,7 +124,7 @@ namespace InstrumentDriverTest.InstrumentDrivers.Oscilloscope
                 VisaUtil.SendCmd(visa, msg);
 
                 // Specify ASCII form for data
-                msg = String.Format("WAVEFORM:FORMAT ASCII");
+                msg = String.Format("WAVEFORM:FORMAT BYTE");
                 VisaUtil.SendCmd(visa, msg);
 
                 // Set Acquisition type
@@ -84,33 +140,14 @@ namespace InstrumentDriverTest.InstrumentDrivers.Oscilloscope
                 // Get timebase
                 msg = String.Format("TIMEBASE:RANGE?");
                 var timebaseString = VisaUtil.SendReceiveStringCmd(visa, msg);
-                var timebaseArr = timebaseString.Split(' ');
-                double timeSize = 0;
-                switch (timebaseArr[1])
-                {
-                    case "s":
-                        timeSize = 1;
-                        break;
-                    case "ms":
-                        timeSize = 1000;
-                        break;
-                    case "us":
-                        timeSize = 1e6;
-                        break;
-                    case "ns":
-                        timeSize = 1e9;
-                        break;
-                    default: timeSize = 0; 
-                        break;
-                }
-                double timebase = Double.Parse(timebaseArr[0], CultureInfo.InvariantCulture.NumberFormat) / timeSize;
+                
+                double timebase = Double.Parse(timebaseString, System.Globalization.NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat);
 
                 // Get data
-                var data = VisaUtil.SendReceiveFloatArrayCmd(visa, "WAVEFORM:DATA?", 8192);
-                var intData = Array.ConvertAll<string, int>(data.Split(','), Convert.ToInt32);
+                var data = VisaUtil.SendReceiveIEEE488_2ByteArray(visa, "WAVEFORM:DATA?");
                 // TODO: postprocessing
 
-                // Xinc, Xor, Yinc, Yor, Yref, Xref, Yref
+                // Xinc, Xor, Xref, Yinc, Yor, Yref
                 List<double> preambleData = GetPreamble();
                 //
                 //value = (Waveform - Yref) * Yinc + Yor;
@@ -119,12 +156,12 @@ namespace InstrumentDriverTest.InstrumentDrivers.Oscilloscope
                 //time = (time - Xref) * Xinc + Xor;
                 List<double> yOutput = new List<double>();
                 List<double> xOutput = new List<double>();
-                List<double> baseX = Util.Range(0, intData.Length);
-                for (int i = 0; i < intData.Length; i++)
+                List<double> baseX = Util.Range(0, data.Length-1);
+                for (int i = 0; i < data.Length; i++)
                 {
-                    var y = intData[i];
-                    yOutput.Add(preambleData[2] * (((double)y) - preambleData[4]) + preambleData[3]);
-                    xOutput.Add(preambleData[0] * (baseX[i] - preambleData[5]) + preambleData[1]);
+                    var y = data[i];
+                    yOutput.Add(preambleData[3] * (((double)y) - preambleData[5]) + preambleData[4]);
+                    xOutput.Add(preambleData[0] * (baseX[i] - preambleData[2]) + preambleData[1]);
                 }
                 return (xOutput, yOutput);
             }
@@ -138,7 +175,7 @@ namespace InstrumentDriverTest.InstrumentDrivers.Oscilloscope
         {
             try
             {
-                var msg = String.Format("WAVEFORM:PREAMBLE");
+                var msg = String.Format("WAVEFORM:PREAMBLE?");
                 var preamble = VisaUtil.SendReceiveStringCmd(visa, msg);
                 var preambleNums = preamble.Split(',');
                 var Xinc = double.Parse(preambleNums[4], System.Globalization.NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat);
@@ -150,14 +187,14 @@ namespace InstrumentDriverTest.InstrumentDrivers.Oscilloscope
 
                 List<double> data = new List<double>
                 {
-                    Xinc, Xinc, Xor, Yinc, Yor, Yref, Xref, Yref
+                    Xinc, Xor, Xref, Yinc, Yor, Yref
                 };
+                return data;
             }
             catch (Exception e)
             {
                 throw e;
             }
-            return new List<double>();
         }
 
         public override byte[] GetImage()
@@ -166,7 +203,7 @@ namespace InstrumentDriverTest.InstrumentDrivers.Oscilloscope
             {
                 visa.TimeoutMilliseconds = 15000;
                 var msg = "DISPlay:DATA? PNG, SCReen, COLor";
-                var img = VisaUtil.SendReceiveByteArray(visa, msg);
+                var img = VisaUtil.SendReceiveIEEE488_2ByteArray(visa, msg);
                 return img;
             }
             catch(Exception e) 

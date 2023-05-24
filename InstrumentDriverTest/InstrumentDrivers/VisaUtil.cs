@@ -70,6 +70,7 @@ namespace InstrumentDriverTest.InstrumentDrivers
         {
             try
             {
+                visa.TimeoutMilliseconds = 5000;
                 visa.RawIO.Write(msg + "\n"); // write to instrument
                 var strOutput = visa.RawIO.ReadString(); // read from instrument
                 Console.WriteLine(strOutput + "\n");
@@ -156,6 +157,36 @@ namespace InstrumentDriverTest.InstrumentDrivers
         }
 
         /// <summary>
+        /// TODO
+        /// Sends the specified message to the gpib address and gets the floar array from the instrument
+        /// Use only when a return message from the instrument is expected
+        /// </summary>
+        /// <param name="visa">visa object for the instrument</param>
+        /// <param name="msg">Query to be sent</param>
+        /// <param name="arrSize">Size of the array to be received</param>
+        /// <returns>Array received from the instrument</returns>
+        public static double[] SendReceiveIEEE488_2FloatArrayCmd(IMessageBasedSession visa, string msg)
+        {
+
+            try
+            {
+                visa.TimeoutMilliseconds = 5000;
+                visa.RawIO.Write(msg + "\n"); // write to instrument
+                var sizeArr = visa.RawIO.Read(10).Skip(2).ToArray(); // Read size
+                string byteNumberStr = Encoding.UTF8.GetString(sizeArr);
+                UInt32 byteNumber = UInt32.Parse(byteNumberStr);
+                var output = visa.RawIO.ReadString(byteNumber+1);
+                var floatOut = Array.ConvertAll<string, double>(output.Split(','), Convert.ToDouble);
+
+
+                return floatOut;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        /// <summary>
         /// Gets all the GPIB devices connected to the computer
         /// </summary>
         /// <returns>List of GPIB addresses of the connected devices</returns>
@@ -207,13 +238,15 @@ namespace InstrumentDriverTest.InstrumentDrivers
             }
         }
 
-        public static byte[] SendReceiveByteArray(IMessageBasedSession visa, string msg)
+        public static byte[] SendReceiveIEEE488_2ByteArray(IMessageBasedSession visa, string msg)
         {
             try
             {
                 visa.RawIO.Write(msg + "\n"); // write to instrument
-                var output = visa.RawIO.Read(); // read from instrument
-                
+                var sizeArr = visa.RawIO.Read(10).Skip(2).ToArray(); // Read size
+                string byteNumberStr = Encoding.UTF8.GetString(sizeArr);
+                UInt32 byteNumber = UInt32.Parse(byteNumberStr);
+                var output = visa.RawIO.Read(byteNumber);
                 return output;
             }
             catch (Exception ex)

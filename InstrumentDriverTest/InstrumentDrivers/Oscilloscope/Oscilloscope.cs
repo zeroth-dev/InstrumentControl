@@ -24,7 +24,7 @@ namespace InstrumentDriverTest.InstrumentDrivers.Oscilloscope
 
         public abstract (List<double>, List<double>) GetWaveform(int channel, AcquisitionType aquisitionType, UInt16 count = 0);
 
-        public abstract List<double> GetFFT(int channel);
+        public abstract (List<double>, List<double>) GetFFT(int channel, AcquisitionType acquisitionType, UInt16 count = 0);
 
         public abstract double GetPeakToPeak(int channel);
         
@@ -50,5 +50,7 @@ namespace InstrumentDriverTest.InstrumentDrivers.Oscilloscope
         }
 
         public abstract byte[] GetImage();
+
+        public abstract double GetPeakFFT(int channel);
     }
 }

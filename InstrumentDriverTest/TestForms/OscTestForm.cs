@@ -51,6 +51,7 @@ namespace InstrumentDriverTest.TestForms
             try
             {
                 oscilloscope = new MSO7034B(gpibAddress);
+                LogBox.AppendText(oscilloscope.idMsg + Environment.NewLine);
             }
             catch (Exception ex)
             {
@@ -77,7 +78,7 @@ namespace InstrumentDriverTest.TestForms
                 {
                     count = UInt16.Parse(AvgNoBox.Text);
                 }
-                var (xAxis, yAxis) = oscilloscope.GetWaveform(channel, acqType, count);
+                (xAxis, yAxis) = oscilloscope.GetWaveform(channel, acqType, count);
                 using (StreamWriter writer = new StreamWriter(@"NormalOutput_time.csv"))
                 {
                     foreach (double item in xAxis)
@@ -118,7 +119,7 @@ namespace InstrumentDriverTest.TestForms
                 {
                     count = UInt16.Parse(AvgNoBox.Text);
                 }
-                var (xAxis, yAxis) = oscilloscope.GetWaveform(channel, acqType, count);
+                (xAxis, yAxis) = oscilloscope.GetFFT(channel, acqType, count);
                 
                 var chart = new ChartForm(xAxis, yAxis);
                 chart.Show();
@@ -132,6 +133,21 @@ namespace InstrumentDriverTest.TestForms
         private void EnableBtns(bool enable)
         {
             SendCmdBtn.Enabled = enable;
+            ChannelBox.Enabled = enable;
+            AvgNoBox.Enabled = enable;
+            AvgTypeBtn.Enabled = enable;
+            GetDataBtn.Enabled = enable;
+            GetFFTBtn.Enabled = enable;
+            ImgSavePathBox.Enabled  = enable;
+            FFTSavePathBox.Enabled= enable;
+            BrowseFFTPathBtn.Enabled = enable;
+            BrowseOscDataPathBox.Enabled = enable;
+            BrowseOscSavePathBtn.Enabled = enable;
+            DataFilePathBox.Enabled = enable;
+            SaveFFTDataBtn.Enabled = enable;
+            SaveImgBtn.Enabled = enable;
+            SaveOscDataBtn.Enabled = enable;
+            FFTPeakBtn.Enabled = enable;
         }
 
         private void PlotData(List<double> x, List<double> y)
@@ -231,5 +247,18 @@ namespace InstrumentDriverTest.TestForms
 
         }
 
+        private void FFTPeakBtn_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var channel = int.Parse(ChannelBox.Text);
+                double peak = oscilloscope.GetPeakFFT(channel);
+                LogBox.AppendText("Peak fft is: " + peak + "dBV\n");
+            }
+            catch(Exception ex)
+            {
+                LogBox.AppendText(ex.Message + Environment.NewLine);
+            }
+        }
     }
 }

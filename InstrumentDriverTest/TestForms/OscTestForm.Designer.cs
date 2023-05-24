@@ -36,6 +36,8 @@
             this.CmdBox = new System.Windows.Forms.TextBox();
             this.LogBox = new System.Windows.Forms.RichTextBox();
             this.CtrlBox = new System.Windows.Forms.GroupBox();
+            this.GetFFTBtn = new System.Windows.Forms.Button();
+            this.GetDataBtn = new System.Windows.Forms.Button();
             this.SaveFFTDataBtn = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.FFTSavePathBox = new System.Windows.Forms.TextBox();
@@ -55,8 +57,7 @@
             this.label11 = new System.Windows.Forms.Label();
             this.ChannelBox = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.GetDataBtn = new System.Windows.Forms.Button();
-            this.GetFFTBtn = new System.Windows.Forms.Button();
+            this.FFTPeakBtn = new System.Windows.Forms.Button();
             this.groupBox5.SuspendLayout();
             this.CtrlBox.SuspendLayout();
             this.SuspendLayout();
@@ -127,6 +128,7 @@
             // 
             // CtrlBox
             // 
+            this.CtrlBox.Controls.Add(this.FFTPeakBtn);
             this.CtrlBox.Controls.Add(this.GetFFTBtn);
             this.CtrlBox.Controls.Add(this.GetDataBtn);
             this.CtrlBox.Controls.Add(this.SaveFFTDataBtn);
@@ -154,6 +156,28 @@
             this.CtrlBox.TabIndex = 11;
             this.CtrlBox.TabStop = false;
             this.CtrlBox.Text = "Control";
+            // 
+            // GetFFTBtn
+            // 
+            this.GetFFTBtn.Enabled = false;
+            this.GetFFTBtn.Location = new System.Drawing.Point(207, 90);
+            this.GetFFTBtn.Name = "GetFFTBtn";
+            this.GetFFTBtn.Size = new System.Drawing.Size(75, 23);
+            this.GetFFTBtn.TabIndex = 42;
+            this.GetFFTBtn.Text = "Get fft";
+            this.GetFFTBtn.UseVisualStyleBackColor = true;
+            this.GetFFTBtn.Click += new System.EventHandler(this.GetFFTBtn_Click);
+            // 
+            // GetDataBtn
+            // 
+            this.GetDataBtn.Enabled = false;
+            this.GetDataBtn.Location = new System.Drawing.Point(126, 90);
+            this.GetDataBtn.Name = "GetDataBtn";
+            this.GetDataBtn.Size = new System.Drawing.Size(75, 23);
+            this.GetDataBtn.TabIndex = 41;
+            this.GetDataBtn.Text = "Get data";
+            this.GetDataBtn.UseVisualStyleBackColor = true;
+            this.GetDataBtn.Click += new System.EventHandler(this.GetDataBtn_Click);
             // 
             // SaveFFTDataBtn
             // 
@@ -338,27 +362,16 @@
             this.label1.TabIndex = 21;
             this.label1.Text = "Channel";
             // 
-            // GetDataBtn
+            // FFTPeakBtn
             // 
-            this.GetDataBtn.Enabled = false;
-            this.GetDataBtn.Location = new System.Drawing.Point(126, 90);
-            this.GetDataBtn.Name = "GetDataBtn";
-            this.GetDataBtn.Size = new System.Drawing.Size(75, 23);
-            this.GetDataBtn.TabIndex = 41;
-            this.GetDataBtn.Text = "Get data";
-            this.GetDataBtn.UseVisualStyleBackColor = true;
-            this.GetDataBtn.Click += new System.EventHandler(this.GetDataBtn_Click);
-            // 
-            // GetFFTBtn
-            // 
-            this.GetFFTBtn.Enabled = false;
-            this.GetFFTBtn.Location = new System.Drawing.Point(207, 90);
-            this.GetFFTBtn.Name = "GetFFTBtn";
-            this.GetFFTBtn.Size = new System.Drawing.Size(75, 23);
-            this.GetFFTBtn.TabIndex = 42;
-            this.GetFFTBtn.Text = "Get fft";
-            this.GetFFTBtn.UseVisualStyleBackColor = true;
-            this.GetFFTBtn.Click += new System.EventHandler(this.GetFFTBtn_Click);
+            this.FFTPeakBtn.Enabled = false;
+            this.FFTPeakBtn.Location = new System.Drawing.Point(207, 61);
+            this.FFTPeakBtn.Name = "FFTPeakBtn";
+            this.FFTPeakBtn.Size = new System.Drawing.Size(75, 23);
+            this.FFTPeakBtn.TabIndex = 43;
+            this.FFTPeakBtn.Text = "Get fft peak";
+            this.FFTPeakBtn.UseVisualStyleBackColor = true;
+            this.FFTPeakBtn.Click += new System.EventHandler(this.FFTPeakBtn_Click);
             // 
             // OscTestForm
             // 
@@ -411,5 +424,6 @@
         private System.Windows.Forms.Button BrowseFFTPathBtn;
         private System.Windows.Forms.Button GetFFTBtn;
         private System.Windows.Forms.Button GetDataBtn;
+        private System.Windows.Forms.Button FFTPeakBtn;
     }
 }
