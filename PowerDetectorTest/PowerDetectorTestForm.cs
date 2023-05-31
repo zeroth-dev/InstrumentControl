@@ -42,12 +42,12 @@ namespace PowerDetectorTest
 
         private void ConnectWGBtn_Click(object sender, EventArgs e)
         {
-            string gpibAddress = RFInstrumentList.Text;
+            string gpibAddress = WGInstrumentList.Text;
             try
             {
-                rfSource = new E44xxB(gpibAddress);
+                waveformGenerator = new WG33600A(gpibAddress);
                 LogText("Registered device:");
-                LogText(rfSource.idMsg);
+                LogText(waveformGenerator.idMsg);
             }
             catch (Exception ex)
             {
@@ -252,10 +252,16 @@ namespace PowerDetectorTest
             var countPower = (int)((endPower - startPower) / step) + 1;
             var countFreq = (int)((freqStop - freqStart) / freqStep) + 1;
             count = countPower * countFreq;
-
+            progress = 0;
             ProgressLabel.Text = "0/" + count;
             rfSource.TurnOnOff(true);
             waveformGenerator.TurnOnOff(1, true);
+            rfSource.TurnAMWBOnOff(true);
+
+
+            tokenSource = new CancellationTokenSource();
+            token = tokenSource.Token;
+
             Task.Factory.StartNew(() =>
             {
                 Iterate(filename, freqStart, freqStop, freqStep, Vpp, startPower, endPower, step, token);
@@ -270,13 +276,14 @@ namespace PowerDetectorTest
                 rfSource.SetCWPower(power);
                 for (double freq = freqStart; freq<=freqStop; freq+=freqStep)
                 {
-                    waveformGenerator.SetSineWave(1, freq, Vpp, 0, 0);
-                    Thread.Sleep(100);
+                    waveformGenerator.SetSineWave(1, freq*1E6, Vpp, 0, 0);
+                    Thread.Sleep(500);
                     var (Vppeak, time, VScope, peakFFT, frequency, FFT) = ReadData();
                     var filenameBase = Path.GetFileNameWithoutExtension(filename);
+                    var foldername=Path.GetDirectoryName(filename);
                     var extension = Path.GetExtension(filename);
-                    var scopeFilename = String.Format("{0}_scope_freq_{1}MHz_P_{2}dBm.{3}", filenameBase, freq, power, extension);
-                    var FFTFilename = String.Format("{0}_FFT_freq_{1}MHz_P_{2}dBm.{3}", filenameBase, freq, power, extension);
+                    var scopeFilename = String.Format("{0}\\{1}_scope_freq_{2}MHz_P_{3}dBm{4}",foldername, filenameBase, freq, power, extension);
+                    var FFTFilename = String.Format("{0}\\{1}_FFT_freq_{2}MHz_P_{3}dBm{4}",foldername, filenameBase, freq, power, extension);
 
                     OutputData(filename, Vpp, freq, power, Vppeak, peakFFT);
                     OutputScope(scopeFilename, time, VScope);

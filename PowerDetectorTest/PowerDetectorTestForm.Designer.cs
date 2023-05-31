@@ -40,6 +40,12 @@
             this.WGInstrumentList = new System.Windows.Forms.ComboBox();
             this.RefreshListBtn = new System.Windows.Forms.Button();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
+            this.SaveImgBtn = new System.Windows.Forms.Button();
+            this.BrowseImgPathBtn = new System.Windows.Forms.Button();
+            this.label7 = new System.Windows.Forms.Label();
+            this.ImgPathBox = new System.Windows.Forms.TextBox();
+            this.TurnAMOnOffBtn = new System.Windows.Forms.Button();
+            this.StopBtn = new System.Windows.Forms.Button();
             this.ProgressLabel = new System.Windows.Forms.Label();
             this.label35 = new System.Windows.Forms.Label();
             this.BrowseSaveFileBtn = new System.Windows.Forms.Button();
@@ -59,26 +65,20 @@
             this.StartBox = new System.Windows.Forms.TextBox();
             this.SetRFPowerBox = new System.Windows.Forms.Label();
             this.FFTPeakBox = new System.Windows.Forms.TextBox();
-            this.StopBtn = new System.Windows.Forms.Button();
-            this.TurnAMOnOffBtn = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.StepFreqBox = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.StopFreqBox = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.StartFreqBox = new System.Windows.Forms.TextBox();
             this.ApplyWGbtn = new System.Windows.Forms.Button();
+            this.label6 = new System.Windows.Forms.Label();
             this.TurnOnWGBtn = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.VoltageBox = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.StepFreqBox = new System.Windows.Forms.TextBox();
-            this.StopFreqBox = new System.Windows.Forms.TextBox();
-            this.StartFreqBox = new System.Windows.Forms.TextBox();
-            this.BrowseImgPathBtn = new System.Windows.Forms.Button();
-            this.label7 = new System.Windows.Forms.Label();
-            this.ImgPathBox = new System.Windows.Forms.TextBox();
-            this.SaveImgBtn = new System.Windows.Forms.Button();
             this.LogBox = new System.Windows.Forms.RichTextBox();
             this.groupBox17.SuspendLayout();
             this.groupBox9.SuspendLayout();
@@ -232,6 +232,62 @@
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = "RF setup";
             // 
+            // SaveImgBtn
+            // 
+            this.SaveImgBtn.Location = new System.Drawing.Point(196, 328);
+            this.SaveImgBtn.Name = "SaveImgBtn";
+            this.SaveImgBtn.Size = new System.Drawing.Size(75, 23);
+            this.SaveImgBtn.TabIndex = 37;
+            this.SaveImgBtn.Text = "Save image";
+            this.SaveImgBtn.UseVisualStyleBackColor = true;
+            this.SaveImgBtn.Click += new System.EventHandler(this.SaveImgBtn_Click);
+            // 
+            // BrowseImgPathBtn
+            // 
+            this.BrowseImgPathBtn.Location = new System.Drawing.Point(115, 328);
+            this.BrowseImgPathBtn.Name = "BrowseImgPathBtn";
+            this.BrowseImgPathBtn.Size = new System.Drawing.Size(75, 23);
+            this.BrowseImgPathBtn.TabIndex = 36;
+            this.BrowseImgPathBtn.Text = "Browse";
+            this.BrowseImgPathBtn.UseVisualStyleBackColor = true;
+            this.BrowseImgPathBtn.Click += new System.EventHandler(this.BrowseImgPathBtn_Click);
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(7, 315);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(63, 13);
+            this.label7.TabIndex = 35;
+            this.label7.Text = "Save image";
+            // 
+            // ImgPathBox
+            // 
+            this.ImgPathBox.Location = new System.Drawing.Point(9, 331);
+            this.ImgPathBox.Name = "ImgPathBox";
+            this.ImgPathBox.Size = new System.Drawing.Size(100, 20);
+            this.ImgPathBox.TabIndex = 34;
+            // 
+            // TurnAMOnOffBtn
+            // 
+            this.TurnAMOnOffBtn.Location = new System.Drawing.Point(167, 142);
+            this.TurnAMOnOffBtn.Name = "TurnAMOnOffBtn";
+            this.TurnAMOnOffBtn.Size = new System.Drawing.Size(75, 23);
+            this.TurnAMOnOffBtn.TabIndex = 33;
+            this.TurnAMOnOffBtn.Text = "Turn AM On";
+            this.TurnAMOnOffBtn.UseVisualStyleBackColor = true;
+            this.TurnAMOnOffBtn.Click += new System.EventHandler(this.TurnAMOnOffBtn_Click);
+            // 
+            // StopBtn
+            // 
+            this.StopBtn.Location = new System.Drawing.Point(104, 259);
+            this.StopBtn.Name = "StopBtn";
+            this.StopBtn.Size = new System.Drawing.Size(91, 23);
+            this.StopBtn.TabIndex = 32;
+            this.StopBtn.Text = "Stop";
+            this.StopBtn.UseVisualStyleBackColor = true;
+            this.StopBtn.Click += new System.EventHandler(this.StopBtn_Click);
+            // 
             // ProgressLabel
             // 
             this.ProgressLabel.AutoSize = true;
@@ -329,7 +385,6 @@
             // 
             // TurnOnRFBtn
             // 
-            this.TurnOnRFBtn.Enabled = false;
             this.TurnOnRFBtn.Location = new System.Drawing.Point(86, 142);
             this.TurnOnRFBtn.Name = "TurnOnRFBtn";
             this.TurnOnRFBtn.Size = new System.Drawing.Size(75, 23);
@@ -358,7 +413,6 @@
             // 
             // ApplyRFBtn
             // 
-            this.ApplyRFBtn.Enabled = false;
             this.ApplyRFBtn.Location = new System.Drawing.Point(5, 142);
             this.ApplyRFBtn.Name = "ApplyRFBtn";
             this.ApplyRFBtn.Size = new System.Drawing.Size(75, 23);
@@ -398,27 +452,6 @@
             this.FFTPeakBox.Size = new System.Drawing.Size(55, 20);
             this.FFTPeakBox.TabIndex = 16;
             // 
-            // StopBtn
-            // 
-            this.StopBtn.Location = new System.Drawing.Point(104, 259);
-            this.StopBtn.Name = "StopBtn";
-            this.StopBtn.Size = new System.Drawing.Size(91, 23);
-            this.StopBtn.TabIndex = 32;
-            this.StopBtn.Text = "Stop";
-            this.StopBtn.UseVisualStyleBackColor = true;
-            this.StopBtn.Click += new System.EventHandler(this.StopBtn_Click);
-            // 
-            // TurnAMOnOffBtn
-            // 
-            this.TurnAMOnOffBtn.Enabled = false;
-            this.TurnAMOnOffBtn.Location = new System.Drawing.Point(167, 142);
-            this.TurnAMOnOffBtn.Name = "TurnAMOnOffBtn";
-            this.TurnAMOnOffBtn.Size = new System.Drawing.Size(75, 23);
-            this.TurnAMOnOffBtn.TabIndex = 33;
-            this.TurnAMOnOffBtn.Text = "Turn AM On";
-            this.TurnAMOnOffBtn.UseVisualStyleBackColor = true;
-            this.TurnAMOnOffBtn.Click += new System.EventHandler(this.TurnAMOnOffBtn_Click);
-            // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.groupBox3);
@@ -450,9 +483,47 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Source";
             // 
+            // StepFreqBox
+            // 
+            this.StepFreqBox.Location = new System.Drawing.Point(130, 101);
+            this.StepFreqBox.Name = "StepFreqBox";
+            this.StepFreqBox.Size = new System.Drawing.Size(56, 20);
+            this.StepFreqBox.TabIndex = 36;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(6, 85);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(29, 13);
+            this.label3.TabIndex = 36;
+            this.label3.Text = "Start";
+            // 
+            // StopFreqBox
+            // 
+            this.StopFreqBox.Location = new System.Drawing.Point(68, 101);
+            this.StopFreqBox.Name = "StopFreqBox";
+            this.StopFreqBox.Size = new System.Drawing.Size(56, 20);
+            this.StopFreqBox.TabIndex = 35;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(68, 85);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(29, 13);
+            this.label5.TabIndex = 35;
+            this.label5.Text = "Stop";
+            // 
+            // StartFreqBox
+            // 
+            this.StartFreqBox.Location = new System.Drawing.Point(6, 101);
+            this.StartFreqBox.Name = "StartFreqBox";
+            this.StartFreqBox.Size = new System.Drawing.Size(56, 20);
+            this.StartFreqBox.TabIndex = 34;
+            // 
             // ApplyWGbtn
             // 
-            this.ApplyWGbtn.Enabled = false;
             this.ApplyWGbtn.Location = new System.Drawing.Point(6, 135);
             this.ApplyWGbtn.Name = "ApplyWGbtn";
             this.ApplyWGbtn.Size = new System.Drawing.Size(75, 23);
@@ -461,9 +532,17 @@
             this.ApplyWGbtn.UseVisualStyleBackColor = true;
             this.ApplyWGbtn.Click += new System.EventHandler(this.ApplyWGbtn_Click);
             // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(130, 85);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(29, 13);
+            this.label6.TabIndex = 34;
+            this.label6.Text = "Step";
+            // 
             // TurnOnWGBtn
             // 
-            this.TurnOnWGBtn.Enabled = false;
             this.TurnOnWGBtn.Location = new System.Drawing.Point(87, 135);
             this.TurnOnWGBtn.Name = "TurnOnWGBtn";
             this.TurnOnWGBtn.Size = new System.Drawing.Size(75, 23);
@@ -505,90 +584,6 @@
             this.label1.Size = new System.Drawing.Size(61, 13);
             this.label1.TabIndex = 3;
             this.label1.Text = "Set voltage";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(6, 85);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(29, 13);
-            this.label3.TabIndex = 36;
-            this.label3.Text = "Start";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(68, 85);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(29, 13);
-            this.label5.TabIndex = 35;
-            this.label5.Text = "Stop";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(130, 85);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(29, 13);
-            this.label6.TabIndex = 34;
-            this.label6.Text = "Step";
-            // 
-            // StepFreqBox
-            // 
-            this.StepFreqBox.Location = new System.Drawing.Point(130, 101);
-            this.StepFreqBox.Name = "StepFreqBox";
-            this.StepFreqBox.Size = new System.Drawing.Size(56, 20);
-            this.StepFreqBox.TabIndex = 36;
-            // 
-            // StopFreqBox
-            // 
-            this.StopFreqBox.Location = new System.Drawing.Point(68, 101);
-            this.StopFreqBox.Name = "StopFreqBox";
-            this.StopFreqBox.Size = new System.Drawing.Size(56, 20);
-            this.StopFreqBox.TabIndex = 35;
-            // 
-            // StartFreqBox
-            // 
-            this.StartFreqBox.Location = new System.Drawing.Point(6, 101);
-            this.StartFreqBox.Name = "StartFreqBox";
-            this.StartFreqBox.Size = new System.Drawing.Size(56, 20);
-            this.StartFreqBox.TabIndex = 34;
-            // 
-            // BrowseImgPathBtn
-            // 
-            this.BrowseImgPathBtn.Location = new System.Drawing.Point(115, 328);
-            this.BrowseImgPathBtn.Name = "BrowseImgPathBtn";
-            this.BrowseImgPathBtn.Size = new System.Drawing.Size(75, 23);
-            this.BrowseImgPathBtn.TabIndex = 36;
-            this.BrowseImgPathBtn.Text = "Browse";
-            this.BrowseImgPathBtn.UseVisualStyleBackColor = true;
-            this.BrowseImgPathBtn.Click += new System.EventHandler(this.BrowseImgPathBtn_Click);
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(7, 315);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(63, 13);
-            this.label7.TabIndex = 35;
-            this.label7.Text = "Save image";
-            // 
-            // ImgPathBox
-            // 
-            this.ImgPathBox.Location = new System.Drawing.Point(9, 331);
-            this.ImgPathBox.Name = "ImgPathBox";
-            this.ImgPathBox.Size = new System.Drawing.Size(100, 20);
-            this.ImgPathBox.TabIndex = 34;
-            // 
-            // SaveImgBtn
-            // 
-            this.SaveImgBtn.Location = new System.Drawing.Point(196, 328);
-            this.SaveImgBtn.Name = "SaveImgBtn";
-            this.SaveImgBtn.Size = new System.Drawing.Size(75, 23);
-            this.SaveImgBtn.TabIndex = 37;
-            this.SaveImgBtn.Text = "Save image";
-            this.SaveImgBtn.UseVisualStyleBackColor = true;
-            this.SaveImgBtn.Click += new System.EventHandler(this.SaveImgBtn_Click);
             // 
             // LogBox
             // 
