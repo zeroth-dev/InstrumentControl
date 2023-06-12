@@ -281,15 +281,22 @@ namespace MaxEfficiencySweep
             double freq = double.Parse(CWFreqBox.Text, provider);
             string freqBand = "GHz";
 
-            using (StreamWriter sw = File.CreateText(filename))
-            {
-                sw.WriteLine("Vg Vd Id Pin Pout eff PAE");
-            }
-
 
             var DC1VoltageList = Array.ConvertAll(Src1VoltageBox.Text.Split(','), double.Parse);
             var DC2VoltageList = Array.ConvertAll(Src2VoltageBox.Text.Split(','), double.Parse);
             var powerList = Array.ConvertAll(PowerBox.Text.Split(','), double.Parse);
+
+            foreach (var dc2 in DC2VoltageList)
+            {
+                var filenameBase = Path.GetFileNameWithoutExtension(filename);
+                var foldername = Path.GetDirectoryName(filename);
+                var extension = Path.GetExtension(filename);
+                var newFilename = String.Format("{0}\\{1}_{2}V{3}", foldername, filenameBase, dc2, extension);
+                using (StreamWriter sw = File.CreateText(newFilename))
+                {
+                    sw.WriteLine("Vg Vd Id Pin Pout eff PAE");
+                }
+            }
 
             Vg = 0;
             Vd = 0;
@@ -297,7 +304,6 @@ namespace MaxEfficiencySweep
             eff = 0;
             Pin = 0;
             Pout = 0;
-
 
             count = DC1VoltageList.Length*DC2VoltageList.Length*powerList.Length;
 
@@ -340,7 +346,13 @@ namespace MaxEfficiencySweep
                             double outPwrWatts = Math.Pow(10, (basePwr - 30) / 10.0f);
                             double PAE = (outPwrWatts - inPwrWatts) / (Vd * Id);
 
-                            OutputData(filename, Vg, Vd, Id, power, basePwr, eff, PAE);
+
+                            var filenameBase = Path.GetFileNameWithoutExtension(filename);
+                            var foldername = Path.GetDirectoryName(filename);
+                            var extension = Path.GetExtension(filename);
+                            var newFilename = String.Format("{0}\\{1}_{2}V{3}", foldername, filenameBase, dc2, extension);
+                            
+                            OutputData(newFilename, Vg, Vd, Id, power, basePwr, eff, PAE);
 
                             if(eff > this.eff)
                             {
